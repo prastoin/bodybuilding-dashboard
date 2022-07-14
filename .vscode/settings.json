@@ -1,0 +1,14 @@
+{
+    "[typescript]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": false
+        }
+    },
+    "[typescriptreact]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": false
+        }
+    },
+    "files.autoSave": "off",
+    "typescript.tsdk": "node_modules/typescript/lib",
+}
