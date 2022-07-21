@@ -6,7 +6,10 @@ export const HomeScreen: React.FC<RootDetailsScreenProps> = ({
   navigation,
 }) => {
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+    <View
+      style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+      testID="home-screen-container"
+    >
       <Text>Home Screen</Text>
       <Button
         title="Go to Details"

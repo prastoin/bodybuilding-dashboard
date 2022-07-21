@@ -29,11 +29,14 @@ export const ProgramBuilderScreen: React.FC<RootProgramBuilderScreenProps> = ({
     });
   }
 
-  const renderItem: ListRenderItem<TrainingSession> = ({ item, index }) => {
+  const renderItem: ListRenderItem<TrainingSession> = ({
+    item: { name },
+    index,
+  }) => {
     return (
-      <View>
+      <View testID={`training-session-container-${name}-${index}`}>
         <Text>
-          {index} _ {item.name}
+          {index} _ {name}
         </Text>
       </View>
     );
