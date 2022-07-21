@@ -12,6 +12,10 @@ export const HomeScreen: React.FC<RootDetailsScreenProps> = ({
         title="Go to Details"
         onPress={() => navigation.navigate("Details")}
       />
+      <Button
+        title="Go to Program Builder"
+        onPress={() => navigation.navigate("ProgramBuilder")}
+      />
     </View>
   );
 };
