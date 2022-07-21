@@ -2,7 +2,9 @@
 
 export interface Typegen0 {
   "@@xstate/typegen": true;
-  eventsCausingActions: {};
+  eventsCausingActions: {
+    addTrainingSessionToContext: "ADD_TRAINING_SESSION";
+  };
   internalEvents: {
     "xstate.init": { type: "xstate.init" };
   };
@@ -15,7 +17,9 @@ export interface Typegen0 {
   };
   eventsCausingServices: {};
   eventsCausingGuards: {};
-  eventsCausingDelays: {};
-  matchesStates: "pending" | "resolved" | "rejected";
+  eventsCausingDelays: {
+    ADD_TRAINING_SESSION_DELAY: "xstate.init";
+  };
+  matchesStates: "Idle" | "User is adding new training session";
   tags: never;
 }

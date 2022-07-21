@@ -1,6 +1,6 @@
 import { useMachine } from "@xstate/react";
 import * as React from "react";
-import { Text, View } from "react-native";
+import { Button, Text, View } from "react-native";
 import { createProgramBuilderMachine } from "../machines/ProgramBuilderMachine";
 import { RootProgramBuilderScreenProps } from "../navigation/RootStack";
 
@@ -12,6 +12,15 @@ export const ProgramBuilderScreen: React.FC<RootProgramBuilderScreenProps> = ({
   );
 
   const programBuilderMachineValue = programBuilderMachineState.value;
+  const programBuilderContext = programBuilderMachineState.context;
+
+  function handleAddTrainingSessionOnpress() {
+    const name = "just a name";
+    sendToProgramBuilderMachine({
+      type: "ADD_TRAINING_SESSION",
+      name,
+    });
+  }
 
   return (
     <View
@@ -20,6 +29,11 @@ export const ProgramBuilderScreen: React.FC<RootProgramBuilderScreenProps> = ({
     >
       <Text>Program Builder Screen</Text>
       <Text>{programBuilderMachineValue}</Text>
+      <Text>{JSON.stringify(programBuilderContext)}</Text>
+      <Button
+        title="Add static training session"
+        onPress={handleAddTrainingSessionOnpress}
+      />
     </View>
   );
 };
