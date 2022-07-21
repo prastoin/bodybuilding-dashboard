@@ -1,0 +1,40 @@
+name: ci
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Run commitlinter 👀
+        uses: wagoid/commitlint-github-action@v3
+  client_integrations_tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v2
+
+      #Modify key version to force cache reset
+      - name: Cache node_modules 📦
+        uses: actions/cache@v2
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-v1-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies 👨🏻‍💻
+        run: yarn install
+
+      - name: Build packages 👷
+        run: yarn run build
+
+      - name: Run client tests 🧪
+        run: yarn test
