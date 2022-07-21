@@ -1,13 +1,14 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Root } from "./navigation/RootStack";
+import * as React from "react";
+import { RootStack } from "./navigation/RootStack";
 
 const Stack = createNativeStackNavigator();
 
 function App() {
   return (
     <NavigationContainer>
-      <Root />
+      <RootStack />
     </NavigationContainer>
   );
 }

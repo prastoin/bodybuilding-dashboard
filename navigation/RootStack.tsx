@@ -1,29 +1,37 @@
-import { RouteProp } from "@react-navigation/native";
 import {
   createNativeStackNavigator,
-  NativeStackNavigationProp,
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
-import React from "react";
+import * as React from "react";
+import { DetailsScreen } from "../screens/Details";
+import { HomeScreen } from "../screens/Home";
 
-import { DetailsScreen } from "../screens/DetailsScreen";
-import { HomeScreen } from "../screens/HomeScreen";
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export type RootStackParamList = {
   Details: undefined;
   Home: undefined;
 };
 
-const RootStack = createNativeStackNavigator<RootStackParamList>();
-
-export const Root = () => (
-  <RootStack.Navigator initialRouteName="Home">
-    <RootStack.Screen name="Details" component={DetailsScreen} />
-    <RootStack.Screen name="Home" component={HomeScreen} />
-  </RootStack.Navigator>
-);
-
 export type RootHomeScreenProps = NativeStackScreenProps<
   RootStackParamList,
   "Home"
 >;
+
+export type RootDetailsScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Details"
+>;
+
+export const RootStack: React.FC = () => {
+  return (
+    <Stack.Navigator initialRouteName="Home">
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ title: "Overview" }}
+      />
+      <Stack.Screen name="Details" component={DetailsScreen} />
+    </Stack.Navigator>
+  );
+};

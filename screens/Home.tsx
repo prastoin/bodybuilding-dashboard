@@ -1,7 +1,10 @@
+import * as React from "react";
 import { Button, Text, View } from "react-native";
-import { RootHomeScreenProps } from "../navigation/RootStack";
+import { RootDetailsScreenProps } from "../navigation/RootStack";
 
-export const HomeScreen: React.FC<RootHomeScreenProps> = ({ navigation }) => {
+export const HomeScreen: React.FC<RootDetailsScreenProps> = ({
+  navigation,
+}) => {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>Home Screen</Text>
