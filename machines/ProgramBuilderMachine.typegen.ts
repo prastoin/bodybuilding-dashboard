@@ -3,6 +3,7 @@
 export interface Typegen0 {
   "@@xstate/typegen": true;
   eventsCausingActions: {
+    removeTrainingSessionToContext: "REMOVE_TRAINING_SESSION";
     addTrainingSessionToContext: "ADD_TRAINING_SESSION";
   };
   internalEvents: {
@@ -18,8 +19,11 @@ export interface Typegen0 {
   eventsCausingServices: {};
   eventsCausingGuards: {};
   eventsCausingDelays: {
-    ADD_TRAINING_SESSION_DELAY: "xstate.init";
+    TRAINING_SESSION_EDITION_DELAY: "xstate.init";
   };
-  matchesStates: "Idle" | "User is adding new training session";
+  matchesStates:
+    | "Idle"
+    | "User is removing last training session"
+    | "User is adding new training session";
   tags: never;
 }
