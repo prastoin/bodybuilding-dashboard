@@ -1,10 +1,11 @@
-import { useMachine } from "@xstate/react";
+import { useActor, useMachine } from "@xstate/react";
 import * as React from "react";
 import { Button, FlatList, Text, View } from "react-native";
 import { createProgramBuilderMachine } from "../machines/ProgramBuilderMachine";
 import { RootProgramBuilderScreenProps } from "../navigation/RootStack";
 import { TrainingSession, TrainingSessionExercise } from "../types";
 import { useTailwind } from "tailwind-rn";
+import { TrainingSessionActorRef } from "../machines/trainingSessionExerciseMachine";
 
 interface TrainingSessionExerciseProps {
   exercise: TrainingSessionExercise;
@@ -25,14 +26,18 @@ const TrainingSessionExerciseItem: React.FC<TrainingSessionExerciseProps> = ({
 );
 
 interface TrainingSessionProps {
-  trainingSession: TrainingSession;
+  trainingSessionActorRef: TrainingSessionActorRef;
   index: number;
 }
 
 const TrainingSessionItem: React.FC<TrainingSessionProps> = ({
-  trainingSession: { exercises, trainingSessionName, uuid },
+  trainingSessionActorRef,
   index,
 }) => {
+  const [trainingSessionState, _sendToTrainingSessionMachine] = useActor(
+    trainingSessionActorRef
+  );
+  const { exercises, trainingSessionName, uuid } = trainingSessionState.context;
   const tailwind = useTailwind();
 
   return (
@@ -96,12 +101,12 @@ export const ProgramBuilderScreen: React.FC<RootProgramBuilderScreenProps> = ({
           "p-4 w-11/12 flex-1 justify-center border-2 border-black"
         )}
       >
-        <FlatList<TrainingSession>
+        <FlatList<TrainingSessionActorRef>
           data={programBuilderContext.trainingSessions}
           renderItem={({ index, item }) => (
-            <TrainingSessionItem trainingSession={item} index={index} />
+            <TrainingSessionItem trainingSessionActorRef={item} index={index} />
           )}
-          keyExtractor={({ uuid }) => uuid}
+          keyExtractor={({ id }) => id}
         />
 
         <Button
