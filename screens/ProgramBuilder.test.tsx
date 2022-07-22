@@ -3,7 +3,6 @@ import {
   fireEvent,
   render,
   renderApp,
-  screen,
   waitFor,
   within,
 } from "../tests/test.utils";

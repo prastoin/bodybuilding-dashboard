@@ -9,3 +9,7 @@ export interface TrainingSession {
 }
 
 export type TrainingSessionCollection = TrainingSession[];
+
+export interface BodybuildingProgram {
+  trainingSessions: TrainingSessionCollection;
+}
