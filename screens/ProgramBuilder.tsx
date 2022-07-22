@@ -3,7 +3,7 @@ import * as React from "react";
 import { Button, FlatList, ListRenderItem, Text, View } from "react-native";
 import { createProgramBuilderMachine } from "../machines/ProgramBuilderMachine";
 import { RootProgramBuilderScreenProps } from "../navigation/RootStack";
-import { TrainingSession, TrainingSessionCollection } from "../types";
+import { TrainingSession, TrainingSessionExercise } from "../types";
 
 export const ProgramBuilderScreen: React.FC<RootProgramBuilderScreenProps> = ({
   navigation,
@@ -12,7 +12,6 @@ export const ProgramBuilderScreen: React.FC<RootProgramBuilderScreenProps> = ({
     createProgramBuilderMachine()
   );
 
-  const programBuilderMachineValue = programBuilderMachineState.value;
   const programBuilderContext = programBuilderMachineState.context;
 
   function handleAddTrainingSessionOnpress() {
@@ -29,15 +28,36 @@ export const ProgramBuilderScreen: React.FC<RootProgramBuilderScreenProps> = ({
     });
   }
 
-  const renderItem: ListRenderItem<TrainingSession> = ({
-    item: { name },
+  const renderTrainingSessionItem: ListRenderItem<TrainingSession> = ({
+    item: { trainingSessionName, exercises, uuid },
     index,
   }) => {
+    const renderTrainingSessionExerciseItem: ListRenderItem<
+      TrainingSessionExercise
+    > = ({ item: { exerciseName }, index }) => {
+      return (
+        <View
+          testID={`training-session-exercise-container-${exerciseName}-${uuid}`}
+        >
+          {index} _ {exerciseName}
+        </View>
+      );
+    };
+
     return (
-      <View testID={`training-session-container-${name}-${index}`}>
-        <Text>
-          {index} _ {name}
-        </Text>
+      <View
+        testID={`training-session-container-${trainingSessionName}-${uuid}`}
+      >
+        <Text>Training Session {index}</Text>
+        <Text>{trainingSessionName}</Text>
+
+        <View>
+          <FlatList<TrainingSessionExercise>
+            data={exercises}
+            renderItem={renderTrainingSessionExerciseItem}
+            keyExtractor={({ exerciseName }) => `${exerciseName}_${uuid}`}
+          ></FlatList>
+        </View>
       </View>
     );
   };
@@ -51,8 +71,8 @@ export const ProgramBuilderScreen: React.FC<RootProgramBuilderScreenProps> = ({
       <Text>{JSON.stringify(programBuilderContext)}</Text>
       <FlatList<TrainingSession>
         data={programBuilderContext.trainingSessions}
-        renderItem={renderItem}
-        keyExtractor={({ name }, index) => `${name}_${index}`} //should be handled differently later
+        renderItem={renderTrainingSessionItem}
+        keyExtractor={({ uuid }) => uuid}
       />
 
       <Button

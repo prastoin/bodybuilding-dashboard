@@ -1,4 +1,4 @@
-import { addToCleanupQueue } from "@testing-library/react-native/build/cleanup";
+import { v4 as uuidv4 } from "uuid";
 import { assign, createMachine } from "xstate";
 import { TrainingSessionCollection } from "../types";
 
@@ -62,7 +62,16 @@ export const createProgramBuilderMachine = () =>
             trainingSessions: [
               ...context.trainingSessions,
               {
-                name: event.name,
+                trainingSessionName: event.name,
+                uuid: uuidv4(),
+                exercises: [
+                  {
+                    exerciseName: "Bench Press",
+                  },
+                  {
+                    exerciseName: "Squat",
+                  },
+                ],
               },
             ],
           };

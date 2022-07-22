@@ -1,5 +1,11 @@
+export interface TrainingSessionExercise {
+  exerciseName: string; //unique
+}
+
 export interface TrainingSession {
-  name: string;
+  trainingSessionName: string;
+  uuid: string;
+  exercises: TrainingSessionExercise[];
 }
 
 export type TrainingSessionCollection = TrainingSession[];
