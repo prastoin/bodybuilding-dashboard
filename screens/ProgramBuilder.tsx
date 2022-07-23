@@ -61,7 +61,7 @@ const TrainingSessionItem: React.FC<TrainingSessionProps> = ({
   return (
     <View
       style={tailwind("mb-1 p-1 flex-1 justify-center border-2 border-black")}
-      testID={`training-session-container-${trainingSessionName}-${uuid}`}
+      testID={`training-session-container-${uuid}`}
     >
       <Text>{trainingSessionName}</Text>
 
@@ -79,6 +79,7 @@ const TrainingSessionItem: React.FC<TrainingSessionProps> = ({
 
         <Button
           title="Remove training session"
+          testID={`remove-training-session-button-${uuid}`}
           onPress={handleRemoveTrainingSessionButtonOnPress}
         />
       </View>
