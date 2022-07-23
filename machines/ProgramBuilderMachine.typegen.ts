@@ -3,7 +3,7 @@
 export interface Typegen0 {
   "@@xstate/typegen": true;
   eventsCausingActions: {
-    removeTrainingSessionToContext: "REMOVE_TRAINING_SESSION";
+    removeTrainingSessionToContext: "_REMOVE_TRAINING_SESSION";
     addTrainingSessionToContext: "ADD_TRAINING_SESSION";
   };
   internalEvents: {

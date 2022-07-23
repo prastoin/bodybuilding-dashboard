@@ -1,10 +1,15 @@
+import { act } from "react-test-renderer";
 import { v4 as uuidv4 } from "uuid";
-import { assign, createMachine, spawn } from "xstate";
-import { BodybuildingProgram } from "../types";
+import { assign, createMachine, EventFrom, spawn } from "xstate";
+import { stop } from "xstate/lib/actions";
 import {
   createTrainingSessionMachine,
   TrainingSessionActorRef,
-} from "./trainingSessionExerciseMachine";
+} from "./TrainingSessionMachine";
+
+export type ProgramBuilderMachineEvents = EventFrom<
+  ReturnType<typeof createProgramBuilderMachine>
+>;
 
 export const createProgramBuilderMachine = () =>
   /** @xstate-layout N4IgpgJg5mDOIC5QAUBOB7KqCGBbAQgK4CWANhGKgLLYDGAFsQHZgB0AkhKWAMQCCECAAIAKjmbMoQgMpxYxdE0SgADunkAXBUqQgAHogAsh1gDYArAA4AnAHYAjJYBMAZgAMpp7YA0IAJ6I9k7mrPa2hm5elpa2LjYuAL5JvkzoFPC6aJg4BCTklDQMzGyc3Mogapra5QYI1k6sroZOhqaWxkERTr4BCBGsbubW9m5u4aamYfbmySBZWHhEZBTUdIwsrCwA7kKwGtgaYEL25ZXEWoo1gW4m1obmLU71praTLj2ILi4NLhG2TjFHJZftYZglfPMckt8qsiixTupztVdLUnG4zFY7I5XB4vB8EABab6sYZOFqg1rmQykpJJIA */
@@ -12,18 +17,18 @@ export const createProgramBuilderMachine = () =>
     {
       schema: {
         context: {} as {
-          trainingSessions: TrainingSessionActorRef[];
+          trainingSessionActorRefCollection: TrainingSessionActorRef[];
         },
         events: {} as
           | {
               type: "ADD_TRAINING_SESSION";
-              name: string;
+              name?: string;
             }
-          | { type: "REMOVE_TRAINING_SESSION" },
+          | { type: "_REMOVE_TRAINING_SESSION"; trainingSessionId: string },
       },
       tsTypes: {} as import("./ProgramBuilderMachine.typegen").Typegen0,
       context: {
-        trainingSessions: [],
+        trainingSessionActorRefCollection: [],
       },
       initial: "Idle",
       states: {
@@ -32,7 +37,7 @@ export const createProgramBuilderMachine = () =>
             ADD_TRAINING_SESSION: {
               target: "User is adding new training session",
             },
-            REMOVE_TRAINING_SESSION: {
+            _REMOVE_TRAINING_SESSION: {
               target: "User is removing last training session",
             },
           },
@@ -63,36 +68,48 @@ export const createProgramBuilderMachine = () =>
     {
       actions: {
         addTrainingSessionToContext: assign((context, event) => {
+          const trainingSessionName = event.name || `Training Session`;
+
           const newTrainingSessionId = uuidv4();
           const newTrainingSessionActor: TrainingSessionActorRef = spawn(
             createTrainingSessionMachine({
-              trainingSessionName: event.name,
+              trainingSessionName: trainingSessionName,
               uuid: newTrainingSessionId,
             }),
             { sync: true, name: newTrainingSessionId }
           );
           return {
             ...context,
-            trainingSessions: [
-              ...context.trainingSessions,
+            trainingSessionActorRefCollection: [
+              ...context.trainingSessionActorRefCollection,
               newTrainingSessionActor,
             ],
           };
         }),
 
-        removeTrainingSessionToContext: assign((context, _event) => {
-          const indexToRemove = Math.max(
-            0,
-            context.trainingSessions.length - 1
-          );
+        removeTrainingSessionToContext: assign(
+          (context, { trainingSessionId }) => {
+            const updatedTrainingSessionActorRefCollection =
+              context.trainingSessionActorRefCollection.filter((actor) => {
+                const currentActorNeedToBeRemoved =
+                  actor.id === trainingSessionId;
+                if (currentActorNeedToBeRemoved) {
+                  if (actor.stop) {
+                    actor.stop();
+                  }
 
-          return {
-            ...context,
-            trainingSessions: context.trainingSessions.filter(
-              (_trainingSession, index) => index !== indexToRemove
-            ),
-          };
-        }),
+                  return false;
+                }
+                return true;
+              });
+
+            return {
+              ...context,
+              trainingSessionActorRefCollection:
+                updatedTrainingSessionActorRefCollection,
+            };
+          }
+        ),
       },
       delays: {
         TRAINING_SESSION_EDITION_DELAY: 500,

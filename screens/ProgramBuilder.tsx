@@ -3,27 +3,35 @@ import * as React from "react";
 import { Button, FlatList, Text, View } from "react-native";
 import { createProgramBuilderMachine } from "../machines/ProgramBuilderMachine";
 import { RootProgramBuilderScreenProps } from "../navigation/RootStack";
-import { TrainingSession, TrainingSessionExercise } from "../types";
 import { useTailwind } from "tailwind-rn";
-import { TrainingSessionActorRef } from "../machines/trainingSessionExerciseMachine";
+import { TrainingSessionActorRef } from "../machines/TrainingSessionMachine";
+import { TrainingSessionExerciseActorRef } from "../machines/TrainingSessionExerciseMachine";
 
 interface TrainingSessionExerciseProps {
-  exercise: TrainingSessionExercise;
-  trainingSessionId: string;
+  trainingSessionExerciseActorRef: TrainingSessionExerciseActorRef;
   index: number;
 }
 
 const TrainingSessionExerciseItem: React.FC<TrainingSessionExerciseProps> = ({
-  exercise: { exerciseName },
-  trainingSessionId,
+  trainingSessionExerciseActorRef,
   index,
-}) => (
-  <View
-    testID={`training-session-exercise-container-${exerciseName}-${trainingSessionId}`}
-  >
-    {index} _ {exerciseName}
-  </View>
-);
+}) => {
+  const [exerciseMachineState, _sendToExerciseMachine] = useActor(
+    trainingSessionExerciseActorRef
+  );
+
+  const { exerciseName, uuid } = exerciseMachineState.context;
+  console.log("ID DE MACHINE = " + trainingSessionExerciseActorRef.id);
+  console.log("UUID= " + uuid);
+
+  return (
+    <View
+      testID={`training-session-exercise-container-${exerciseName}-${uuid}`}
+    >
+      {index} _ {exerciseName}
+    </View>
+  );
+};
 
 interface TrainingSessionProps {
   trainingSessionActorRef: TrainingSessionActorRef;
@@ -34,32 +42,45 @@ const TrainingSessionItem: React.FC<TrainingSessionProps> = ({
   trainingSessionActorRef,
   index,
 }) => {
-  const [trainingSessionState, _sendToTrainingSessionMachine] = useActor(
+  const [trainingSessionState, sendToTrainingSessionMachine] = useActor(
     trainingSessionActorRef
   );
-  const { exercises, trainingSessionName, uuid } = trainingSessionState.context;
+  const {
+    trainingSessionExerciseActorRefCollection,
+    trainingSessionName,
+    uuid,
+  } = trainingSessionState.context;
   const tailwind = useTailwind();
+
+  function handleRemoveTrainingSessionButtonOnPress() {
+    sendToTrainingSessionMachine({
+      type: "REMOVE_TRAINING_SESSION",
+    });
+  }
 
   return (
     <View
       style={tailwind("mb-1 p-1 flex-1 justify-center border-2 border-black")}
       testID={`training-session-container-${trainingSessionName}-${uuid}`}
     >
-      <Text>Training Session {index}</Text>
       <Text>{trainingSessionName}</Text>
 
       <View>
-        <FlatList<TrainingSessionExercise>
-          data={exercises}
+        <FlatList<TrainingSessionExerciseActorRef>
+          data={trainingSessionExerciseActorRefCollection}
           renderItem={({ item, index }) => (
             <TrainingSessionExerciseItem
-              exercise={item}
+              trainingSessionExerciseActorRef={item}
               index={index}
-              trainingSessionId={uuid}
             />
           )}
-          keyExtractor={({ exerciseName }) => `${exerciseName}_${uuid}`}
+          keyExtractor={({ id }) => id}
         ></FlatList>
+
+        <Button
+          title="Remove training session"
+          onPress={handleRemoveTrainingSessionButtonOnPress}
+        />
       </View>
     </View>
   );
@@ -76,16 +97,8 @@ export const ProgramBuilderScreen: React.FC<RootProgramBuilderScreenProps> = ({
   const programBuilderContext = programBuilderMachineState.context;
 
   function handleAddTrainingSessionOnpress() {
-    const name = "just a name";
     sendToProgramBuilderMachine({
       type: "ADD_TRAINING_SESSION",
-      name,
-    });
-  }
-
-  function handleRemoveLastTrainingSessionOnpress() {
-    sendToProgramBuilderMachine({
-      type: "REMOVE_TRAINING_SESSION",
     });
   }
 
@@ -95,6 +108,7 @@ export const ProgramBuilderScreen: React.FC<RootProgramBuilderScreenProps> = ({
       testID={"program-builder-screen-container"}
     >
       <Text>Program Builder Screen</Text>
+      <Text>{JSON.stringify(programBuilderContext)}</Text>
 
       <View
         style={tailwind(
@@ -102,7 +116,7 @@ export const ProgramBuilderScreen: React.FC<RootProgramBuilderScreenProps> = ({
         )}
       >
         <FlatList<TrainingSessionActorRef>
-          data={programBuilderContext.trainingSessions}
+          data={programBuilderContext.trainingSessionActorRefCollection}
           renderItem={({ index, item }) => (
             <TrainingSessionItem trainingSessionActorRef={item} index={index} />
           )}
@@ -112,10 +126,6 @@ export const ProgramBuilderScreen: React.FC<RootProgramBuilderScreenProps> = ({
         <Button
           title="Add static training session"
           onPress={handleAddTrainingSessionOnpress}
-        />
-        <Button
-          title="Remove last training session"
-          onPress={handleRemoveLastTrainingSessionOnpress}
         />
       </View>
     </View>
