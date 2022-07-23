@@ -28,7 +28,9 @@ const TrainingSessionExerciseItem: React.FC<TrainingSessionExerciseProps> = ({
     <View
       testID={`training-session-exercise-container-${exerciseName}-${uuid}`}
     >
-      {index} _ {exerciseName}
+      <Text>
+        {index} _ {exerciseName}
+      </Text>
     </View>
   );
 };
@@ -58,6 +60,12 @@ const TrainingSessionItem: React.FC<TrainingSessionProps> = ({
     });
   }
 
+  function handleAddExerciseButtonOnPress() {
+    sendToTrainingSessionMachine({
+      type: "ADD_EXERCISE",
+    });
+  }
+
   return (
     <View
       style={tailwind("mb-1 p-1 flex-1 justify-center border-2 border-black")}
@@ -77,6 +85,11 @@ const TrainingSessionItem: React.FC<TrainingSessionProps> = ({
           keyExtractor={({ id }) => id}
         ></FlatList>
 
+        <Button
+          title="Add exercise"
+          testID={`add-exercise-button-${uuid}`}
+          onPress={handleAddExerciseButtonOnPress}
+        />
         <Button
           title="Remove training session"
           testID={`remove-training-session-button-${uuid}`}

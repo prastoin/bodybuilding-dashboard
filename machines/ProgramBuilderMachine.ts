@@ -1,7 +1,6 @@
-import { act } from "react-test-renderer";
+import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import { assign, createMachine, EventFrom, spawn } from "xstate";
-import { stop } from "xstate/lib/actions";
 import {
   createTrainingSessionMachine,
   TrainingSessionActorRef,

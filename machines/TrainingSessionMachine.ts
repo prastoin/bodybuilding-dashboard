@@ -1,24 +1,16 @@
-import {
-  ActorRef,
-  assign,
-  ContextFrom,
-  createMachine,
-  EventFrom,
-  spawn,
-  State,
-} from "xstate";
+import "react-native-get-random-values";
+import { ActorRef, assign, createMachine, spawn, State } from "xstate";
 import {
   createTrainingSessionExerciseMachine,
   TrainingSessionExerciseActorRef,
 } from "./TrainingSessionExerciseMachine";
 import { v4 as uuidv4 } from "uuid";
 import { sendParent } from "xstate/lib/actions";
-import { ProgramBuilderMachineEvents } from "./ProgramBuilderMachine";
 
 type TrainingSessionMachineEvents =
   | {
       type: "ADD_EXERCISE";
-      name: string;
+      name?: string;
     }
   | {
       type: "REMOVE_TRAINING_SESSION";
@@ -77,7 +69,7 @@ export const createTrainingSessionMachine = ({
     },
     {
       actions: {
-        "User added an exercise": assign((context, event) => {
+        "User added an exercise": assign((context, _event) => {
           const uuid = uuidv4();
           const newTrainingSessionExerciseActorRef: TrainingSessionExerciseActorRef =
             spawn(
