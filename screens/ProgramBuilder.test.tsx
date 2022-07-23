@@ -3,7 +3,6 @@ import {
   fireEvent,
   render,
   renderApp,
-  screen,
   waitFor,
   within,
 } from "../tests/test.utils";
@@ -54,14 +53,27 @@ const programBuilderTestMachine = createMachine({
 
     "User removed session training": {
       meta: {
-        test: async ({
-          screen,
-          expectedTrainingSessionsCounter,
-        }: TestingContext) => {
+        test: async (context: TestingContext) => {
+          const {
+            expectedTrainingSessionsCounter,
+            screen,
+            lastlyRemovedTrainningSessionId,
+          } = context;
+
           const programBuilderScreenContainer = await screen.findByTestId(
             `program-builder-screen-container`
           );
 
+          // Checking removed training session doesnot appear anymore
+          waitFor(() => {
+            const removedTrainingSessionContainer = screen.queryByTestId(
+              `training-session-container-${lastlyRemovedTrainningSessionId}`
+            );
+            expect(removedTrainingSessionContainer).toBeNull();
+          });
+          context.lastlyRemovedTrainningSessionId = undefined;
+
+          // Checking global expected counter
           waitFor(() => {
             const trainingSessionContainerCollection = within(
               programBuilderScreenContainer
@@ -89,6 +101,7 @@ const programBuilderTestMachine = createMachine({
 interface TestingContext {
   screen: ReturnType<typeof render>;
   expectedTrainingSessionsCounter: number;
+  lastlyRemovedTrainningSessionId?: string;
 }
 
 const programBuilderTestModel = createModel<TestingContext>(
@@ -110,13 +123,28 @@ const programBuilderTestModel = createModel<TestingContext>(
   "User removed the last training session": {
     exec: async (context) => {
       const { screen } = context;
+      if (context.expectedTrainingSessionsCounter === 0) {
+        return;
+      }
+
       context.expectedTrainingSessionsCounter--;
 
-      const removeLastTrainingSessionButton = await screen.findByText(
-        /.*remove.*training.*session/i
+      const removeLastTrainingSessionButton = screen.queryAllByTestId(
+        /remove-training-session-button-.*/i
       );
 
-      fireEvent.press(removeLastTrainingSessionButton);
+      const lastTrainingSessionButton =
+        removeLastTrainingSessionButton[
+          removeLastTrainingSessionButton.length - 1
+        ];
+
+      const lastTrainingSessionButtonTestId: string =
+        lastTrainingSessionButton.props.testID;
+      context.lastlyRemovedTrainningSessionId = lastTrainingSessionButtonTestId
+        .split("-")
+        .pop();
+
+      fireEvent.press(lastTrainingSessionButton);
     },
   },
 });
@@ -127,7 +155,6 @@ describe("Xstate tests generations", () => {
   testPlans.forEach((plan) => {
     describe(plan.description, () => {
       plan.paths.forEach((path) => {
-        console.log(path);
         it(path.description, async () => {
           const screen = renderApp();
 

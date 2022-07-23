@@ -10,9 +10,22 @@
 //   return Reanimated;
 // });
 
-// // Silence the warning: Animated: `useNativeDriver` is not supported because the native animated module is missing
-// jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
+// Silence the warning: Animated: `useNativeDriver` is not supported because the native animated module is missing
+jest.mock("react-native/Libraries/Animated/NativeAnimatedHelper");
+
+jest.mock("tailwind-rn", () => {
+  const { View } = require("react-native");
+  const originalModule = jest.requireActual("tailwind-rn");
+
+  return {
+    ...originalModule,
+    TailwindProvider: View,
+  };
+});
 
 jest.useFakeTimers();
+
+// jest.spyOn(console, "warn").mockImplementation();
+// jest.spyOn(console, "error").mockImplementation();
 
 export {};

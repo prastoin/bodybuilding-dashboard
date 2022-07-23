@@ -1,0 +1,45 @@
+.static {
+  position: static
+}
+
+.mb-1 {
+  margin-bottom: 0.25rem
+}
+
+.flex {
+  display: flex
+}
+
+.w-11\/12 {
+  width: 91.666667%
+}
+
+.flex-1 {
+  flex: 1 1 0%
+}
+
+.justify-center {
+  justify-content: center
+}
+
+.border-2 {
+  border-width: 2px
+}
+
+.border-black {
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity))
+}
+
+.p-1 {
+  padding: 0.25rem
+}
+
+.p-4 {
+  padding: 1rem
+}
+
+.text-blue-600 {
+  --tw-text-opacity: 1;
+  color: rgb(37 99 235 / var(--tw-text-opacity))
+}

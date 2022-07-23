@@ -1,15 +1,16 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
 import { RootStack } from "./navigation/RootStack";
-
-const Stack = createNativeStackNavigator();
+import { TailwindProvider } from "tailwind-rn";
+import utilities from "./tailwind.json";
 
 function App() {
   return (
-    <NavigationContainer>
-      <RootStack />
-    </NavigationContainer>
+    <TailwindProvider utilities={utilities}>
+      <NavigationContainer>
+        <RootStack />
+      </NavigationContainer>
+    </TailwindProvider>
   );
 }
 
