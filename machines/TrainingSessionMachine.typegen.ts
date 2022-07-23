@@ -4,6 +4,7 @@ export interface Typegen0 {
   "@@xstate/typegen": true;
   eventsCausingActions: {
     "User added an exercise": "ADD_EXERCISE";
+    "Forward training session deletion to program builder": "REMOVE_TRAINING_SESSION";
   };
   internalEvents: {
     "xstate.init": { type: "xstate.init" };
