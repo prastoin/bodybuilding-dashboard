@@ -6,6 +6,7 @@ import { RootProgramBuilderScreenProps } from "../navigation/RootStack";
 import { useTailwind } from "tailwind-rn";
 import { TrainingSessionActorRef } from "../machines/TrainingSessionMachine";
 import { TrainingSessionExerciseActorRef } from "../machines/TrainingSessionExerciseMachine";
+import { AntDesign } from "@expo/vector-icons";
 
 interface TrainingSessionExerciseProps {
   trainingSessionExerciseActorRef: TrainingSessionExerciseActorRef;
@@ -16,19 +17,36 @@ const TrainingSessionExerciseItem: React.FC<TrainingSessionExerciseProps> = ({
   trainingSessionExerciseActorRef,
   index,
 }) => {
-  const [exerciseMachineState, _sendToExerciseMachine] = useActor(
+  const [exerciseMachineState, sendToExerciseMachine] = useActor(
     trainingSessionExerciseActorRef
   );
+  const tailwind = useTailwind();
 
   const { exerciseName, uuid } = exerciseMachineState.context;
-  console.log("ID DE MACHINE = " + trainingSessionExerciseActorRef.id);
-  console.log("UUID= " + uuid);
+
+  function handleRemoveExerciseButtonOnPress() {
+    console.log("Deletion requested", { uuid });
+
+    sendToExerciseMachine({
+      type: "REMOVE_EXERCISE",
+    });
+  }
 
   return (
     <View
-      testID={`training-session-exercise-container-${exerciseName}-${uuid}`}
+      style={tailwind("flex-row")}
+      testID={`training-session-exercise-container-${uuid}`}
     >
-      {index} _ {exerciseName}
+      <Text>
+        {index} _ {exerciseName}
+      </Text>
+      <AntDesign
+        name="close"
+        size={24}
+        color="black"
+        onPress={handleRemoveExerciseButtonOnPress}
+        testID={`remove-exercise-button-${uuid}`}
+      />
     </View>
   );
 };
@@ -58,6 +76,12 @@ const TrainingSessionItem: React.FC<TrainingSessionProps> = ({
     });
   }
 
+  function handleAddExerciseButtonOnPress() {
+    sendToTrainingSessionMachine({
+      type: "ADD_EXERCISE",
+    });
+  }
+
   return (
     <View
       style={tailwind("mb-1 p-1 flex-1 justify-center border-2 border-black")}
@@ -77,6 +101,11 @@ const TrainingSessionItem: React.FC<TrainingSessionProps> = ({
           keyExtractor={({ id }) => id}
         ></FlatList>
 
+        <Button
+          title="Add exercise"
+          testID={`add-exercise-button-${uuid}`}
+          onPress={handleAddExerciseButtonOnPress}
+        />
         <Button
           title="Remove training session"
           testID={`remove-training-session-button-${uuid}`}

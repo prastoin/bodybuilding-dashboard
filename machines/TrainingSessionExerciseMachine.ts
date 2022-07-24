@@ -1,20 +1,19 @@
-import {
-  ActorRef,
-  assign,
-  ContextFrom,
-  createMachine,
-  EventFrom,
-  State,
-} from "xstate";
-
-type TrainingSessionExerciseMachine = ReturnType<
-  typeof createTrainingSessionExerciseMachine
->;
+import { ActorRef, assign, createMachine, State } from "xstate";
+import { sendParent } from "xstate/lib/actions";
 
 type TrainingSessionExerciseMachineEvent =
-  EventFrom<TrainingSessionExerciseMachine>;
-type TrainingSessionExerciseMachineContext =
-  ContextFrom<TrainingSessionExerciseMachine>;
+  | {
+      type: "ADD_TRACKER_SECTION";
+      name: string;
+    }
+  | {
+      type: "REMOVE_EXERCISE";
+    };
+
+type TrainingSessionExerciseMachineContext = {
+  exerciseName: string;
+  uuid: string;
+};
 
 type TrainingSessionExerciseMachineState = State<
   TrainingSessionExerciseMachineContext,
@@ -39,14 +38,8 @@ export const createTrainingSessionExerciseMachine = ({
         {} as import("./TrainingSessionExerciseMachine.typegen").Typegen0,
       id: uuid,
       schema: {
-        context: {} as {
-          exerciseName: string;
-          uuid: string;
-        },
-        events: {} as {
-          type: "ADD_TRACKER_SECTION";
-          name: string;
-        },
+        context: {} as TrainingSessionExerciseMachineContext,
+        events: {} as TrainingSessionExerciseMachineEvent,
       },
       context: {
         exerciseName,
@@ -59,6 +52,10 @@ export const createTrainingSessionExerciseMachine = ({
             ADD_TRACKER_SECTION: {
               actions: "User added a tracker section",
             },
+
+            REMOVE_EXERCISE: {
+              actions: ["Forward exercise deletion to program builder"],
+            },
           },
         },
       },
@@ -67,6 +64,10 @@ export const createTrainingSessionExerciseMachine = ({
       actions: {
         "User added a tracker section": assign((context, event) => {
           return context;
+        }),
+        "Forward exercise deletion to program builder": sendParent({
+          type: "_REMOVE_TRAINING_SESSION_EXERCISE",
+          exerciseId: uuid,
         }),
       },
     }

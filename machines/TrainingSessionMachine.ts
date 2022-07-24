@@ -1,27 +1,23 @@
-import {
-  ActorRef,
-  assign,
-  ContextFrom,
-  createMachine,
-  EventFrom,
-  spawn,
-  State,
-} from "xstate";
+import "react-native-get-random-values";
+import { ActorRef, assign, createMachine, spawn, State } from "xstate";
 import {
   createTrainingSessionExerciseMachine,
   TrainingSessionExerciseActorRef,
 } from "./TrainingSessionExerciseMachine";
 import { v4 as uuidv4 } from "uuid";
 import { sendParent } from "xstate/lib/actions";
-import { ProgramBuilderMachineEvents } from "./ProgramBuilderMachine";
 
 type TrainingSessionMachineEvents =
   | {
       type: "ADD_EXERCISE";
-      name: string;
+      name?: string;
     }
   | {
       type: "REMOVE_TRAINING_SESSION";
+    }
+  | {
+      type: "_REMOVE_TRAINING_SESSION_EXERCISE";
+      exerciseId: string;
     };
 
 type TrainingSessionMachineContext = {
@@ -71,13 +67,17 @@ export const createTrainingSessionMachine = ({
             REMOVE_TRAINING_SESSION: {
               actions: "Forward training session deletion to program builder",
             },
+
+            _REMOVE_TRAINING_SESSION_EXERCISE: {
+              actions: "remove training session exercise from context",
+            },
           },
         },
       },
     },
     {
       actions: {
-        "User added an exercise": assign((context, event) => {
+        "User added an exercise": assign((context, _event) => {
           const uuid = uuidv4();
           const newTrainingSessionExerciseActorRef: TrainingSessionExerciseActorRef =
             spawn(
@@ -103,6 +103,38 @@ export const createTrainingSessionMachine = ({
           type: "_REMOVE_TRAINING_SESSION",
           trainingSessionId: uuid,
         }),
+
+        "remove training session exercise from context": assign(
+          (context, { exerciseId }) => {
+            console.log({
+              exerciseId,
+            });
+            const updatedExerciseCollection =
+              context.trainingSessionExerciseActorRefCollection.filter(
+                (actor) => {
+                  const currentActorNeedToBeRemoved = actor.id === exerciseId;
+                  if (currentActorNeedToBeRemoved) {
+                    if (actor.stop) {
+                      actor.stop();
+                    }
+
+                    return false;
+                  }
+                  return true;
+                }
+              );
+
+            console.log(context.trainingSessionExerciseActorRefCollection);
+            console.log({
+              updatedExerciseCollection,
+            });
+            return {
+              ...context,
+              trainingSessionExerciseActorRefCollection:
+                updatedExerciseCollection,
+            };
+          }
+        ),
       },
     }
   );

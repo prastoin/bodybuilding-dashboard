@@ -1,7 +1,6 @@
-import { act } from "react-test-renderer";
+import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import { assign, createMachine, EventFrom, spawn } from "xstate";
-import { stop } from "xstate/lib/actions";
 import {
   createTrainingSessionMachine,
   TrainingSessionActorRef,
@@ -35,30 +34,10 @@ export const createProgramBuilderMachine = () =>
         Idle: {
           on: {
             ADD_TRAINING_SESSION: {
-              target: "User is adding new training session",
+              actions: "addTrainingSessionToContext",
             },
             _REMOVE_TRAINING_SESSION: {
-              target: "User is removing last training session",
-            },
-          },
-        },
-
-        "User is removing last training session": {
-          entry: "removeTrainingSessionToContext",
-
-          after: {
-            TRAINING_SESSION_EDITION_DELAY: {
-              target: "Idle",
-            },
-          },
-        },
-
-        "User is adding new training session": {
-          entry: "addTrainingSessionToContext",
-
-          after: {
-            TRAINING_SESSION_EDITION_DELAY: {
-              target: "Idle",
+              actions: "removeTrainingSessionToContext",
             },
           },
         },
@@ -110,9 +89,6 @@ export const createProgramBuilderMachine = () =>
             };
           }
         ),
-      },
-      delays: {
-        TRAINING_SESSION_EDITION_DELAY: 500,
       },
     }
   );

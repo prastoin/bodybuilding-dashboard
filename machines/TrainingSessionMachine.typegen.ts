@@ -5,6 +5,7 @@ export interface Typegen0 {
   eventsCausingActions: {
     "User added an exercise": "ADD_EXERCISE";
     "Forward training session deletion to program builder": "REMOVE_TRAINING_SESSION";
+    "remove training session exercise from context": "_REMOVE_TRAINING_SESSION_EXERCISE";
   };
   internalEvents: {
     "xstate.init": { type: "xstate.init" };
