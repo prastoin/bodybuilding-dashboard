@@ -35,7 +35,7 @@ const TrainingSessionExerciseItem: React.FC<TrainingSessionExerciseProps> = ({
   return (
     <View
       style={tailwind("flex-row")}
-      testID={`training-session-exercise-container-${exerciseName}-${uuid}`}
+      testID={`training-session-exercise-container-${uuid}`}
     >
       <Text>
         {index} _ {exerciseName}

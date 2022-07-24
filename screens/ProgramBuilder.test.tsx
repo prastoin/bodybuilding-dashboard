@@ -7,6 +7,57 @@ import {
   within,
 } from "../tests/test.utils";
 import { createModel } from "@xstate/test";
+import invariant from "invariant";
+import { ReactTestInstance } from "react-test-renderer";
+import { mapContext } from "xstate/lib/utils";
+
+function getAllTrainingSessionContainer({
+  screen,
+}: TestingContext): ReactTestInstance[] {
+  const trainingSessionContainerCollection = screen.queryAllByTestId(
+    /training-session-container.*/i
+  );
+
+  return trainingSessionContainerCollection;
+}
+
+/**
+ * Throws error if no training session container found at all
+ */
+function getLastTrainingSessionContainer(context: TestingContext): {
+  lastTrainingSessionId: string;
+  lastTrainingSessionContainer: ReactTestInstance;
+} {
+  const allTrainingSessionContainer = getAllTrainingSessionContainer(context);
+
+  invariant(
+    allTrainingSessionContainer.length > 0,
+    "Training session container not found"
+  );
+
+  const lastTrainingSessionContainer =
+    allTrainingSessionContainer[allTrainingSessionContainer.length - 1];
+
+  const lastTrainingSessionContainerTestId: string =
+    lastTrainingSessionContainer.props.testID;
+
+  const lastTrainingSessionIdSplit =
+    lastTrainingSessionContainerTestId.split("-");
+
+  const lastTrainingSessionId = lastTrainingSessionIdSplit
+    .slice(lastTrainingSessionIdSplit.length - 5)
+    .join("-");
+
+  invariant(
+    lastTrainingSessionId !== undefined,
+    "lastTrainingSessionId is undefined"
+  );
+
+  return {
+    lastTrainingSessionId,
+    lastTrainingSessionContainer,
+  };
+}
 
 test("User goes to program builder screen from home", async () => {
   const screen = renderApp();
@@ -18,9 +69,9 @@ test("User goes to program builder screen from home", async () => {
 
 const programBuilderTestMachine = createMachine({
   id: "program builder test machine",
-  initial: "Program builder screen view",
+  initial: "Program builder view",
   states: {
-    "Program builder screen view": {
+    "Program builder view": {
       meta: {
         test: async ({ screen }: TestingContext) => {
           await screen.findByTestId(`program-builder-screen-container`);
@@ -30,23 +81,68 @@ const programBuilderTestMachine = createMachine({
 
     "User added session training": {
       meta: {
-        test: async ({
-          screen,
-          expectedTrainingSessionsCounter,
-        }: TestingContext) => {
-          const programBuilderScreenContainer = await screen.findByTestId(
-            `program-builder-screen-container`
-          );
+        test: async ({ screen }: TestingContext) => {
+          await screen.findByTestId(`program-builder-screen-container`);
+        },
+      },
+      initial: "Idle",
 
-          waitFor(() => {
-            const trainingSessionContainerCollection = within(
-              programBuilderScreenContainer
-            ).queryAllByTestId(/training-session-container.*/i);
+      states: {
+        Idle: {
+          meta: {
+            test: async (context: TestingContext) => {
+              const { expectedTrainingSessionsCounter, screen } = context;
 
-            expect(trainingSessionContainerCollection.length).toBe(
-              expectedTrainingSessionsCounter
-            );
-          });
+              waitFor(() => {
+                const trainingSessionContainerCollection =
+                  getAllTrainingSessionContainer(context);
+
+                expect(trainingSessionContainerCollection.length).toBe(
+                  expectedTrainingSessionsCounter
+                );
+              });
+            },
+          },
+        },
+
+        "User added an exercise to last training session": {
+          meta: {
+            test: async (context: TestingContext) => {
+              const {
+                expectedTrainingSessionsCounter,
+                screen,
+                expectedTrainingSessionExerciseCounter,
+              } = context;
+
+              invariant(
+                expectedTrainingSessionExerciseCounter !== undefined,
+                "Unsync testing context error"
+              );
+
+              const { lastTrainingSessionContainer } =
+                getLastTrainingSessionContainer(context);
+
+              waitFor(() => {
+                const allRelatedExercisesContainer = within(
+                  lastTrainingSessionContainer
+                ).queryAllByTestId(/training-session-exercise-container-.*/i);
+
+                expect(allRelatedExercisesContainer.length).toBe(
+                  expectedTrainingSessionsCounter
+                );
+              });
+            },
+          },
+        },
+      },
+
+      on: {
+        "User added exercise to the last training session": {
+          target: ".User added an exercise to last training session",
+        },
+
+        "User removed the last training session": {
+          target: "User removed session training",
         },
       },
     },
@@ -60,9 +156,20 @@ const programBuilderTestMachine = createMachine({
             lastlyRemovedTrainningSessionId,
           } = context;
 
-          const programBuilderScreenContainer = await screen.findByTestId(
-            `program-builder-screen-container`
+          invariant(
+            lastlyRemovedTrainningSessionId !== undefined,
+            "lastlyRemoveTrainingSessionId is undefined"
           );
+
+          // Checking global expected counter
+          waitFor(async () => {
+            const trainingSessionContainerCollection =
+              getAllTrainingSessionContainer(context);
+
+            expect(trainingSessionContainerCollection.length).toBe(
+              expectedTrainingSessionsCounter
+            );
+          });
 
           // Checking removed training session doesnot appear anymore
           waitFor(() => {
@@ -72,28 +179,14 @@ const programBuilderTestMachine = createMachine({
             expect(removedTrainingSessionContainer).toBeNull();
           });
           context.lastlyRemovedTrainningSessionId = undefined;
-
-          // Checking global expected counter
-          waitFor(() => {
-            const trainingSessionContainerCollection = within(
-              programBuilderScreenContainer
-            ).queryAllByTestId(/training-session-container.*/i);
-
-            expect(trainingSessionContainerCollection.length).toBe(
-              expectedTrainingSessionsCounter
-            );
-          });
         },
       },
     },
   },
+
   on: {
     "User added a training session": {
-      target: ".User added session training",
-    },
-
-    "User removed the last training session": {
-      target: ".User removed session training",
+      target: "User added session training",
     },
   },
 });
@@ -101,6 +194,7 @@ const programBuilderTestMachine = createMachine({
 interface TestingContext {
   screen: ReturnType<typeof render>;
   expectedTrainingSessionsCounter: number;
+  expectedTrainingSessionExerciseCounter?: number;
   lastlyRemovedTrainningSessionId?: string;
 }
 
@@ -123,28 +217,43 @@ const programBuilderTestModel = createModel<TestingContext>(
   "User removed the last training session": {
     exec: async (context) => {
       const { screen } = context;
-      if (context.expectedTrainingSessionsCounter === 0) {
-        return;
-      }
+
+      invariant(
+        context.expectedTrainingSessionsCounter !== 0,
+        "expectedTrainingSessionsCounter is 0"
+      );
 
       context.expectedTrainingSessionsCounter--;
 
-      const removeLastTrainingSessionButton = screen.queryAllByTestId(
-        /remove-training-session-button-.*/i
+      const { lastTrainingSessionId } =
+        getLastTrainingSessionContainer(context);
+
+      const removeLastTrainingSessionButton = await screen.findByTestId(
+        `remove-training-session-button-${lastTrainingSessionId}`
       );
 
-      const lastTrainingSessionButton =
-        removeLastTrainingSessionButton[
-          removeLastTrainingSessionButton.length - 1
-        ];
+      context.lastlyRemovedTrainningSessionId = lastTrainingSessionId;
+      getAllTrainingSessionContainer(context);
+      fireEvent.press(removeLastTrainingSessionButton);
+    },
+  },
 
-      const lastTrainingSessionButtonTestId: string =
-        lastTrainingSessionButton.props.testID;
-      context.lastlyRemovedTrainningSessionId = lastTrainingSessionButtonTestId
-        .split("-")
-        .pop();
+  "User added exercise to the last training session": {
+    exec: async (context) => {
+      const { expectedTrainingSessionExerciseCounter } = context;
+      context.expectedTrainingSessionExerciseCounter =
+        expectedTrainingSessionExerciseCounter === undefined
+          ? 1
+          : expectedTrainingSessionExerciseCounter + 1;
 
-      fireEvent.press(lastTrainingSessionButton);
+      const { lastTrainingSessionContainer, lastTrainingSessionId } =
+        getLastTrainingSessionContainer(context);
+
+      const addExerciseButton = await within(
+        lastTrainingSessionContainer
+      ).findByTestId(`add-exercise-button-${lastTrainingSessionId}`);
+
+      fireEvent.press(addExerciseButton);
     },
   },
 });

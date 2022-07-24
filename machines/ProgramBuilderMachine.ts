@@ -34,30 +34,10 @@ export const createProgramBuilderMachine = () =>
         Idle: {
           on: {
             ADD_TRAINING_SESSION: {
-              target: "User is adding new training session",
+              actions: "addTrainingSessionToContext",
             },
             _REMOVE_TRAINING_SESSION: {
-              target: "User is removing last training session",
-            },
-          },
-        },
-
-        "User is removing last training session": {
-          entry: "removeTrainingSessionToContext",
-
-          after: {
-            TRAINING_SESSION_EDITION_DELAY: {
-              target: "Idle",
-            },
-          },
-        },
-
-        "User is adding new training session": {
-          entry: "addTrainingSessionToContext",
-
-          after: {
-            TRAINING_SESSION_EDITION_DELAY: {
-              target: "Idle",
+              actions: "removeTrainingSessionToContext",
             },
           },
         },
@@ -109,9 +89,6 @@ export const createProgramBuilderMachine = () =>
             };
           }
         ),
-      },
-      delays: {
-        TRAINING_SESSION_EDITION_DELAY: 500,
       },
     }
   );
