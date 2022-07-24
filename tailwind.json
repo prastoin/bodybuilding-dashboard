@@ -26,6 +26,11 @@
 			"flexBasis": "0%"
 		}
 	},
+	"flex-row": {
+		"style": {
+			"flexDirection": "row"
+		}
+	},
 	"justify-center": {
 		"style": {
 			"justifyContent": "center"

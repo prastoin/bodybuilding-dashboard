@@ -18,6 +18,10 @@
   flex: 1 1 0%
 }
 
+.flex-row {
+  flex-direction: row
+}
+
 .justify-center {
   justify-content: center
 }

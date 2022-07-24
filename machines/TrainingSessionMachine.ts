@@ -14,6 +14,10 @@ type TrainingSessionMachineEvents =
     }
   | {
       type: "REMOVE_TRAINING_SESSION";
+    }
+  | {
+      type: "_REMOVE_TRAINING_SESSION_EXERCISE";
+      exerciseId: string;
     };
 
 type TrainingSessionMachineContext = {
@@ -63,6 +67,10 @@ export const createTrainingSessionMachine = ({
             REMOVE_TRAINING_SESSION: {
               actions: "Forward training session deletion to program builder",
             },
+
+            _REMOVE_TRAINING_SESSION_EXERCISE: {
+              actions: "remove training session exercise from context",
+            },
           },
         },
       },
@@ -95,6 +103,38 @@ export const createTrainingSessionMachine = ({
           type: "_REMOVE_TRAINING_SESSION",
           trainingSessionId: uuid,
         }),
+
+        "remove training session exercise from context": assign(
+          (context, { exerciseId }) => {
+            console.log({
+              exerciseId,
+            });
+            const updatedExerciseCollection =
+              context.trainingSessionExerciseActorRefCollection.filter(
+                (actor) => {
+                  const currentActorNeedToBeRemoved = actor.id === exerciseId;
+                  if (currentActorNeedToBeRemoved) {
+                    if (actor.stop) {
+                      actor.stop();
+                    }
+
+                    return false;
+                  }
+                  return true;
+                }
+              );
+
+            console.log(context.trainingSessionExerciseActorRefCollection);
+            console.log({
+              updatedExerciseCollection,
+            });
+            return {
+              ...context,
+              trainingSessionExerciseActorRefCollection:
+                updatedExerciseCollection,
+            };
+          }
+        ),
       },
     }
   );

@@ -6,6 +6,7 @@ import { RootProgramBuilderScreenProps } from "../navigation/RootStack";
 import { useTailwind } from "tailwind-rn";
 import { TrainingSessionActorRef } from "../machines/TrainingSessionMachine";
 import { TrainingSessionExerciseActorRef } from "../machines/TrainingSessionExerciseMachine";
+import { AntDesign } from "@expo/vector-icons";
 
 interface TrainingSessionExerciseProps {
   trainingSessionExerciseActorRef: TrainingSessionExerciseActorRef;
@@ -16,21 +17,35 @@ const TrainingSessionExerciseItem: React.FC<TrainingSessionExerciseProps> = ({
   trainingSessionExerciseActorRef,
   index,
 }) => {
-  const [exerciseMachineState, _sendToExerciseMachine] = useActor(
+  const [exerciseMachineState, sendToExerciseMachine] = useActor(
     trainingSessionExerciseActorRef
   );
+  const tailwind = useTailwind();
 
   const { exerciseName, uuid } = exerciseMachineState.context;
-  console.log("ID DE MACHINE = " + trainingSessionExerciseActorRef.id);
-  console.log("UUID= " + uuid);
+
+  function handleRemoveExerciseButtonOnPress() {
+    console.log("Deletion requested", { uuid });
+
+    sendToExerciseMachine({
+      type: "REMOVE_EXERCISE",
+    });
+  }
 
   return (
     <View
+      style={tailwind("flex-row")}
       testID={`training-session-exercise-container-${exerciseName}-${uuid}`}
     >
       <Text>
         {index} _ {exerciseName}
       </Text>
+      <AntDesign
+        name="close"
+        size={24}
+        color="black"
+        onPress={handleRemoveExerciseButtonOnPress}
+      />
     </View>
   );
 };
