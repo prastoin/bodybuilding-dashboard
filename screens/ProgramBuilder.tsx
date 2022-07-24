@@ -45,6 +45,7 @@ const TrainingSessionExerciseItem: React.FC<TrainingSessionExerciseProps> = ({
         size={24}
         color="black"
         onPress={handleRemoveExerciseButtonOnPress}
+        testID={`remove-exercise-button-${uuid}`}
       />
     </View>
   );
