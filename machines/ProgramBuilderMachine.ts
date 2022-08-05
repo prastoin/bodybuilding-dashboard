@@ -1,6 +1,12 @@
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
-import { assign, createMachine, EventFrom, spawn } from "xstate";
+import {
+  assign,
+  createMachine,
+  EventFrom,
+  InterpreterFrom,
+  spawn,
+} from "xstate";
 import {
   createTrainingSessionMachine,
   TrainingSessionActorRef,
@@ -10,14 +16,20 @@ export type ProgramBuilderMachineEvents = EventFrom<
   ReturnType<typeof createProgramBuilderMachine>
 >;
 
+export type ProgramBuilderMachineContext = {
+  trainingSessionActorRefCollection: TrainingSessionActorRef[];
+};
+
+export type AppMachineInterpreter = InterpreterFrom<
+  ReturnType<typeof createProgramBuilderMachine>
+>;
+
 export const createProgramBuilderMachine = () =>
   /** @xstate-layout N4IgpgJg5mDOIC5QAUBOB7KqCGBbAQgK4CWANhGKgLLYDGAFsQHZgB0AkhKWAMQCCECAAIAKjmbMoQgMpxYxdE0SgADunkAXBUqQgAHogAsh1gDYArAA4AnAHYAjJYBMAZgAMpp7YA0IAJ6I9k7mrPa2hm5elpa2LjYuAL5JvkzoFPC6aJg4BCTklDQMzGyc3Mogapra5QYI1k6sroZOhqaWxkERTr4BCBGsbubW9m5u4aamYfbmySBZWHhEZBTUdIwsrCwA7kKwGtgaYEL25ZXEWoo1gW4m1obmLU71praTLj2ILi4NLhG2TjFHJZftYZglfPMckt8qsiixTupztVdLUnG4zFY7I5XB4vB8EABab6sYZOFqg1rmQykpJJIA */
   createMachine(
     {
       schema: {
-        context: {} as {
-          trainingSessionActorRefCollection: TrainingSessionActorRef[];
-        },
+        context: {} as ProgramBuilderMachineContext,
         events: {} as
           | {
               type: "ADD_TRAINING_SESSION";
@@ -47,6 +59,7 @@ export const createProgramBuilderMachine = () =>
     {
       actions: {
         addTrainingSessionToContext: assign((context, event) => {
+          console.log("ADD TRAINING SESSION TO CONTEXT");
           const trainingSessionName = event.name || `Training Session`;
 
           const newTrainingSessionId = uuidv4();
