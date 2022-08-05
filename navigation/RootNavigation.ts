@@ -26,7 +26,8 @@ export function navigateFromRef<
   Route extends keyof BottomTabNavigatorParamList
 >(
   name: keyof BottomTabNavigatorParamList,
-  params?: BottomTabNavigatorParamList[Route]
+  // Might need later depending on BottomTabNavigatorParamList to set params as optionnal
+  params: BottomTabNavigatorParamList[Route]
 ): void {
   if (navigationRef.isReady() && navigationRef.current) {
     // Perform navigation if the app has mounted

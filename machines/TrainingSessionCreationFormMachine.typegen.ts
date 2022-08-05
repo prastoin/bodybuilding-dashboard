@@ -7,19 +7,19 @@ export interface Typegen0 {
   };
   invokeSrcNameMap: {};
   missingImplementations: {
-    actions: never;
+    actions: "popBackToTop";
     services: never;
     guards: never;
     delays: never;
   };
   eventsCausingActions: {
-    "Forward training session deletion to program builder": "REMOVE_TRAINING_SESSION";
-    "User added an exercise": "ADD_EXERCISE";
-    "remove training session exercise from context": "_REMOVE_TRAINING_SESSION_EXERCISE";
+    NotifyParentToCancelTrainingSessionOperation: "GO_BACK";
+    assignTrainingSessionNameToContext: "SET_ROOM_NAME_AND_GO_NEXT";
+    popBackToTop: "SET_ROOM_NAME_AND_GO_NEXT";
   };
   eventsCausingServices: {};
   eventsCausingGuards: {};
   eventsCausingDelays: {};
-  matchesStates: "Idle";
+  matchesStates: "Form is completed" | "Training session name step";
   tags: never;
 }

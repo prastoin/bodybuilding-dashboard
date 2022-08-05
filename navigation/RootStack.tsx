@@ -1,4 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigatorScreenParams } from "@react-navigation/native";
 import {
   createNativeStackNavigator,
   NativeStackScreenProps,
@@ -14,9 +15,8 @@ const BottomTabNavigator =
   createBottomTabNavigator<BottomTabNavigatorParamList>();
 
 export type BottomTabNavigatorParamList = {
-  Details: undefined;
-  Home: undefined;
-  ProgramBuilder: undefined;
+  Home: NavigatorScreenParams<HomeStackParamList>;
+  ProgramBuilder: NavigatorScreenParams<ProgramBuilderStackParamList>;
 };
 
 export type RootHomeScreenProps = NativeStackScreenProps<
@@ -24,23 +24,13 @@ export type RootHomeScreenProps = NativeStackScreenProps<
   "Home"
 >;
 
-export type RootDetailsScreenProps = NativeStackScreenProps<
-  BottomTabNavigatorParamList,
-  "Details"
->;
-
 export const BottomTab: React.FC = () => {
   return (
     <BottomTabNavigator.Navigator screenOptions={{ headerShown: false }}>
-      <BottomTabNavigator.Screen
-        name="Home"
-        component={HomeStackNavigator}
-        options={{ tabBarLabel: "Home!" }}
-      />
+      <BottomTabNavigator.Screen name="Home" component={HomeStackNavigator} />
       <BottomTabNavigator.Screen
         name="ProgramBuilder"
         component={ProgramBuilderStackNavigator}
-        options={{ tabBarLabel: "Program Builder" }}
       />
     </BottomTabNavigator.Navigator>
   );

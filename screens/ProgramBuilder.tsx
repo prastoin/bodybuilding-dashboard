@@ -1,12 +1,12 @@
 import { useActor } from "@xstate/react";
 import * as React from "react";
 import { Button, FlatList, Text, View } from "react-native";
-import { RootProgramBuilderScreenProps } from "../navigation/RootStack";
 import { useTailwind } from "tailwind-rn";
 import { TrainingSessionActorRef } from "../machines/TrainingSessionMachine";
 import { TrainingSessionExerciseActorRef } from "../machines/TrainingSessionExerciseMachine";
 import { TrainingSessionExerciseItem } from "../components/programBuilder/TrainingSessionExerciseWizard";
 import { useAppContext } from "../contexts/AppContext";
+import { ProgramBuilderIndexScreenProps } from "../navigation/RootStack";
 
 interface TrainingSessionProps {
   trainingSessionActorRef: TrainingSessionActorRef;
@@ -73,7 +73,7 @@ const TrainingSessionItem: React.FC<TrainingSessionProps> = ({
   );
 };
 
-export const ProgramBuilderScreen: React.FC<RootProgramBuilderScreenProps> = ({
+export const ProgramBuilderScreen: React.FC<ProgramBuilderIndexScreenProps> = ({
   navigation,
 }) => {
   const tailwind = useTailwind();
@@ -85,8 +85,9 @@ export const ProgramBuilderScreen: React.FC<RootProgramBuilderScreenProps> = ({
   const { context: programBuilderContext } = programBuilderState;
 
   function handleAddTrainingSessionOnpress() {
+    navigation.navigate("TrainingSesssionCreationFormName");
     sendToProgramBuilderMachine({
-      type: "ADD_TRAINING_SESSION",
+      type: "ENTER_TRAINING_SESSION_CREATION_FORM",
     });
   }
 
