@@ -1,55 +1,12 @@
-import { useActor, useMachine } from "@xstate/react";
+import { useActor } from "@xstate/react";
 import * as React from "react";
 import { Button, FlatList, Text, View } from "react-native";
-import { createProgramBuilderMachine } from "../machines/ProgramBuilderMachine";
 import { RootProgramBuilderScreenProps } from "../navigation/RootStack";
 import { useTailwind } from "tailwind-rn";
 import { TrainingSessionActorRef } from "../machines/TrainingSessionMachine";
 import { TrainingSessionExerciseActorRef } from "../machines/TrainingSessionExerciseMachine";
-import { AntDesign } from "@expo/vector-icons";
-
-interface TrainingSessionExerciseProps {
-  trainingSessionExerciseActorRef: TrainingSessionExerciseActorRef;
-  index: number;
-}
-
-const TrainingSessionExerciseItem: React.FC<TrainingSessionExerciseProps> = ({
-  trainingSessionExerciseActorRef,
-  index,
-}) => {
-  const [exerciseMachineState, sendToExerciseMachine] = useActor(
-    trainingSessionExerciseActorRef
-  );
-  const tailwind = useTailwind();
-
-  const { exerciseName, uuid } = exerciseMachineState.context;
-
-  function handleRemoveExerciseButtonOnPress() {
-    console.log("Deletion requested", { uuid });
-
-    sendToExerciseMachine({
-      type: "REMOVE_EXERCISE",
-    });
-  }
-
-  return (
-    <View
-      style={tailwind("flex-row")}
-      testID={`training-session-exercise-container-${uuid}`}
-    >
-      <Text>
-        {index} _ {exerciseName}
-      </Text>
-      <AntDesign
-        name="close"
-        size={24}
-        color="black"
-        onPress={handleRemoveExerciseButtonOnPress}
-        testID={`remove-exercise-button-${uuid}`}
-      />
-    </View>
-  );
-};
+import { TrainingSessionExerciseItem } from "../components/programBuilder/TrainingSessionExerciseWizard";
+import { useAppContext } from "../contexts/AppContext";
 
 interface TrainingSessionProps {
   trainingSessionActorRef: TrainingSessionActorRef;
@@ -120,11 +77,12 @@ export const ProgramBuilderScreen: React.FC<RootProgramBuilderScreenProps> = ({
   navigation,
 }) => {
   const tailwind = useTailwind();
-  const [programBuilderMachineState, sendToProgramBuilderMachine] = useMachine(
-    createProgramBuilderMachine()
-  );
+  const { programBuilderService } = useAppContext();
 
-  const programBuilderContext = programBuilderMachineState.context;
+  const [programBuilderState, sendToProgramBuilderMachine] = useActor(
+    programBuilderService
+  );
+  const { context: programBuilderContext } = programBuilderState;
 
   function handleAddTrainingSessionOnpress() {
     sendToProgramBuilderMachine({

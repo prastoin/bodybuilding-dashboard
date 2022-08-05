@@ -2,10 +2,6 @@
 
 export interface Typegen0 {
   "@@xstate/typegen": true;
-  eventsCausingActions: {
-    addTrainingSessionToContext: "ADD_TRAINING_SESSION";
-    removeTrainingSessionToContext: "_REMOVE_TRAINING_SESSION";
-  };
   internalEvents: {
     "xstate.init": { type: "xstate.init" };
   };
@@ -15,6 +11,10 @@ export interface Typegen0 {
     services: never;
     guards: never;
     delays: never;
+  };
+  eventsCausingActions: {
+    addTrainingSessionToContext: "ADD_TRAINING_SESSION";
+    removeTrainingSessionToContext: "_REMOVE_TRAINING_SESSION";
   };
   eventsCausingServices: {};
   eventsCausingGuards: {};
