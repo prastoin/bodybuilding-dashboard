@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import * as React from "react";
-import { RootStack } from "./navigation/RootStack";
+import { BottomTab } from "./navigation/RootStack";
 import { TailwindProvider } from "tailwind-rn";
 import utilities from "./tailwind.json";
 import { AppContextProvider } from "./contexts/AppContext";
@@ -10,7 +10,7 @@ function App() {
     <TailwindProvider utilities={utilities}>
       <AppContextProvider>
         <NavigationContainer>
-          <RootStack />
+          <BottomTab />
         </NavigationContainer>
       </AppContextProvider>
     </TailwindProvider>

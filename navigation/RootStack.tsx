@@ -1,52 +1,82 @@
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   createNativeStackNavigator,
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import * as React from "react";
-import { DetailsScreen } from "../screens/Details";
 import { HomeScreen } from "../screens/Home";
 import { ProgramBuilderScreen } from "../screens/ProgramBuilder";
 import TrainingSessionFormNameWrapper from "../screens/ProgramBuilderTrainingSessionCreatorFormName";
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+// BottomTab navigator
 
-export type RootStackParamList = {
+const BottomTabNavigator =
+  createBottomTabNavigator<BottomTabNavigatorParamList>();
+
+export type BottomTabNavigatorParamList = {
   Details: undefined;
   Home: undefined;
   ProgramBuilder: undefined;
 };
 
 export type RootHomeScreenProps = NativeStackScreenProps<
-  RootStackParamList,
+  BottomTabNavigatorParamList,
   "Home"
 >;
 
 export type RootDetailsScreenProps = NativeStackScreenProps<
-  RootStackParamList,
+  BottomTabNavigatorParamList,
   "Details"
 >;
 
-export type RootProgramBuilderScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  "ProgramBuilder"
->;
-
-export const RootStack: React.FC = () => {
+export const BottomTab: React.FC = () => {
   return (
-    <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen
+    <BottomTabNavigator.Navigator screenOptions={{ headerShown: false }}>
+      <BottomTabNavigator.Screen
         name="Home"
-        component={HomeScreen}
-        options={{ title: "Overview" }}
+        component={HomeStackNavigator}
+        options={{ tabBarLabel: "Home!" }}
       />
-      <Stack.Screen name="Details" component={DetailsScreen} />
-      <Stack.Screen
+      <BottomTabNavigator.Screen
         name="ProgramBuilder"
         component={ProgramBuilderStackNavigator}
+        options={{ tabBarLabel: "Program Builder" }}
       />
-    </Stack.Navigator>
+    </BottomTabNavigator.Navigator>
   );
 };
+
+///
+
+// Home stack navigator
+
+export type HomeStackParamList = {
+  Index: undefined;
+};
+
+const HomeStack = createNativeStackNavigator<HomeStackParamList>();
+
+export type HomeIndexScreenProps = NativeStackScreenProps<
+  HomeStackParamList,
+  "Index"
+>;
+
+const HomeStackNavigator: React.FC = () => {
+  return (
+    <HomeStack.Navigator
+      initialRouteName="Index"
+      screenOptions={{
+        headerShown: true,
+      }}
+    >
+      <HomeStack.Screen name="Index" component={HomeScreen} />
+    </HomeStack.Navigator>
+  );
+};
+
+///
+
+// Program builder stack Navigator
 
 export type ProgramBuilderStackParamList = {
   Index: undefined;
@@ -72,7 +102,7 @@ const ProgramBuilderStackNavigator: React.FC = () => {
     <ProgramBuilderStack.Navigator
       initialRouteName="Index"
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
       }}
     >
       <ProgramBuilderStack.Screen
@@ -86,3 +116,5 @@ const ProgramBuilderStackNavigator: React.FC = () => {
     </ProgramBuilderStack.Navigator>
   );
 };
+
+///
