@@ -4,12 +4,13 @@ import { BottomTab } from "./navigation/RootStack";
 import { TailwindProvider } from "tailwind-rn";
 import utilities from "./tailwind.json";
 import { AppContextProvider } from "./contexts/AppContext";
+import { navigationRef } from "./navigation/RootNavigation";
 
 function App() {
   return (
     <TailwindProvider utilities={utilities}>
       <AppContextProvider>
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <BottomTab />
         </NavigationContainer>
       </AppContextProvider>
