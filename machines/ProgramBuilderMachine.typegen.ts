@@ -3,6 +3,11 @@
 export interface Typegen0 {
   "@@xstate/typegen": true;
   internalEvents: {
+    "done.invoke.TrainingSessionCreationForm": {
+      type: "done.invoke.TrainingSessionCreationForm";
+      data: unknown;
+      __tip: "See the XState TS docs to learn how to strongly type this.";
+    };
     "xstate.init": { type: "xstate.init" };
   };
   invokeSrcNameMap: {};
@@ -13,12 +18,13 @@ export interface Typegen0 {
     delays: never;
   };
   eventsCausingActions: {
-    addTrainingSessionToContext: "ADD_TRAINING_SESSION";
+    addTrainingSessionToContext: "done.invoke.TrainingSessionCreationForm";
     removeTrainingSessionToContext: "_REMOVE_TRAINING_SESSION";
+    resetProgramBuilderStackNavigator: "done.invoke.TrainingSessionCreationForm";
   };
   eventsCausingServices: {};
   eventsCausingGuards: {};
   eventsCausingDelays: {};
-  matchesStates: "Idle";
+  matchesStates: "Creating a training session" | "Idle";
   tags: never;
 }

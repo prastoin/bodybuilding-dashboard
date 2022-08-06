@@ -7,6 +7,11 @@ import {
   InterpreterFrom,
   spawn,
 } from "xstate";
+import { navigateFromRef } from "../navigation/RootNavigation";
+import {
+  createTrainingSessionCreationFormMachine,
+  TrainingSessionFormDoneInvokeEvent,
+} from "./TrainingSessionCreationFormMachine";
 import {
   createTrainingSessionMachine,
   TrainingSessionActorRef,
@@ -32,10 +37,10 @@ export const createProgramBuilderMachine = () =>
         context: {} as ProgramBuilderMachineContext,
         events: {} as
           | {
-              type: "ADD_TRAINING_SESSION";
-              name?: string;
+              type: "ENTER_TRAINING_SESSION_CREATION_FORM";
             }
-          | { type: "_REMOVE_TRAINING_SESSION"; trainingSessionId: string },
+          | { type: "_REMOVE_TRAINING_SESSION"; trainingSessionId: string }
+          | { type: "_CANCEL_TRAINING_SESSION_CREATION_OPERATION" },
       },
       tsTypes: {} as import("./ProgramBuilderMachine.typegen").Typegen0,
       context: {
@@ -45,11 +50,35 @@ export const createProgramBuilderMachine = () =>
       states: {
         Idle: {
           on: {
-            ADD_TRAINING_SESSION: {
-              actions: "addTrainingSessionToContext",
+            ENTER_TRAINING_SESSION_CREATION_FORM: {
+              target: "Creating a training session",
             },
             _REMOVE_TRAINING_SESSION: {
               actions: "removeTrainingSessionToContext",
+            },
+          },
+        },
+
+        "Creating a training session": {
+          invoke: {
+            id: "TrainingSessionCreationForm",
+
+            src: () => {
+              return createTrainingSessionCreationFormMachine();
+            },
+
+            onDone: {
+              target: "Idle",
+              actions: [
+                "addTrainingSessionToContext",
+                "resetProgramBuilderStackNavigator",
+              ],
+            },
+          },
+
+          on: {
+            _CANCEL_TRAINING_SESSION_CREATION_OPERATION: {
+              target: "Idle",
             },
           },
         },
@@ -58,11 +87,18 @@ export const createProgramBuilderMachine = () =>
     },
     {
       actions: {
-        addTrainingSessionToContext: assign((context, event) => {
-          console.log("ADD TRAINING SESSION TO CONTEXT");
-          const trainingSessionName = event.name || `Training Session`;
+        resetProgramBuilderStackNavigator: (_context, _event) => {
+          navigateFromRef("ProgramBuilder", {
+            screen: "Index",
+          });
+        },
 
-          const newTrainingSessionId = uuidv4();
+        addTrainingSessionToContext: assign((context, event) => {
+          // TODO search for a better solution
+          const {
+            data: { trainingSessionName, uuid: newTrainingSessionId },
+          } = event as TrainingSessionFormDoneInvokeEvent;
+
           const newTrainingSessionActor: TrainingSessionActorRef = spawn(
             createTrainingSessionMachine({
               trainingSessionName: trainingSessionName,
@@ -70,6 +106,7 @@ export const createProgramBuilderMachine = () =>
             }),
             { sync: true, name: newTrainingSessionId }
           );
+
           return {
             ...context,
             trainingSessionActorRefCollection: [

@@ -1,45 +1,110 @@
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigatorScreenParams } from "@react-navigation/native";
 import {
   createNativeStackNavigator,
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import * as React from "react";
-import { DetailsScreen } from "../screens/Details";
 import { HomeScreen } from "../screens/Home";
 import { ProgramBuilderScreen } from "../screens/ProgramBuilder";
+import TrainingSessionFormNameWrapper from "../screens/ProgramBuilderTrainingSessionCreatorFormName";
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+// BottomTab navigator
 
-export type RootStackParamList = {
-  Details: undefined;
-  Home: undefined;
-  ProgramBuilder: undefined;
+const BottomTabNavigator =
+  createBottomTabNavigator<BottomTabNavigatorParamList>();
+
+export type BottomTabNavigatorParamList = {
+  Home: NavigatorScreenParams<HomeStackParamList>;
+  ProgramBuilder: NavigatorScreenParams<ProgramBuilderStackParamList>;
 };
 
 export type RootHomeScreenProps = NativeStackScreenProps<
-  RootStackParamList,
+  BottomTabNavigatorParamList,
   "Home"
 >;
 
-export type RootDetailsScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  "Details"
->;
-
-export type RootProgramBuilderScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  "ProgramBuilder"
->;
-
-export const RootStack: React.FC = () => {
+export const BottomTab: React.FC = () => {
   return (
-    <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ title: "Overview" }}
+    <BottomTabNavigator.Navigator screenOptions={{ headerShown: false }}>
+      <BottomTabNavigator.Screen name="Home" component={HomeStackNavigator} />
+      <BottomTabNavigator.Screen
+        name="ProgramBuilder"
+        component={ProgramBuilderStackNavigator}
       />
-      <Stack.Screen name="Details" component={DetailsScreen} />
-      <Stack.Screen name="ProgramBuilder" component={ProgramBuilderScreen} />
-    </Stack.Navigator>
+    </BottomTabNavigator.Navigator>
   );
 };
+
+///
+
+// Home stack navigator
+
+export type HomeStackParamList = {
+  Index: undefined;
+};
+
+const HomeStack = createNativeStackNavigator<HomeStackParamList>();
+
+export type HomeIndexScreenProps = NativeStackScreenProps<
+  HomeStackParamList,
+  "Index"
+>;
+
+const HomeStackNavigator: React.FC = () => {
+  return (
+    <HomeStack.Navigator
+      initialRouteName="Index"
+      screenOptions={{
+        headerShown: true,
+      }}
+    >
+      <HomeStack.Screen name="Index" component={HomeScreen} />
+    </HomeStack.Navigator>
+  );
+};
+
+///
+
+// Program builder stack Navigator
+
+export type ProgramBuilderStackParamList = {
+  Index: undefined;
+  TrainingSesssionCreationFormName: undefined;
+};
+
+const ProgramBuilderStack =
+  createNativeStackNavigator<ProgramBuilderStackParamList>();
+
+export type ProgramBuilderIndexScreenProps = NativeStackScreenProps<
+  ProgramBuilderStackParamList,
+  "Index"
+>;
+
+export type ProgramBuilderTrainingSessionCreationFormNameScreenProps =
+  NativeStackScreenProps<
+    ProgramBuilderStackParamList,
+    "TrainingSesssionCreationFormName"
+  >;
+
+const ProgramBuilderStackNavigator: React.FC = () => {
+  return (
+    <ProgramBuilderStack.Navigator
+      initialRouteName="Index"
+      screenOptions={{
+        headerShown: true,
+      }}
+    >
+      <ProgramBuilderStack.Screen
+        name="Index"
+        component={ProgramBuilderScreen}
+      />
+      <ProgramBuilderStack.Screen
+        name="TrainingSesssionCreationFormName"
+        component={TrainingSessionFormNameWrapper}
+      />
+    </ProgramBuilderStack.Navigator>
+  );
+};
+
+///
