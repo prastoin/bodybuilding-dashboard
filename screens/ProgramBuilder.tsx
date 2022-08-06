@@ -4,7 +4,7 @@ import { Button, FlatList, Text, View } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import { TrainingSessionActorRef } from "../machines/TrainingSessionMachine";
 import { TrainingSessionExerciseActorRef } from "../machines/TrainingSessionExerciseMachine";
-import { TrainingSessionExerciseItem } from "../components/programBuilder/TrainingSessionExerciseWizard";
+import { TrainingSessionExerciseItem } from "../components/programBuilder/TrainingSessionExercise";
 import { useAppContext } from "../contexts/AppContext";
 import { ProgramBuilderIndexScreenProps } from "../navigation/RootStack";
 
