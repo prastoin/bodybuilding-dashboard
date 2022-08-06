@@ -1,12 +1,7 @@
 import { fireEvent, renderApp } from "./tests/test.utils";
 
-test("Home page has a button to details page", async () => {
+test("Home page is the app landing page", async () => {
   const screen = renderApp();
 
-  screen.getByText(/Home/i);
-  const goToDetailsButton = screen.getByText(/Go.*Details/i);
-
-  fireEvent.press(goToDetailsButton);
-
-  await screen.findByText(/Details.*screen/i);
+  await screen.findByTestId(/home-screen-container/i);
 });
