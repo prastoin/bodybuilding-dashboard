@@ -28,7 +28,7 @@ const TrainingSessionFormNameContent: React.FC<
   const tailwind = useTailwind();
   const defaultTrainingSessionName = "";
   return (
-    <View>
+    <View testID="training-session-creation-form-name-step">
       <Controller
         control={control}
         rules={{
@@ -39,8 +39,7 @@ const TrainingSessionFormNameContent: React.FC<
             value={value}
             onBlur={onBlur}
             onChangeText={onChange}
-            placeholder="Playlist name"
-            placeholderTextColor="#fff"
+            placeholder="Name"
           />
         )}
         name="sessionTrainingName"

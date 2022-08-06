@@ -314,6 +314,24 @@ const programBuilderTestModel = createModel<TestingContext>(
       );
 
       fireEvent.press(addTrainingSessionButton);
+
+      const creationFormNameScreen = await screen.findByTestId(
+        "training-session-creation-form-name-step"
+      );
+
+      const textInput = await within(
+        creationFormNameScreen
+      ).findByPlaceholderText("Name");
+
+      fireEvent(textInput, "focus");
+      const trainingSessionName = "just_a_name";
+      fireEvent.changeText(textInput, trainingSessionName);
+
+      const submitButton = await within(creationFormNameScreen).findByText(
+        /submit/i
+      );
+
+      fireEvent.press(submitButton);
     },
   },
 
