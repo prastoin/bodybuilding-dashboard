@@ -1,4 +1,4 @@
-import { fireEvent, renderApp } from "./tests/test.utils";
+import { renderApp } from "../tests/test.utils";
 
 test("Home page is the app landing page", async () => {
   const screen = renderApp();
