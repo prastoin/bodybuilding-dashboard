@@ -18,6 +18,9 @@ jobs:
         uses: wagoid/commitlint-github-action@v3
   client_integrations_tests:
     runs-on: ubuntu-latest
+    env:
+      SERVER_HOST: localhost
+      SERVER_PORT: 3333
     timeout-minutes: 30
     steps:
       - name: Checkout 🛎
