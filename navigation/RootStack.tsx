@@ -7,7 +7,8 @@ import {
 import * as React from "react";
 import { HomeScreen } from "../screens/Home";
 import { ProgramBuilderScreen } from "../screens/ProgramBuilder";
-import TrainingSessionFormNameWrapper from "../screens/ProgramBuilderTrainingSessionCreatorFormName";
+import TrainingSessionCreationFormName from "../screens/TrainingSessionName/TrainingSessionCreationFormName";
+import TrainingSessionEditorFormName from "../screens/TrainingSessionName/TrainingSessionEditorFormName";
 
 // BottomTab navigator
 
@@ -71,6 +72,9 @@ const HomeStackNavigator: React.FC = () => {
 export type ProgramBuilderStackParamList = {
   Index: undefined;
   TrainingSesssionCreationFormName: undefined;
+  TrainingSessionEditorFormName: {
+    trainingSessionId: string;
+  };
 };
 
 const ProgramBuilderStack =
@@ -87,6 +91,12 @@ export type ProgramBuilderTrainingSessionCreationFormNameScreenProps =
     "TrainingSesssionCreationFormName"
   >;
 
+export type ProgramBuilderTrainingSessionEditorFormNameScreenProps =
+  NativeStackScreenProps<
+    ProgramBuilderStackParamList,
+    "TrainingSessionEditorFormName"
+  >;
+
 const ProgramBuilderStackNavigator: React.FC = () => {
   return (
     <ProgramBuilderStack.Navigator
@@ -101,7 +111,11 @@ const ProgramBuilderStackNavigator: React.FC = () => {
       />
       <ProgramBuilderStack.Screen
         name="TrainingSesssionCreationFormName"
-        component={TrainingSessionFormNameWrapper}
+        component={TrainingSessionCreationFormName}
+      />
+      <ProgramBuilderStack.Screen
+        name="TrainingSessionEditorFormName"
+        component={TrainingSessionEditorFormName}
       />
     </ProgramBuilderStack.Navigator>
   );

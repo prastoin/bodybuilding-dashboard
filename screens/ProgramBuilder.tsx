@@ -4,9 +4,10 @@ import { Button, FlatList, Text, View } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import { TrainingSessionActorRef } from "../machines/TrainingSessionMachine";
 import { TrainingSessionExerciseActorRef } from "../machines/TrainingSessionExerciseMachine";
-import { TrainingSessionExerciseItem } from "../components/programBuilder/TrainingSessionExerciseWizard";
+import { TrainingSessionExerciseItem } from "../components/programBuilder/TrainingSessionExercise";
 import { useAppContext } from "../contexts/AppContext";
 import { ProgramBuilderIndexScreenProps } from "../navigation/RootStack";
+import { useNavigation } from "@react-navigation/native";
 
 interface TrainingSessionProps {
   trainingSessionActorRef: TrainingSessionActorRef;
@@ -15,8 +16,8 @@ interface TrainingSessionProps {
 
 const TrainingSessionItem: React.FC<TrainingSessionProps> = ({
   trainingSessionActorRef,
-  index,
 }) => {
+  const navigation = useNavigation();
   const [trainingSessionState, sendToTrainingSessionMachine] = useActor(
     trainingSessionActorRef
   );
@@ -39,12 +40,18 @@ const TrainingSessionItem: React.FC<TrainingSessionProps> = ({
     });
   }
 
+  function handleEditTrainingSessionName() {
+    sendToTrainingSessionMachine({
+      type: "USER_ENTERED_TRAINING_SESSION_NAME_EDITOR",
+    });
+  }
+
   return (
     <View
       style={tailwind("mb-1 p-1 flex-1 justify-center border-2 border-black")}
       testID={`training-session-container-${uuid}`}
     >
-      <Text>{trainingSessionName}</Text>
+      <Text onPress={handleEditTrainingSessionName}>{trainingSessionName}</Text>
 
       <View>
         <FlatList<TrainingSessionExerciseActorRef>
@@ -73,9 +80,9 @@ const TrainingSessionItem: React.FC<TrainingSessionProps> = ({
   );
 };
 
-export const ProgramBuilderScreen: React.FC<ProgramBuilderIndexScreenProps> = ({
-  navigation,
-}) => {
+export const ProgramBuilderScreen: React.FC<
+  ProgramBuilderIndexScreenProps
+> = () => {
   const tailwind = useTailwind();
   const { programBuilderService } = useAppContext();
 
@@ -85,7 +92,6 @@ export const ProgramBuilderScreen: React.FC<ProgramBuilderIndexScreenProps> = ({
   const { context: programBuilderContext } = programBuilderState;
 
   function handleAddTrainingSessionOnpress() {
-    navigation.navigate("TrainingSesssionCreationFormName");
     sendToProgramBuilderMachine({
       type: "ENTER_TRAINING_SESSION_CREATION_FORM",
     });

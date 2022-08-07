@@ -6,6 +6,7 @@ import {
 } from "./TrainingSessionExerciseMachine";
 import { v4 as uuidv4 } from "uuid";
 import { sendParent } from "xstate/lib/actions";
+import { goBackFromRef, navigateFromRef } from "../navigation/RootNavigation";
 
 type TrainingSessionMachineEvents =
   | {
@@ -18,6 +19,16 @@ type TrainingSessionMachineEvents =
   | {
       type: "_REMOVE_TRAINING_SESSION_EXERCISE";
       exerciseId: string;
+    }
+  | {
+      type: "USER_FINISHED_TRAINING_SESSION_NAME_EDITION";
+      newName: string;
+    }
+  | {
+      type: "USER_ENTERED_TRAINING_SESSION_NAME_EDITOR";
+    }
+  | {
+      type: "USER_CANCELED_TRAINING_SESSION_NAME_EDITION";
     };
 
 type TrainingSessionMachineContext = {
@@ -71,6 +82,25 @@ export const createTrainingSessionMachine = ({
             _REMOVE_TRAINING_SESSION_EXERCISE: {
               actions: "remove training session exercise from context",
             },
+
+            USER_ENTERED_TRAINING_SESSION_NAME_EDITOR: {
+              target: "User is editing training session name",
+            },
+          },
+        },
+
+        "User is editing training session name": {
+          entry: "Navigate to training session name editor",
+
+          on: {
+            USER_FINISHED_TRAINING_SESSION_NAME_EDITION: {
+              actions: ["update training session name", "Navigate go back"],
+              target: "Idle",
+            },
+
+            USER_CANCELED_TRAINING_SESSION_NAME_EDITION: {
+              target: "Idle",
+            },
           },
         },
       },
@@ -98,6 +128,27 @@ export const createTrainingSessionMachine = ({
             ],
           };
         }),
+
+        "Navigate to training session name editor": (context) => {
+          navigateFromRef("ProgramBuilder", {
+            screen: "TrainingSessionEditorFormName",
+            params: {
+              trainingSessionId: context.uuid,
+            },
+          });
+        },
+
+        "Navigate go back": () => {
+          goBackFromRef();
+        },
+
+        "update training session name": assign((context, { newName }) => {
+          return {
+            ...context,
+            trainingSessionName: newName,
+          };
+        }),
+
         // Could make typings works here
         "Forward training session deletion to program builder": sendParent({
           type: "_REMOVE_TRAINING_SESSION",
