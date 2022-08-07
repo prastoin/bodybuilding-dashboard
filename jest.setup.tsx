@@ -10,6 +10,13 @@
 //   return Reanimated;
 // });
 
+// Polyfill "window.fetch" used in the React component.
+import "whatwg-fetch";
+
+import XMLHttpRequest from "xhr2";
+
+global.XMLHttpRequest = XMLHttpRequest;
+
 // Silence the warning: Animated: `useNativeDriver` is not supported because the native animated module is missing
 jest.mock("react-native/Libraries/Animated/NativeAnimatedHelper");
 
@@ -40,5 +47,3 @@ afterEach(() => {
 
 // jest.spyOn(console, "warn").mockImplementation();
 // jest.spyOn(console, "error").mockImplementation();
-
-export {};
