@@ -60,6 +60,8 @@ export const createProgramBuilderMachine = () =>
         },
 
         "Creating a training session": {
+          entry: "navigateToTrainingSessionCreationForm",
+
           invoke: {
             id: "TrainingSessionCreationForm",
 
@@ -87,6 +89,12 @@ export const createProgramBuilderMachine = () =>
     },
     {
       actions: {
+        navigateToTrainingSessionCreationForm: (_context, _event) => {
+          navigateFromRef("ProgramBuilder", {
+            screen: "TrainingSesssionCreationFormName",
+          });
+        },
+
         resetProgramBuilderStackNavigator: (_context, _event) => {
           navigateFromRef("ProgramBuilder", {
             screen: "Index",

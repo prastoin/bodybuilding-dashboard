@@ -19,6 +19,7 @@ export interface Typegen0 {
   };
   eventsCausingActions: {
     addTrainingSessionToContext: "done.invoke.TrainingSessionCreationForm";
+    navigateToTrainingSessionCreationForm: "ENTER_TRAINING_SESSION_CREATION_FORM";
     removeTrainingSessionToContext: "_REMOVE_TRAINING_SESSION";
     resetProgramBuilderStackNavigator: "done.invoke.TrainingSessionCreationForm";
   };
