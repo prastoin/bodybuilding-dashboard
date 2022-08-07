@@ -28,10 +28,21 @@ export type RootHomeScreenProps = NativeStackScreenProps<
 export const BottomTab: React.FC = () => {
   return (
     <BottomTabNavigator.Navigator screenOptions={{ headerShown: false }}>
-      <BottomTabNavigator.Screen name="Home" component={HomeStackNavigator} />
+      <BottomTabNavigator.Screen
+        name="Home"
+        component={HomeStackNavigator}
+        options={{
+          tabBarLabel: "Home",
+          tabBarTestID: "home-bottom-tab",
+        }}
+      />
       <BottomTabNavigator.Screen
         name="ProgramBuilder"
         component={ProgramBuilderStackNavigator}
+        options={{
+          tabBarLabel: "Program Builder",
+          tabBarTestID: "program-builder-bottom-tab",
+        }}
       />
     </BottomTabNavigator.Navigator>
   );
