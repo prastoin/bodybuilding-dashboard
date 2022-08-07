@@ -16,9 +16,16 @@ export const TrainingSession = z.object({
 export type TrainingSession = z.infer<typeof TrainingSession>;
 export type TrainingSessionCollection = TrainingSession[];
 
-export const TrainingProgram = z.object({
+export const BodybuildingProgram = z.object({
   uuid: z.string().uuid(),
   programName: NonEmptyString,
   trainingSessions: TrainingSession.array(),
 });
-export type BodybuildingProgram = z.infer<typeof TrainingProgram>;
+export type BodybuildingProgram = z.infer<typeof BodybuildingProgram>;
+
+// Http types
+
+export const RetrieveUserBodyBuildingProgramResponseBody = BodybuildingProgram;
+export type RetrieveUserBodyBuildingProgramResponseBody = z.infer<
+  typeof RetrieveUserBodyBuildingProgramResponseBody
+>;

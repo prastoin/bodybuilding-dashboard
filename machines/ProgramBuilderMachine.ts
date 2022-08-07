@@ -1,11 +1,14 @@
 import {
   assign,
   createMachine,
+  DoneInvokeEvent,
   EventFrom,
   InterpreterFrom,
   spawn,
 } from "xstate";
 import { navigateFromRef } from "../navigation/RootNavigation";
+import { sendRetrieveUserBodyBuildingProgram } from "../services/ProgramBuilderService";
+import { RetrieveUserBodyBuildingProgramResponseBody } from "../types";
 import {
   createTrainingSessionCreationFormMachine,
   TrainingSessionFormDoneInvokeEvent,
@@ -44,8 +47,31 @@ export const createProgramBuilderMachine = () =>
       context: {
         trainingSessionActorRefCollection: [],
       },
-      initial: "Idle",
+      initial: "Fetching user bodybuilding program",
       states: {
+        "Fetching user bodybuilding program": {
+          invoke: {
+            id: "Fetch user bodybuilding program service",
+            src: "Fetch user bodybuilding program",
+            onDone: {
+              target: "Idle",
+              actions: (_context, e) => {
+                const event =
+                  e as DoneInvokeEvent<RetrieveUserBodyBuildingProgramResponseBody>;
+
+                console.log({ event });
+              },
+            },
+
+            onError: {
+              target: "Idle",
+              actions: () => {
+                console.log("Fetch error on user bodybuilding program");
+              },
+            },
+          },
+        },
+
         Idle: {
           on: {
             ENTER_TRAINING_SESSION_CREATION_FORM: {
@@ -86,6 +112,12 @@ export const createProgramBuilderMachine = () =>
       id: "ProgramBuilderMachine",
     },
     {
+      services: {
+        "Fetch user bodybuilding program": async () => {
+          return await sendRetrieveUserBodyBuildingProgram();
+        },
+      },
+
       actions: {
         navigateToTrainingSessionCreationForm: (_context, _event) => {
           navigateFromRef("ProgramBuilder", {
@@ -100,7 +132,7 @@ export const createProgramBuilderMachine = () =>
         },
 
         addTrainingSessionToContext: assign((context, event) => {
-          // TODO search for a better solution
+          // TODO search for a better typing solution to avoid the `as TrainingSessionFormDoneInvokeEvent`
           const {
             data: { trainingSessionName, uuid: newTrainingSessionId },
           } = event as TrainingSessionFormDoneInvokeEvent;
