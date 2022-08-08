@@ -1,3 +1,5 @@
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
 import {
   assign,
   createMachine,
@@ -8,11 +10,15 @@ import {
 } from "xstate";
 import { navigateFromRef } from "../navigation/RootNavigation";
 import { sendRetrieveUserBodyBuildingProgram } from "../services/ProgramBuilderService";
-import { RetrieveUserBodyBuildingProgramResponseBody } from "../types";
+import {
+  BodybuildingProgram,
+  RetrieveUserBodyBuildingProgramResponseBody,
+} from "../types";
 import {
   createTrainingSessionCreationFormMachine,
   TrainingSessionFormDoneInvokeEvent,
 } from "./TrainingSessionCreationFormMachine";
+import { TrainingSessionExerciseActorRef } from "./TrainingSessionExerciseMachine";
 import {
   createTrainingSessionMachine,
   TrainingSessionActorRef,
@@ -22,7 +28,10 @@ export type ProgramBuilderMachineEvents = EventFrom<
   ReturnType<typeof createProgramBuilderMachine>
 >;
 
-export type ProgramBuilderMachineContext = {
+export type ProgramBuilderMachineContext = Omit<
+  BodybuildingProgram,
+  "trainingSessions"
+> & {
   trainingSessionActorRefCollection: TrainingSessionActorRef[];
 };
 
@@ -45,6 +54,8 @@ export const createProgramBuilderMachine = () =>
       },
       tsTypes: {} as import("./ProgramBuilderMachine.typegen").Typegen0,
       context: {
+        programName: "Program name",
+        uuid: uuidv4(),
         trainingSessionActorRefCollection: [],
       },
       initial: "Fetching user bodybuilding program",
@@ -55,17 +66,13 @@ export const createProgramBuilderMachine = () =>
             src: "Fetch user bodybuilding program",
             onDone: {
               target: "Idle",
-              actions: (_context, e) => {
-                const event =
-                  e as DoneInvokeEvent<RetrieveUserBodyBuildingProgramResponseBody>;
-
-                console.log({ event });
-              },
+              actions: "assignMergeRetrievedUserProgram",
             },
 
             onError: {
               target: "Idle",
-              actions: () => {
+              actions: (_context, e) => {
+                console.log(e);
                 console.log("Fetch error on user bodybuilding program");
               },
             },
@@ -119,6 +126,36 @@ export const createProgramBuilderMachine = () =>
       },
 
       actions: {
+        assignMergeRetrievedUserProgram: assign((_context, e) => {
+          const event =
+            e as DoneInvokeEvent<RetrieveUserBodyBuildingProgramResponseBody>;
+
+          const {
+            programName,
+            trainingSessions: trainingSessionCollection,
+            uuid,
+          } = event.data;
+
+          const trainingSessionActorRefCollection =
+            trainingSessionCollection.map<TrainingSessionActorRef>(
+              (trainingSession) =>
+                spawn(
+                  // TODO Refactor below function to spawn exercises
+                  createTrainingSessionMachine({
+                    trainingSessionName: trainingSession.trainingSessionName,
+                    uuid: trainingSession.uuid,
+                  }),
+                  { sync: true, name: trainingSession.uuid }
+                )
+            );
+
+          return {
+            programName,
+            uuid,
+            trainingSessionActorRefCollection,
+          };
+        }),
+
         navigateToTrainingSessionCreationForm: (_context, _event) => {
           navigateFromRef("ProgramBuilder", {
             screen: "TrainingSesssionCreationFormName",
