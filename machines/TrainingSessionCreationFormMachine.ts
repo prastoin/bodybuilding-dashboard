@@ -8,14 +8,13 @@ import {
   InterpreterFrom,
 } from "xstate";
 import { sendParent } from "xstate/lib/actions";
-import { navigateFromRef } from "../navigation/RootNavigation";
 
 export type TrainingSessionCreationFormMachineEvents =
   | {
       type: "SET_ROOM_NAME_AND_GO_NEXT";
       name: string;
     }
-  | { type: "GO_BACK" };
+  | { type: "USER_WENT_TO_PREVIOUS_SCREEN" };
 
 export type TrainingSessionCreationFormMachineContext = {
   trainingSessionName: string;
@@ -56,8 +55,8 @@ export const createTrainingSessionCreationFormMachine = () =>
               target: "Form is completed",
               actions: "assignTrainingSessionNameToContext",
             },
-            GO_BACK: {
-              actions: "NotifyParentToCancelTrainingSessionOperation",
+            USER_WENT_TO_PREVIOUS_SCREEN: {
+              actions: "Notify parent that user exited the form",
             },
           },
         },
@@ -84,8 +83,8 @@ export const createTrainingSessionCreationFormMachine = () =>
             trainingSessionName: name,
           };
         }),
-        NotifyParentToCancelTrainingSessionOperation: sendParent({
-          type: "_CANCEL_TRAINING_SESSION_CREATION_OPERATION",
+        "Notify parent that user exited the form": sendParent({
+          type: "_CANCEL_TRAINING_SESSION_CREATION_FORM",
         }),
       },
     }

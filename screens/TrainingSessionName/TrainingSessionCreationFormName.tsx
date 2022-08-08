@@ -21,9 +21,16 @@ const TrainingSessionCreationFormName: React.FC<
     });
   };
 
+  const handleGoBack = () => {
+    trainingSessionCreationFormActor.send({
+      type: "USER_WENT_TO_PREVIOUS_SCREEN",
+    });
+  };
+
   return (
     <TrainingSessionFormNameContent
       testId="training-session-creation-form-name-step"
+      handleOnGoBack={handleGoBack}
       handleOnSubmit={({ sessionTrainingName }) => {
         handleGoNext(sessionTrainingName);
       }}

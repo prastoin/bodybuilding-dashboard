@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Button, Text, TextInput, View } from "react-native";
@@ -9,17 +10,28 @@ export interface TrainingSessionCreationFormNameFormFieldValues {
 
 interface TrainingSessionCreationFormNameContentProps {
   handleOnSubmit: SubmitHandler<TrainingSessionCreationFormNameFormFieldValues>;
+  handleOnGoBack: () => void;
   testId: string;
 }
 
 export const TrainingSessionFormNameContent: React.FC<
   TrainingSessionCreationFormNameContentProps
-> = ({ handleOnSubmit, testId }) => {
+> = ({ handleOnSubmit, handleOnGoBack, testId }) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<TrainingSessionCreationFormNameFormFieldValues>();
+
+  const navigation = useNavigation();
+
+  React.useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        handleOnGoBack();
+      }),
+    [navigation]
+  );
 
   const tailwind = useTailwind();
   const defaultTrainingSessionName = "";

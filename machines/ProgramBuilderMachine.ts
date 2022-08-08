@@ -50,7 +50,7 @@ export const createProgramBuilderMachine = () =>
               type: "ENTER_TRAINING_SESSION_CREATION_FORM";
             }
           | { type: "_REMOVE_TRAINING_SESSION"; trainingSessionId: string }
-          | { type: "_CANCEL_TRAINING_SESSION_CREATION_OPERATION" },
+          | { type: "_CANCEL_TRAINING_SESSION_CREATION_FORM" },
       },
       tsTypes: {} as import("./ProgramBuilderMachine.typegen").Typegen0,
       context: {
@@ -110,7 +110,7 @@ export const createProgramBuilderMachine = () =>
           },
 
           on: {
-            _CANCEL_TRAINING_SESSION_CREATION_OPERATION: {
+            _CANCEL_TRAINING_SESSION_CREATION_FORM: {
               target: "Idle",
             },
           },

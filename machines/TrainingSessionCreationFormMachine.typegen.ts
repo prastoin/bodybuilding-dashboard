@@ -13,7 +13,7 @@ export interface Typegen0 {
     delays: never;
   };
   eventsCausingActions: {
-    NotifyParentToCancelTrainingSessionOperation: "GO_BACK";
+    "Notify parent that user exited the form": "USER_WENT_TO_PREVIOUS_SCREEN";
     assignTrainingSessionNameToContext: "SET_ROOM_NAME_AND_GO_NEXT";
     popBackToTop: "SET_ROOM_NAME_AND_GO_NEXT";
   };
