@@ -3,15 +3,22 @@ import { v4 as uuidv4 } from "uuid";
 import {
   assign,
   createMachine,
+  DoneInvokeEvent,
   EventFrom,
   InterpreterFrom,
   spawn,
 } from "xstate";
 import { navigateFromRef } from "../navigation/RootNavigation";
+import { sendRetrieveUserBodyBuildingProgram } from "../services/ProgramBuilderService";
+import {
+  BodybuildingProgram,
+  RetrieveUserBodyBuildingProgramResponseBody,
+} from "../types";
 import {
   createTrainingSessionCreationFormMachine,
   TrainingSessionFormDoneInvokeEvent,
 } from "./TrainingSessionCreationFormMachine";
+import { TrainingSessionExerciseActorRef } from "./TrainingSessionExerciseMachine";
 import {
   createTrainingSessionMachine,
   TrainingSessionActorRef,
@@ -21,7 +28,10 @@ export type ProgramBuilderMachineEvents = EventFrom<
   ReturnType<typeof createProgramBuilderMachine>
 >;
 
-export type ProgramBuilderMachineContext = {
+export type ProgramBuilderMachineContext = Omit<
+  BodybuildingProgram,
+  "trainingSessions"
+> & {
   trainingSessionActorRefCollection: TrainingSessionActorRef[];
 };
 
@@ -40,14 +50,35 @@ export const createProgramBuilderMachine = () =>
               type: "ENTER_TRAINING_SESSION_CREATION_FORM";
             }
           | { type: "_REMOVE_TRAINING_SESSION"; trainingSessionId: string }
-          | { type: "_CANCEL_TRAINING_SESSION_CREATION_OPERATION" },
+          | { type: "_CANCEL_TRAINING_SESSION_CREATION_FORM" },
       },
       tsTypes: {} as import("./ProgramBuilderMachine.typegen").Typegen0,
       context: {
+        programName: "Program name",
+        uuid: uuidv4(),
         trainingSessionActorRefCollection: [],
       },
-      initial: "Idle",
+      initial: "Fetching user bodybuilding program",
       states: {
+        "Fetching user bodybuilding program": {
+          invoke: {
+            id: "Fetch user bodybuilding program service",
+            src: "Fetch user bodybuilding program",
+            onDone: {
+              target: "Idle",
+              actions: "assignMergeRetrievedUserProgram",
+            },
+
+            onError: {
+              target: "Idle",
+              actions: (_context, e) => {
+                console.log(e);
+                console.log("Fetch error on user bodybuilding program");
+              },
+            },
+          },
+        },
+
         Idle: {
           on: {
             ENTER_TRAINING_SESSION_CREATION_FORM: {
@@ -79,7 +110,7 @@ export const createProgramBuilderMachine = () =>
           },
 
           on: {
-            _CANCEL_TRAINING_SESSION_CREATION_OPERATION: {
+            _CANCEL_TRAINING_SESSION_CREATION_FORM: {
               target: "Idle",
             },
           },
@@ -88,7 +119,44 @@ export const createProgramBuilderMachine = () =>
       id: "ProgramBuilderMachine",
     },
     {
+      services: {
+        "Fetch user bodybuilding program": async () => {
+          return await sendRetrieveUserBodyBuildingProgram();
+        },
+      },
+
       actions: {
+        assignMergeRetrievedUserProgram: assign((_context, e) => {
+          const event =
+            e as DoneInvokeEvent<RetrieveUserBodyBuildingProgramResponseBody>;
+
+          const {
+            programName,
+            trainingSessions: trainingSessionCollection,
+            uuid,
+          } = event.data;
+
+          const trainingSessionActorRefCollection =
+            trainingSessionCollection.map<TrainingSessionActorRef>(
+              (trainingSession) =>
+                spawn(
+                  // TODO Refactor below function to spawn exercises
+                  createTrainingSessionMachine({
+                    trainingSessionName: trainingSession.trainingSessionName,
+                    uuid: trainingSession.uuid,
+                    exerciseCollection: trainingSession.exercises,
+                  }),
+                  { sync: true, name: trainingSession.uuid }
+                )
+            );
+
+          return {
+            programName,
+            uuid,
+            trainingSessionActorRefCollection,
+          };
+        }),
+
         navigateToTrainingSessionCreationForm: (_context, _event) => {
           navigateFromRef("ProgramBuilder", {
             screen: "TrainingSesssionCreationFormName",
@@ -102,7 +170,7 @@ export const createProgramBuilderMachine = () =>
         },
 
         addTrainingSessionToContext: assign((context, event) => {
-          // TODO search for a better solution
+          // TODO search for a better typing solution to avoid the `as TrainingSessionFormDoneInvokeEvent`
           const {
             data: { trainingSessionName, uuid: newTrainingSessionId },
           } = event as TrainingSessionFormDoneInvokeEvent;

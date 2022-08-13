@@ -3,6 +3,7 @@
 export interface Typegen0 {
   "@@xstate/typegen": true;
   internalEvents: {
+    "": { type: "" };
     "xstate.init": { type: "xstate.init" };
   };
   invokeSrcNameMap: {};
@@ -16,13 +17,19 @@ export interface Typegen0 {
     "Forward training session deletion to program builder": "REMOVE_TRAINING_SESSION";
     "Navigate go back": "USER_FINISHED_TRAINING_SESSION_NAME_EDITION";
     "Navigate to training session name editor": "USER_ENTERED_TRAINING_SESSION_NAME_EDITOR";
+    "Spawn and assign initial exercises": "";
     "User added an exercise": "ADD_EXERCISE";
     "remove training session exercise from context": "_REMOVE_TRAINING_SESSION_EXERCISE";
     "update training session name": "USER_FINISHED_TRAINING_SESSION_NAME_EDITION";
   };
   eventsCausingServices: {};
-  eventsCausingGuards: {};
+  eventsCausingGuards: {
+    "Initial Exercises has to been spawned": "";
+  };
   eventsCausingDelays: {};
-  matchesStates: "Idle" | "User is editing training session name";
+  matchesStates:
+    | "Idle"
+    | "Spawning initial exercises"
+    | "User is editing training session name";
   tags: never;
 }

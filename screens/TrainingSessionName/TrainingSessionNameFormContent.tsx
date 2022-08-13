@@ -1,7 +1,9 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Button, Text, TextInput, View } from "react-native";
+import { Button, Text, TextInput } from "react-native";
 import { useTailwind } from "tailwind-rn/dist";
+import AppScreen from "../../components/AppScreen";
 
 export interface TrainingSessionCreationFormNameFormFieldValues {
   sessionTrainingName: string;
@@ -9,22 +11,33 @@ export interface TrainingSessionCreationFormNameFormFieldValues {
 
 interface TrainingSessionCreationFormNameContentProps {
   handleOnSubmit: SubmitHandler<TrainingSessionCreationFormNameFormFieldValues>;
+  handleOnGoBack: () => void;
   testId: string;
 }
 
 export const TrainingSessionFormNameContent: React.FC<
   TrainingSessionCreationFormNameContentProps
-> = ({ handleOnSubmit, testId }) => {
+> = ({ handleOnSubmit, handleOnGoBack, testId }) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<TrainingSessionCreationFormNameFormFieldValues>();
 
+  const navigation = useNavigation();
+
+  React.useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        handleOnGoBack();
+      }),
+    [navigation]
+  );
+
   const tailwind = useTailwind();
   const defaultTrainingSessionName = "";
   return (
-    <View testID={testId}>
+    <AppScreen testID={testId}>
       <Controller
         control={control}
         rules={{
@@ -48,6 +61,6 @@ export const TrainingSessionFormNameContent: React.FC<
       )}
 
       <Button title="Submit" onPress={handleSubmit(handleOnSubmit)}></Button>
-    </View>
+    </AppScreen>
   );
 };

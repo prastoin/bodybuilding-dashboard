@@ -53,20 +53,20 @@
 			"borderLeftColor": "rgb(0 0 0 / var(--tw-border-opacity))"
 		}
 	},
-	"p-1": {
-		"style": {
-			"paddingTop": 4,
-			"paddingRight": 4,
-			"paddingBottom": 4,
-			"paddingLeft": 4
-		}
-	},
 	"p-4": {
 		"style": {
 			"paddingTop": 16,
 			"paddingRight": 16,
 			"paddingBottom": 16,
 			"paddingLeft": 16
+		}
+	},
+	"p-1": {
+		"style": {
+			"paddingTop": 4,
+			"paddingRight": 4,
+			"paddingBottom": 4,
+			"paddingLeft": 4
 		}
 	},
 	"text-blue-600": {

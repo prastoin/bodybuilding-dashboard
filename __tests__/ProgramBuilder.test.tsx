@@ -1,6 +1,9 @@
 import { createMachine } from "xstate";
 import {
   fireEvent,
+  getAllTrainingSessionContainer,
+  getLastTrainingSessionContainer,
+  getTrainingSessionLastExercise,
   render,
   renderApp,
   waitFor,
@@ -8,114 +11,13 @@ import {
 } from "../tests/test.utils";
 import { createModel } from "@xstate/test";
 import invariant from "invariant";
-import { ReactTestInstance } from "react-test-renderer";
-
-function getAllTrainingSessionContainer({
-  screen,
-}: TestingContext): ReactTestInstance[] {
-  const trainingSessionContainerCollection = screen.queryAllByTestId(
-    /training-session-container.*/i
-  );
-
-  return trainingSessionContainerCollection;
-}
-
-/**
- * Throws error if no training session container found at all
- */
-function getLastTrainingSessionContainer(context: TestingContext): {
-  lastTrainingSessionId: string;
-  lastTrainingSessionContainer: ReactTestInstance;
-} {
-  const allTrainingSessionContainer = getAllTrainingSessionContainer(context);
-
-  invariant(
-    allTrainingSessionContainer.length > 0,
-    "Training session container not found"
-  );
-
-  const lastTrainingSessionContainer =
-    allTrainingSessionContainer[allTrainingSessionContainer.length - 1];
-
-  const lastTrainingSessionContainerTestId: string =
-    lastTrainingSessionContainer.props.testID;
-
-  const lastTrainingSessionIdSplit =
-    lastTrainingSessionContainerTestId.split("-");
-
-  const lastTrainingSessionId = lastTrainingSessionIdSplit
-    .slice(lastTrainingSessionIdSplit.length - 5)
-    .join("-");
-
-  invariant(
-    lastTrainingSessionId !== undefined,
-    "lastTrainingSessionId is undefined"
-  );
-
-  return {
-    lastTrainingSessionId,
-    lastTrainingSessionContainer,
-  };
-}
-
-function getAllTrainingSessionExercise({
-  context: { screen },
-  trainingSessionId,
-}: {
-  context: TestingContext;
-  trainingSessionId: string;
-}): ReactTestInstance[] {
-  const trainingSessionContainer = screen.getByTestId(
-    `training-session-container-${trainingSessionId}`
-  );
-
-  const allExerciseContainers = within(
-    trainingSessionContainer
-  ).queryAllByTestId(/training-session-exercise-container-.*/i);
-
-  return allExerciseContainers;
-}
-
-function getTrainingSessionLastExercise({
-  context,
-  trainingSessionId,
-}: {
-  context: TestingContext;
-  trainingSessionId: string;
-}): { lastExerciseContainer: ReactTestInstance; lastExerciseId: string } {
-  const allExercisesContainers = getAllTrainingSessionExercise({
-    context,
-    trainingSessionId,
-  });
-
-  invariant(
-    allExercisesContainers.length > 0,
-    "allExercisesContainers length is < to 0"
-  );
-
-  const lastExerciseContainer =
-    allExercisesContainers[allExercisesContainers.length - 1];
-
-  const lastExerciseTestId: string = lastExerciseContainer.props.testID;
-
-  const lastExerciseTestIdSplit = lastExerciseTestId.split("-");
-
-  const lastExerciseId = lastExerciseTestIdSplit
-    .slice(lastExerciseTestIdSplit.length - 5)
-    .join("-");
-
-  return {
-    lastExerciseContainer,
-    lastExerciseId,
-  };
-}
 
 test("User goes to program builder screen from home", async () => {
   const screen = renderApp();
 
   const goToProgramBuilderButton = screen.getByText(/.*Program.*Builder.*/i);
   fireEvent.press(goToProgramBuilderButton);
-  screen.findByTestId(`program-builder-screen-container`);
+  screen.findByTestId(/program-builder-screen-container/i);
 });
 
 const programBuilderTestMachine = createMachine({
@@ -125,7 +27,7 @@ const programBuilderTestMachine = createMachine({
     "Program builder view": {
       meta: {
         test: async ({ screen }: TestingContext) => {
-          await screen.findByTestId(`program-builder-screen-container`);
+          await screen.findByTestId(/program-builder-screen-container/i);
         },
       },
     },
@@ -133,7 +35,7 @@ const programBuilderTestMachine = createMachine({
     "User added session training": {
       meta: {
         test: async ({ screen }: TestingContext) => {
-          await screen.findByTestId(`program-builder-screen-container`);
+          await screen.findByTestId(/program-builder-screen-container/i);
         },
       },
       initial: "Idle",
@@ -146,7 +48,7 @@ const programBuilderTestMachine = createMachine({
 
               waitFor(() => {
                 const trainingSessionContainerCollection =
-                  getAllTrainingSessionContainer(context);
+                  getAllTrainingSessionContainer(context.screen);
 
                 expect(trainingSessionContainerCollection.length).toBe(
                   expectedTrainingSessionsCounter
@@ -171,7 +73,7 @@ const programBuilderTestMachine = createMachine({
               );
 
               const { lastTrainingSessionContainer } =
-                getLastTrainingSessionContainer(context);
+                getLastTrainingSessionContainer(context.screen);
 
               waitFor(() => {
                 const allRelatedExercisesContainer = within(
@@ -213,7 +115,7 @@ const programBuilderTestMachine = createMachine({
               );
 
               const { lastTrainingSessionContainer } =
-                getLastTrainingSessionContainer(context);
+                getLastTrainingSessionContainer(context.screen);
 
               waitFor(() => {
                 const allRelatedExercisesContainer = within(
@@ -266,7 +168,7 @@ const programBuilderTestMachine = createMachine({
           // Checking global expected counter
           waitFor(async () => {
             const trainingSessionContainerCollection =
-              getAllTrainingSessionContainer(context);
+              getAllTrainingSessionContainer(context.screen);
 
             expect(trainingSessionContainerCollection.length).toBe(
               expectedTrainingSessionsCounter
@@ -309,14 +211,18 @@ const programBuilderTestModel = createModel<TestingContext>(
       const { screen } = context;
       context.expectedTrainingSessionsCounter++;
 
-      const addTrainingSessionButton = await screen.findByText(
-        /.*add.*training.*session/i
+      await waitFor(async () => {
+        await screen.findByText(/default.*msw.*bodybuilding.*program/i);
+      });
+
+      const addTrainingSessionButton = await screen.findByTestId(
+        "add-training-session-button"
       );
 
       fireEvent.press(addTrainingSessionButton);
 
       const creationFormNameScreen = await screen.findByTestId(
-        "training-session-creation-form-name-step"
+        /training-session-creation-form-name-step/i
       );
 
       const textInput = await within(
@@ -346,15 +252,16 @@ const programBuilderTestModel = createModel<TestingContext>(
 
       context.expectedTrainingSessionsCounter--;
 
-      const { lastTrainingSessionId } =
-        getLastTrainingSessionContainer(context);
+      const { lastTrainingSessionId } = getLastTrainingSessionContainer(
+        context.screen
+      );
 
       const removeLastTrainingSessionButton = await screen.findByTestId(
         `remove-training-session-button-${lastTrainingSessionId}`
       );
 
       context.lastlyRemovedTrainningSessionId = lastTrainingSessionId;
-      getAllTrainingSessionContainer(context);
+      getAllTrainingSessionContainer(context.screen);
       fireEvent.press(removeLastTrainingSessionButton);
     },
   },
@@ -368,7 +275,7 @@ const programBuilderTestModel = createModel<TestingContext>(
           : expectedTrainingSessionExerciseCounter + 1;
 
       const { lastTrainingSessionContainer, lastTrainingSessionId } =
-        getLastTrainingSessionContainer(context);
+        getLastTrainingSessionContainer(context.screen);
 
       const addExerciseButton = await within(
         lastTrainingSessionContainer
@@ -388,11 +295,12 @@ const programBuilderTestModel = createModel<TestingContext>(
       // @ts-ignore
       context.expectedTrainingSessionExerciseCounter--;
 
-      const { lastTrainingSessionId } =
-        getLastTrainingSessionContainer(context);
+      const { lastTrainingSessionId } = getLastTrainingSessionContainer(
+        context.screen
+      );
       const { lastExerciseContainer, lastExerciseId } =
         getTrainingSessionLastExercise({
-          context,
+          screen: context.screen,
           trainingSessionId: lastTrainingSessionId,
         });
 
@@ -416,11 +324,11 @@ describe("Xstate tests generations", () => {
         it(path.description, async () => {
           const screen = renderApp();
 
-          await screen.findByTestId("home-screen-container");
+          await screen.findByTestId("home-screen-container-visible");
           const goToProgramBuilderButton =
             screen.getByText(/.*Program.*Builder.*/i);
           fireEvent.press(goToProgramBuilderButton);
-          await screen.findByTestId("program-builder-screen-container");
+          await screen.findByTestId("program-builder-screen-container-visible");
           // do any setup, then...
 
           await path.test({

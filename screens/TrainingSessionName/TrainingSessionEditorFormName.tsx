@@ -21,9 +21,16 @@ const TrainingSessionEditorFormName: React.FC<
     });
   };
 
+  const handleGoBack = () => {
+    trainingSessionActorRef.send({
+      type: "USER_CANCELED_TRAINING_SESSION_NAME_EDITION",
+    });
+  };
+
   return (
     <TrainingSessionFormNameContent
-      testId="training-session-creation-form-name-step"
+      testId={`training-session-editor-form-name-${trainingSessionActorRef.id}`}
+      handleOnGoBack={handleGoBack}
       handleOnSubmit={({ sessionTrainingName }) => {
         handleGoNext(sessionTrainingName);
       }}

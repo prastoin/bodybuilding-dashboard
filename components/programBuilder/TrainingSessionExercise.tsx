@@ -21,8 +21,6 @@ export const TrainingSessionExerciseItem: React.FC<
   const { exerciseName, uuid } = exerciseMachineState.context;
 
   function handleRemoveExerciseButtonOnPress() {
-    console.log("Deletion requested", { uuid });
-
     sendToExerciseMachine({
       type: "REMOVE_EXERCISE",
     });
