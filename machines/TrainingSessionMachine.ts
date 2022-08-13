@@ -127,7 +127,8 @@ export const createTrainingSessionMachine = ({
     {
       guards: {
         "Initial Exercises has to been spawned": (context) =>
-          context.initialExercisesToSpawn !== undefined,
+          context.initialExercisesToSpawn !== undefined &&
+          context.initialExercisesToSpawn.length > 0,
       },
 
       actions: {

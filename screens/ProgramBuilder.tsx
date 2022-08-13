@@ -45,6 +45,7 @@ export const ProgramBuilderScreen: React.FC<
 
         <Button
           title="Add static training session"
+          testID="add-training-session-button"
           onPress={handleAddTrainingSessionOnpress}
         />
       </View>

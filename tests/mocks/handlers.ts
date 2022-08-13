@@ -18,12 +18,14 @@ export const handlers = [
     Record<string, never>,
     RetrieveUserBodyBuildingProgramResponseBody
   >(`${SERVER_ENDPOINT}/retrieve-program`, (req, res, ctx) => {
-    const BodybuildingProgram: BodybuildingProgram = {
-      programName: "Default msw bodybuilding program",
-      trainingSessions: [],
-      uuid: uuidv4(),
-    };
-    return res(ctx.status(200), ctx.json(BodybuildingProgram));
+    return res(
+      ctx.status(200),
+      ctx.json({
+        programName: "Default msw bodybuilding program",
+        trainingSessions: [],
+        uuid: uuidv4(),
+      })
+    );
   }),
   // Handles a GET /user request
 ];

@@ -17,7 +17,7 @@ test("User goes to program builder screen from home", async () => {
 
   const goToProgramBuilderButton = screen.getByText(/.*Program.*Builder.*/i);
   fireEvent.press(goToProgramBuilderButton);
-  screen.findByTestId(`program-builder-screen-container`);
+  screen.findByTestId(/program-builder-screen-container/i);
 });
 
 const programBuilderTestMachine = createMachine({
@@ -27,7 +27,7 @@ const programBuilderTestMachine = createMachine({
     "Program builder view": {
       meta: {
         test: async ({ screen }: TestingContext) => {
-          await screen.findByTestId(`program-builder-screen-container`);
+          await screen.findByTestId(/program-builder-screen-container/i);
         },
       },
     },
@@ -35,7 +35,7 @@ const programBuilderTestMachine = createMachine({
     "User added session training": {
       meta: {
         test: async ({ screen }: TestingContext) => {
-          await screen.findByTestId(`program-builder-screen-container`);
+          await screen.findByTestId(/program-builder-screen-container/i);
         },
       },
       initial: "Idle",
@@ -211,14 +211,18 @@ const programBuilderTestModel = createModel<TestingContext>(
       const { screen } = context;
       context.expectedTrainingSessionsCounter++;
 
-      const addTrainingSessionButton = await screen.findByText(
-        /.*add.*training.*session/i
+      await waitFor(async () => {
+        await screen.findByText(/default.*msw.*bodybuilding.*program/i);
+      });
+
+      const addTrainingSessionButton = await screen.findByTestId(
+        "add-training-session-button"
       );
 
       fireEvent.press(addTrainingSessionButton);
 
       const creationFormNameScreen = await screen.findByTestId(
-        "training-session-creation-form-name-step"
+        /training-session-creation-form-name-step/i
       );
 
       const textInput = await within(
@@ -320,11 +324,11 @@ describe("Xstate tests generations", () => {
         it(path.description, async () => {
           const screen = renderApp();
 
-          await screen.findByTestId("home-screen-container");
+          await screen.findByTestId("home-screen-container-visible");
           const goToProgramBuilderButton =
             screen.getByText(/.*Program.*Builder.*/i);
           fireEvent.press(goToProgramBuilderButton);
-          await screen.findByTestId("program-builder-screen-container");
+          await screen.findByTestId("program-builder-screen-container-visible");
           // do any setup, then...
 
           await path.test({
