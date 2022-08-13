@@ -76,8 +76,6 @@ export const createTrainingSessionCreationFormMachine = () =>
     {
       actions: {
         assignTrainingSessionNameToContext: assign((context, { name }) => {
-          console.log("ASSIGN IN FORM MACHINE");
-
           return {
             ...context,
             trainingSessionName: name,

@@ -79,7 +79,6 @@ test("User can re-enter training session editor name", async () => {
       Record<string, never>,
       RetrieveUserBodyBuildingProgramResponseBody
     >(`${SERVER_ENDPOINT}/retrieve-program`, (_req, res, ctx) => {
-      console.log("MOCK IS HIT");
       return res(ctx.status(200), ctx.json(bodyBuildingProgram));
     })
   );

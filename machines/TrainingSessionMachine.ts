@@ -210,9 +210,6 @@ export const createTrainingSessionMachine = ({
 
         "remove training session exercise from context": assign(
           (context, { exerciseId }) => {
-            console.log({
-              exerciseId,
-            });
             const updatedExerciseCollection =
               context.trainingSessionExerciseActorRefCollection.filter(
                 (actor) => {
@@ -228,10 +225,6 @@ export const createTrainingSessionMachine = ({
                 }
               );
 
-            console.log(context.trainingSessionExerciseActorRefCollection);
-            console.log({
-              updatedExerciseCollection,
-            });
             return {
               ...context,
               trainingSessionExerciseActorRefCollection:

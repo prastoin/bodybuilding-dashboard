@@ -35,12 +35,12 @@
   border-color: rgb(0 0 0 / var(--tw-border-opacity))
 }
 
-.p-1 {
-  padding: 0.25rem
-}
-
 .p-4 {
   padding: 1rem
+}
+
+.p-1 {
+  padding: 0.25rem
 }
 
 .text-blue-600 {
