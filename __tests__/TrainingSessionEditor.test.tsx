@@ -9,6 +9,7 @@ import {
   renderApp,
   SERVER_ENDPOINT,
   waitFor,
+  within,
 } from "../tests/test.utils";
 import { RetrieveUserBodyBuildingProgramResponseBody } from "../types";
 
@@ -34,6 +35,7 @@ test("On app start user program is retrieved", async () => {
 
   await screen.findByTestId("program-builder-screen-container-visible");
 
+  // Checking is spawned correctly
   const allTrainingSessionContainer = await waitFor(() => {
     const allTrainingSessionContainer = getAllTrainingSessionContainer(screen);
     expect(allTrainingSessionContainer.length).toBe(
@@ -43,14 +45,28 @@ test("On app start user program is retrieved", async () => {
     return allTrainingSessionContainer;
   });
 
+  //Checking training session
   await Promise.all(
-    bodyBuildingProgram.trainingSessions.map(async (trainingSession) => {
-      const oneIsMatching = allTrainingSessionContainer.find(
-        (container) =>
-          container.props.testID ===
+    allTrainingSessionContainer.map(async (trainingSessionContainer) => {
+      const matchingTrainingSession = bodyBuildingProgram.trainingSessions.find(
+        (trainingSession) =>
+          trainingSessionContainer.props.testID ===
           `training-session-container-${trainingSession.uuid}`
       );
-      expect(oneIsMatching).toBeTruthy();
+      expect(matchingTrainingSession).toBeTruthy();
+      invariant(
+        matchingTrainingSession !== undefined,
+        "macthingTrainingSession is undefined"
+      );
+
+      //Checking training session exercises
+      await Promise.all(
+        matchingTrainingSession.exercises.map(async (exercise) => {
+          await within(trainingSessionContainer).findByTestId(
+            `training-session-exercise-container-${exercise.uuid}`
+          );
+        })
+      );
     })
   );
 });
