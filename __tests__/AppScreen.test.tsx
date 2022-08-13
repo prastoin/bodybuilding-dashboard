@@ -4,7 +4,7 @@ import {
   renderApp,
 } from "../tests/test.utils";
 
-test("Focused page has visible sufix in its testID", async () => {
+test("Focused page has visible suffix in its testID", async () => {
   const screen = renderApp();
 
   await screen.findByTestId("home-screen-container-visible");
