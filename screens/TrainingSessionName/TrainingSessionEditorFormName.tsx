@@ -29,7 +29,7 @@ const TrainingSessionEditorFormName: React.FC<
 
   return (
     <TrainingSessionFormNameContent
-      testId="training-session-creation-form-name-step"
+      testId={`training-session-editor-form-name-${trainingSessionActorRef.id}`}
       handleOnGoBack={handleGoBack}
       handleOnSubmit={({ sessionTrainingName }) => {
         handleGoNext(sessionTrainingName);
