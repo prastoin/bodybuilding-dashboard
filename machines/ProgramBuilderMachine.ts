@@ -144,6 +144,7 @@ export const createProgramBuilderMachine = () =>
                   createTrainingSessionMachine({
                     trainingSessionName: trainingSession.trainingSessionName,
                     uuid: trainingSession.uuid,
+                    exerciseCollection: trainingSession.exercises,
                   }),
                   { sync: true, name: trainingSession.uuid }
                 )

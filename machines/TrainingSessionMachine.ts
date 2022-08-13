@@ -7,6 +7,8 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { sendParent } from "xstate/lib/actions";
 import { goBackFromRef, navigateFromRef } from "../navigation/RootNavigation";
+import { TrainingSessionExercise } from "../types";
+import invariant from "invariant";
 
 type TrainingSessionMachineEvents =
   | {
@@ -32,6 +34,7 @@ type TrainingSessionMachineEvents =
     };
 
 type TrainingSessionMachineContext = {
+  initialExercisesToSpawn?: TrainingSessionExercise[];
   trainingSessionName: string;
   uuid: string;
   trainingSessionExerciseActorRefCollection: TrainingSessionExerciseActorRef[];
@@ -50,9 +53,11 @@ export type TrainingSessionActorRef = ActorRef<
 export const createTrainingSessionMachine = ({
   trainingSessionName,
   uuid,
+  exerciseCollection,
 }: {
   trainingSessionName: string;
   uuid: string;
+  exerciseCollection?: TrainingSessionExercise[];
 }) => {
   return createMachine(
     {
@@ -63,12 +68,26 @@ export const createTrainingSessionMachine = ({
         events: {} as TrainingSessionMachineEvents,
       },
       context: {
+        initialExercisesToSpawn: exerciseCollection,
         trainingSessionExerciseActorRefCollection: [],
         trainingSessionName,
         uuid,
       },
-      initial: "Idle",
+      initial: "Spawning initial exercises",
       states: {
+        "Spawning initial exercises": {
+          always: [
+            {
+              cond: "Initial Exercises has to been spawned",
+              actions: "Spawn and assign initial exercises",
+              target: "Idle",
+            },
+            {
+              target: "Idle",
+            },
+          ],
+        },
+
         Idle: {
           on: {
             ADD_EXERCISE: {
@@ -106,7 +125,41 @@ export const createTrainingSessionMachine = ({
       },
     },
     {
+      guards: {
+        "Initial Exercises has to been spawned": (context) =>
+          context.initialExercisesToSpawn !== undefined,
+      },
+
       actions: {
+        "Spawn and assign initial exercises": assign((context, event) => {
+          const { initialExercisesToSpawn } = context;
+          invariant(
+            initialExercisesToSpawn !== undefined,
+            "should never occurs initialExercisesToSpawn is undefined"
+          );
+
+          const exerciseActorRefCollection = initialExercisesToSpawn.map(
+            ({ exerciseName, uuid }) => {
+              const newTrainingSessionExerciseActorRef: TrainingSessionExerciseActorRef =
+                spawn(
+                  createTrainingSessionExerciseMachine({
+                    exerciseName,
+                    uuid,
+                  }),
+                  { sync: true, name: uuid }
+                );
+              return newTrainingSessionExerciseActorRef;
+            }
+          );
+
+          return {
+            ...context,
+            initialExercisesToSpawn: undefined,
+            trainingSessionExerciseActorRefCollection:
+              exerciseActorRefCollection,
+          };
+        }),
+
         "User added an exercise": assign((context, _event) => {
           const uuid = uuidv4();
           const newTrainingSessionExerciseActorRef: TrainingSessionExerciseActorRef =
