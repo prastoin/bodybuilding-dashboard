@@ -8,6 +8,7 @@ import { TrainingSessionExerciseItem } from "../components/programBuilder/Traini
 import { useAppContext } from "../contexts/AppContext";
 import { ProgramBuilderIndexScreenProps } from "../navigation/RootStack";
 import { useNavigation } from "@react-navigation/native";
+import AppScreen from "../components/AppScreen";
 
 interface TrainingSessionProps {
   trainingSessionActorRef: TrainingSessionActorRef;
@@ -98,10 +99,7 @@ export const ProgramBuilderScreen: React.FC<
   }
 
   return (
-    <View
-      style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-      testID={"program-builder-screen-container"}
-    >
+    <AppScreen testID={"program-builder-screen-container"}>
       <Text>Program Builder Screen</Text>
       <Text>{JSON.stringify(programBuilderContext)}</Text>
 
@@ -123,6 +121,6 @@ export const ProgramBuilderScreen: React.FC<
           onPress={handleAddTrainingSessionOnpress}
         />
       </View>
-    </View>
+    </AppScreen>
   );
 };
