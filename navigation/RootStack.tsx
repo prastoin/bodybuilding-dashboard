@@ -73,7 +73,13 @@ const HomeStackNavigator: React.FC = () => {
         headerShown: true,
       }}
     >
-      <HomeStack.Screen name="Index" component={HomeScreen} />
+      <HomeStack.Screen
+        name="Index"
+        component={HomeScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
     </HomeStack.Navigator>
   );
 };
@@ -140,6 +146,9 @@ const ProgramBuilderStackNavigator: React.FC = () => {
       <ProgramBuilderStack.Screen
         name="Index"
         component={ProgramBuilderScreen}
+        options={{
+          headerShown: false,
+        }}
       />
       <ProgramBuilderStack.Screen
         name="TrainingSesssionCreationFormName"

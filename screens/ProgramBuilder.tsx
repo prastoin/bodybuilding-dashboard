@@ -27,14 +27,8 @@ export const ProgramBuilderScreen: React.FC<
 
   return (
     <AppScreen testID={"program-builder-screen-container"}>
-      <Text>Program Builder Screen</Text>
-      <Text>{JSON.stringify(programBuilderContext)}</Text>
-
-      <View
-        style={tailwind(
-          "p-4 w-11/12 flex-1 justify-center border-2 border-black"
-        )}
-      >
+      <View>
+        <Text>{programBuilderContext.programName}</Text>
         <FlatList<TrainingSessionActorRef>
           data={programBuilderContext.trainingSessionActorRefCollection}
           renderItem={({ index, item }) => (

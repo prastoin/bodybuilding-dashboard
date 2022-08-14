@@ -4,6 +4,12 @@
 			"position": "static"
 		}
 	},
+	"mx-auto": {
+		"style": {
+			"marginLeft": "auto",
+			"marginRight": "auto"
+		}
+	},
 	"mb-1": {
 		"style": {
 			"marginBottom": 4
@@ -29,6 +35,11 @@
 	"flex-row": {
 		"style": {
 			"flexDirection": "row"
+		}
+	},
+	"items-center": {
+		"style": {
+			"alignItems": "center"
 		}
 	},
 	"justify-center": {
