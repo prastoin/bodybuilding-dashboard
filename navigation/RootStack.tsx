@@ -5,6 +5,7 @@ import {
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import * as React from "react";
+import ExerciseCreationFormName from "../screens/ExerciseName/ExerciseCreationFormName";
 import ExerciseEditorFormName from "../screens/ExerciseName/ExerciseEditorFormName";
 import { HomeScreen } from "../screens/Home";
 import { ProgramBuilderScreen } from "../screens/ProgramBuilder";
@@ -91,6 +92,9 @@ export type ProgramBuilderStackParamList = {
     exerciseId: string;
     trainingSessionId: string;
   };
+  ExerciseCreationFormName: {
+    trainingSessionId: string;
+  };
 };
 
 const ProgramBuilderStack =
@@ -119,6 +123,12 @@ export type ProgramBuilderExerciseEditorFormNameScreenProps =
     "ExerciseEditorFormName"
   >;
 
+export type ProgramBuilderExerciseCreationFormNameScreenProps =
+  NativeStackScreenProps<
+    ProgramBuilderStackParamList,
+    "ExerciseCreationFormName"
+  >;
+
 const ProgramBuilderStackNavigator: React.FC = () => {
   return (
     <ProgramBuilderStack.Navigator
@@ -142,6 +152,11 @@ const ProgramBuilderStackNavigator: React.FC = () => {
       <ProgramBuilderStack.Screen
         name="ExerciseEditorFormName"
         component={ExerciseEditorFormName}
+      />
+
+      <ProgramBuilderStack.Screen
+        name="ExerciseCreationFormName"
+        component={ExerciseCreationFormName}
       />
     </ProgramBuilderStack.Navigator>
   );
