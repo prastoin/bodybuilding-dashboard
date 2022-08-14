@@ -14,7 +14,7 @@ export interface Typegen0 {
   };
   eventsCausingActions: {
     "Notify parent that user exited the form": "USER_WENT_TO_PREVIOUS_SCREEN";
-    assignTrainingSessionNameToContext: "SET_TRAINING_SESSION_NAME_AND_GO_NEXT";
+    assignTrainingSessionNameToContext: "SET_EXERCISE_NAME_AND_GO_NEXT";
   };
   eventsCausingServices: {};
   eventsCausingGuards: {};

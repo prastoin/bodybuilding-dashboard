@@ -4,6 +4,7 @@ import React from "react";
 import { View } from "react-native";
 import { HeaderBackButton } from "@react-navigation/elements";
 import { IS_TEST } from "../types";
+import { useTailwind } from "tailwind-rn/dist";
 
 export interface AppScreenProps {
   testID: string;
@@ -34,10 +35,11 @@ const AppScreen: React.FC<AppScreenProps> = ({ testID, children }) => {
     const isFocused = useIsFocused();
     testID = isFocused ? testID + "-visible" : testID;
   }
+  const tailwind = useTailwind();
 
   return (
     <View
-      style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+      style={tailwind("p-4 w-11/12 flex-1 justify-center items-center mx-auto")}
       testID={testID}
     >
       {children}

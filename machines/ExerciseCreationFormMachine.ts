@@ -9,49 +9,48 @@ import {
 } from "xstate";
 import { sendParent } from "xstate/lib/actions";
 
-export type TrainingSessionCreationFormMachineEvents =
+export type ExerciseCreationFormMachineEvents =
   | {
-      type: "SET_TRAINING_SESSION_NAME_AND_GO_NEXT";
+      type: "SET_EXERCISE_NAME_AND_GO_NEXT";
       name: string;
     }
   | { type: "USER_WENT_TO_PREVIOUS_SCREEN" };
 
-export type TrainingSessionCreationFormMachineContext = {
-  trainingSessionName: string;
+export type ExerciseCreationFormMachineContext = {
+  exerciseName: string;
   uuid: string;
 };
 
 export type AppMachineInterpreter = InterpreterFrom<
-  ReturnType<typeof createTrainingSessionCreationFormMachine>
+  ReturnType<typeof createExerciseCreationFormMachine>
 >;
 
-export type TrainingSessionCreationFormActorRef = ActorRef<
-  TrainingSessionCreationFormMachineEvents,
-  TrainingSessionCreationFormMachineContext
+export type ExerciseCreationFormActorRef = ActorRef<
+  ExerciseCreationFormMachineEvents,
+  ExerciseCreationFormMachineContext
 >;
 
-export type TrainingSessionFormDoneInvokeEvent =
-  DoneInvokeEvent<TrainingSessionCreationFormMachineContext>;
+export type ExerciseFormCreationDoneInvokeEvent =
+  DoneInvokeEvent<ExerciseCreationFormMachineContext>;
 
-export const createTrainingSessionCreationFormMachine = () =>
+export const createExerciseCreationFormMachine = () =>
   /** @xstate-layout N4IgpgJg5mDOIC5QAUBOB7KqCGBbAQgK4CWANhGKgLLYDGAFsQHZgB0AkhKWAMQCCECAAIAKjmbMoQgMpxYxdE0SgADunkAXBUqQgAHogAsh1gDYArAA4AnAHYAjJYBMAZgAMpp7YA0IAJ6I9k7mrPa2hm5elpa2LjYuAL5JvkzoFPC6aJg4BCTklDQMzGyc3Mogapra5QYI1k6sroZOhqaWxkERTr4BCBGsbubW9m5u4aamYfbmySBZWHhEZBTUdIwsrCwA7kKwGtgaYEL25ZXEWoo1gW4m1obmLU71praTLj2ILi4NLhG2TjFHJZftYZglfPMckt8qsiixTupztVdLUnG4zFY7I5XB4vB8EABab6sYZOFqg1rmQykpJJIA */
   createMachine(
     {
       schema: {
-        context: {} as TrainingSessionCreationFormMachineContext,
-        events: {} as TrainingSessionCreationFormMachineEvents,
+        context: {} as ExerciseCreationFormMachineContext,
+        events: {} as ExerciseCreationFormMachineEvents,
       },
-      tsTypes:
-        {} as import("./TrainingSessionCreationFormMachine.typegen").Typegen0,
+      tsTypes: {} as import("./ExerciseCreationFormMachine.typegen").Typegen0,
       context: {
-        trainingSessionName: "",
+        exerciseName: "",
         uuid: uuidv4(),
       },
       initial: "Training session name step",
       states: {
         "Training session name step": {
           on: {
-            SET_TRAINING_SESSION_NAME_AND_GO_NEXT: {
+            SET_EXERCISE_NAME_AND_GO_NEXT: {
               target: "Form is completed",
               actions: "assignTrainingSessionNameToContext",
             },
@@ -64,24 +63,24 @@ export const createTrainingSessionCreationFormMachine = () =>
         "Form is completed": {
           type: "final",
 
-          data: ({ trainingSessionName, uuid }) => ({
-            trainingSessionName,
+          data: ({ exerciseName, uuid }) => ({
+            exerciseName,
             uuid,
           }),
         },
       },
-      id: "TrainingSessionCreationFormMachine",
+      id: "ExerciseCreationForm",
     },
     {
       actions: {
         assignTrainingSessionNameToContext: assign((context, { name }) => {
           return {
             ...context,
-            trainingSessionName: name,
+            exerciseName: name,
           };
         }),
         "Notify parent that user exited the form": sendParent({
-          type: "_CANCEL_TRAINING_SESSION_CREATION_FORM",
+          type: "_USER_CANCELLED_EXERCISE_CREATION_FORM",
         }),
       },
     }

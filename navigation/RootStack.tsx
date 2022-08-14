@@ -5,6 +5,7 @@ import {
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import * as React from "react";
+import ExerciseCreationFormName from "../screens/ExerciseName/ExerciseCreationFormName";
 import ExerciseEditorFormName from "../screens/ExerciseName/ExerciseEditorFormName";
 import { HomeScreen } from "../screens/Home";
 import { ProgramBuilderScreen } from "../screens/ProgramBuilder";
@@ -72,7 +73,13 @@ const HomeStackNavigator: React.FC = () => {
         headerShown: true,
       }}
     >
-      <HomeStack.Screen name="Index" component={HomeScreen} />
+      <HomeStack.Screen
+        name="Index"
+        component={HomeScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
     </HomeStack.Navigator>
   );
 };
@@ -89,6 +96,9 @@ export type ProgramBuilderStackParamList = {
   };
   ExerciseEditorFormName: {
     exerciseId: string;
+    trainingSessionId: string;
+  };
+  ExerciseCreationFormName: {
     trainingSessionId: string;
   };
 };
@@ -119,6 +129,12 @@ export type ProgramBuilderExerciseEditorFormNameScreenProps =
     "ExerciseEditorFormName"
   >;
 
+export type ProgramBuilderExerciseCreationFormNameScreenProps =
+  NativeStackScreenProps<
+    ProgramBuilderStackParamList,
+    "ExerciseCreationFormName"
+  >;
+
 const ProgramBuilderStackNavigator: React.FC = () => {
   return (
     <ProgramBuilderStack.Navigator
@@ -130,6 +146,9 @@ const ProgramBuilderStackNavigator: React.FC = () => {
       <ProgramBuilderStack.Screen
         name="Index"
         component={ProgramBuilderScreen}
+        options={{
+          headerShown: false,
+        }}
       />
       <ProgramBuilderStack.Screen
         name="TrainingSesssionCreationFormName"
@@ -142,6 +161,11 @@ const ProgramBuilderStackNavigator: React.FC = () => {
       <ProgramBuilderStack.Screen
         name="ExerciseEditorFormName"
         component={ExerciseEditorFormName}
+      />
+
+      <ProgramBuilderStack.Screen
+        name="ExerciseCreationFormName"
+        component={ExerciseCreationFormName}
       />
     </ProgramBuilderStack.Navigator>
   );

@@ -11,6 +11,7 @@ import {
 } from "../tests/test.utils";
 import { createModel } from "@xstate/test";
 import invariant from "invariant";
+import { faker } from "@faker-js/faker";
 
 test("User goes to program builder screen from home", async () => {
   const screen = renderApp();
@@ -268,7 +269,7 @@ const programBuilderTestModel = createModel<TestingContext>(
 
   "User added exercise to the last training session": {
     exec: async (context) => {
-      const { expectedTrainingSessionExerciseCounter } = context;
+      const { expectedTrainingSessionExerciseCounter, screen } = context;
       context.expectedTrainingSessionExerciseCounter =
         expectedTrainingSessionExerciseCounter === undefined
           ? 1
@@ -282,6 +283,26 @@ const programBuilderTestModel = createModel<TestingContext>(
       ).findByTestId(`add-exercise-button-${lastTrainingSessionId}`);
 
       fireEvent.press(addExerciseButton);
+
+      const exerciseCreationContainter = await screen.findByTestId(
+        /exercise-creation-form-name-.*-visible/i
+      );
+
+      const name = faker.name.firstName();
+      const textInput = await within(
+        exerciseCreationContainter
+      ).findByPlaceholderText(/name/i);
+
+      fireEvent(textInput, "focus");
+      fireEvent.changeText(textInput, name);
+
+      const submitButton = await within(exerciseCreationContainter).findByText(
+        /Submit/i
+      );
+
+      fireEvent.press(submitButton);
+
+      await screen.findByTestId("program-builder-screen-container-visible");
     },
   },
 

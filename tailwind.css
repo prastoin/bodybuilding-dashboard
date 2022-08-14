@@ -2,6 +2,11 @@
   position: static
 }
 
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto
+}
+
 .mb-1 {
   margin-bottom: 0.25rem
 }
@@ -20,6 +25,10 @@
 
 .flex-row {
   flex-direction: row
+}
+
+.items-center {
+  align-items: center
 }
 
 .justify-center {
