@@ -13,12 +13,15 @@ export interface Typegen0 {
     delays: never;
   };
   eventsCausingActions: {
+    "Assign new exercise name to context": "USER_FINISHED_NAME_EDITION_OPERATION";
     "Forward exercise deletion to program builder": "REMOVE_EXERCISE";
+    "Navigate go back": "USER_FINISHED_NAME_EDITION_OPERATION";
+    "Navigate to name editor screen": "USER_ENTERED_NAME_EDITION_OPERATION";
     "User added a tracker section": "ADD_TRACKER_SECTION";
   };
   eventsCausingServices: {};
   eventsCausingGuards: {};
   eventsCausingDelays: {};
-  matchesStates: "Idle";
+  matchesStates: "Idle" | "User is editing exercise name";
   tags: never;
 }

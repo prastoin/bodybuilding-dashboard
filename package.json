@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@faker-js/faker": "^7.4.0",
     "@testing-library/jest-native": "^4.0.5",
     "@testing-library/react-native": "^10.1.1",
     "@types/invariant": "^2.2.35",
