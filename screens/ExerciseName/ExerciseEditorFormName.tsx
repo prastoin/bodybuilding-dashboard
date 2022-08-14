@@ -8,31 +8,31 @@ const ExerciseEditorFormName: React.FC<
   ProgramBuilderExerciseEditorFormNameScreenProps
 > = ({ route }) => {
   const { exerciseId, trainingSessionId } = route.params;
-  const trainingSessionActorRef = useExerciseActorRef({
+  const exerciseActorRef = useExerciseActorRef({
     exerciseId,
     trainingSessionId,
   });
 
-  if (trainingSessionActorRef === undefined) {
-    return <View testID="training-session-editor-form-name-default" />;
+  if (exerciseActorRef === undefined) {
+    return <View testID="exercise-editor-form-name-default" />;
   }
 
   const handleGoNext = (newExerciseName: string) => {
-    trainingSessionActorRef.send({
+    exerciseActorRef.send({
       type: "USER_FINISHED_NAME_EDITION_OPERATION",
       newExerciseName,
     });
   };
 
   const handleGoBack = () => {
-    trainingSessionActorRef.send({
+    exerciseActorRef.send({
       type: "USER_CANCELLED_NAME_EDITION_OPERATION",
     });
   };
 
   return (
     <ExerciseNameFormContent
-      testId={`exercise-editor-form-name-${trainingSessionActorRef.id}`}
+      testId={`exercise-editor-form-name-${exerciseActorRef.id}`}
       handleOnGoBack={handleGoBack}
       handleOnSubmit={({ exerciseName }) => {
         handleGoNext(exerciseName);

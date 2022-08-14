@@ -32,13 +32,12 @@ export const TrainingSessionExerciseItem: React.FC<
       testID={`training-session-exercise-container-${uuid}`}
     >
       <View style={tailwind("flex-row ")}>
-        <Text>
-          {index} _ {exerciseName}
-        </Text>
+        <Text>{exerciseName}</Text>
         <AntDesign
           name="edit"
           size={24}
           color="black"
+          testID="edit-exercise-name"
           onPress={() =>
             sendToExerciseMachine({
               type: "USER_ENTERED_NAME_EDITION_OPERATION",
