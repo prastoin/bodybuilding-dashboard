@@ -1,6 +1,6 @@
 import { useActor } from "@xstate/react";
 import * as React from "react";
-import { Modal, Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import { TrainingSessionExerciseActorRef } from "../../machines/TrainingSessionExerciseMachine";
 import { AntDesign } from "@expo/vector-icons";
@@ -31,9 +31,21 @@ export const TrainingSessionExerciseItem: React.FC<
       style={tailwind("flex-row")}
       testID={`training-session-exercise-container-${uuid}`}
     >
-      <Text>
-        {index} _ {exerciseName}
-      </Text>
+      <View style={tailwind("flex-row ")}>
+        <Text>
+          {index} _ {exerciseName}
+        </Text>
+        <AntDesign
+          name="edit"
+          size={24}
+          color="black"
+          onPress={() =>
+            sendToExerciseMachine({
+              type: "USER_ENTERED_NAME_EDITION_OPERATION",
+            })
+          }
+        />
+      </View>
       <AntDesign
         name="close"
         size={24}

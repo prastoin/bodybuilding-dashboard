@@ -52,7 +52,7 @@ export type TrainingSessionActorRef = ActorRef<
 
 export const createTrainingSessionMachine = ({
   trainingSessionName,
-  uuid,
+  uuid: trainingSessionId,
   exerciseCollection,
 }: {
   trainingSessionName: string;
@@ -62,7 +62,7 @@ export const createTrainingSessionMachine = ({
   return createMachine(
     {
       tsTypes: {} as import("./TrainingSessionMachine.typegen").Typegen0,
-      id: uuid,
+      id: trainingSessionId,
       schema: {
         context: {} as TrainingSessionMachineContext,
         events: {} as TrainingSessionMachineEvents,
@@ -71,7 +71,7 @@ export const createTrainingSessionMachine = ({
         initialExercisesToSpawn: exerciseCollection,
         trainingSessionExerciseActorRefCollection: [],
         trainingSessionName,
-        uuid,
+        uuid: trainingSessionId,
       },
       initial: "Spawning initial exercises",
       states: {
@@ -117,6 +117,8 @@ export const createTrainingSessionMachine = ({
               target: "Idle",
             },
 
+            // User can cancel this operation only by going back by itself
+            // Maybe we should sniff and block the operation to perform it there ?
             USER_CANCELED_TRAINING_SESSION_NAME_EDITION: {
               target: "Idle",
             },
@@ -146,6 +148,7 @@ export const createTrainingSessionMachine = ({
                   createTrainingSessionExerciseMachine({
                     exerciseName,
                     uuid,
+                    parentTrainingSessionId: trainingSessionId,
                   }),
                   { sync: true, name: uuid }
                 );
@@ -169,7 +172,8 @@ export const createTrainingSessionMachine = ({
                 exerciseName: `Exercise_${
                   context.trainingSessionExerciseActorRefCollection.length + 1
                 }`,
-                uuid,
+                uuid: uuid,
+                parentTrainingSessionId: trainingSessionId,
               }),
               { sync: true, name: uuid }
             );
@@ -206,7 +210,7 @@ export const createTrainingSessionMachine = ({
         // Could make typings works here
         "Forward training session deletion to program builder": sendParent({
           type: "_REMOVE_TRAINING_SESSION",
-          trainingSessionId: uuid,
+          trainingSessionId: trainingSessionId,
         }),
 
         "remove training session exercise from context": assign(
