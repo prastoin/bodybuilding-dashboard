@@ -9,6 +9,10 @@ import { sendParent } from "xstate/lib/actions";
 import { goBackFromRef, navigateFromRef } from "../navigation/RootNavigation";
 import { TrainingSessionExercise } from "../types";
 import invariant from "invariant";
+import {
+  createExerciseCreationFormMachine,
+  ExerciseFormCreationDoneInvokeEvent,
+} from "./ExerciseCreationFormMachine";
 
 type TrainingSessionMachineEvents =
   | {
@@ -31,6 +35,12 @@ type TrainingSessionMachineEvents =
     }
   | {
       type: "USER_CANCELED_TRAINING_SESSION_NAME_EDITION";
+    }
+  | {
+      type: "USER_ENTERED_EXERCISE_CREATION_FORM";
+    }
+  | {
+      type: "_USER_CANCELLED_EXERCISE_CREATION_FORM";
     };
 
 type TrainingSessionMachineContext = {
@@ -104,6 +114,36 @@ export const createTrainingSessionMachine = ({
 
             USER_ENTERED_TRAINING_SESSION_NAME_EDITOR: {
               target: "User is editing training session name",
+            },
+
+            USER_ENTERED_EXERCISE_CREATION_FORM: {
+              target: "User is creating an exercise",
+            },
+          },
+        },
+
+        "User is creating an exercise": {
+          entry: "Navigate to exercise creation form name step",
+
+          invoke: {
+            id: "ExerciseCreationForm",
+
+            src: () => {
+              return createExerciseCreationFormMachine();
+            },
+
+            onDone: {
+              target: "Idle",
+              actions: [
+                "Assign created exercise to context",
+                "Reset program builder stack",
+              ],
+            },
+          },
+
+          on: {
+            _USER_CANCELLED_EXERCISE_CREATION_FORM: {
+              target: "Idle",
             },
           },
         },
@@ -187,6 +227,21 @@ export const createTrainingSessionMachine = ({
           };
         }),
 
+        "Reset program builder stack": () => {
+          navigateFromRef("ProgramBuilder", {
+            screen: "Index",
+          });
+        },
+
+        "Navigate to exercise creation form name step": () => {
+          navigateFromRef("ProgramBuilder", {
+            screen: "ExerciseCreationFormName",
+            params: {
+              trainingSessionId,
+            },
+          });
+        },
+
         "Navigate to training session name editor": (context) => {
           navigateFromRef("ProgramBuilder", {
             screen: "TrainingSessionEditorFormName",
@@ -199,6 +254,29 @@ export const createTrainingSessionMachine = ({
         "Navigate go back": () => {
           goBackFromRef();
         },
+
+        "Assign created exercise to context": assign((context, event) => {
+          const {
+            data: { exerciseName, uuid: newTrainingSessionId },
+          } = event as ExerciseFormCreationDoneInvokeEvent;
+
+          const newExerciseActor: TrainingSessionExerciseActorRef = spawn(
+            createTrainingSessionExerciseMachine({
+              exerciseName,
+              parentTrainingSessionId: trainingSessionId,
+              uuid: newTrainingSessionId,
+            }),
+            { sync: true, name: newTrainingSessionId }
+          );
+
+          return {
+            ...context,
+            trainingSessionExerciseActorRefCollection: [
+              ...context.trainingSessionExerciseActorRefCollection,
+              newExerciseActor,
+            ],
+          };
+        }),
 
         "update training session name": assign((context, { newName }) => {
           return {

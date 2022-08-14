@@ -32,7 +32,7 @@ export const TrainingSessionItem: React.FC<TrainingSessionProps> = ({
 
   function handleAddExerciseButtonOnPress() {
     sendToTrainingSessionMachine({
-      type: "ADD_EXERCISE",
+      type: "USER_ENTERED_EXERCISE_CREATION_FORM",
     });
   }
 
