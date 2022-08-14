@@ -16,7 +16,7 @@ const TrainingSessionCreationFormName: React.FC<
 
   const handleGoNext = (sessionTrainingName: string) => {
     trainingSessionCreationFormActor.send({
-      type: "SET_ROOM_NAME_AND_GO_NEXT",
+      type: "SET_TRAINING_SESSION_NAME_AND_GO_NEXT",
       name: sessionTrainingName,
     });
   };

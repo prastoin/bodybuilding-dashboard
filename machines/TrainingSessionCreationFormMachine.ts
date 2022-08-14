@@ -11,7 +11,7 @@ import { sendParent } from "xstate/lib/actions";
 
 export type TrainingSessionCreationFormMachineEvents =
   | {
-      type: "SET_ROOM_NAME_AND_GO_NEXT";
+      type: "SET_TRAINING_SESSION_NAME_AND_GO_NEXT";
       name: string;
     }
   | { type: "USER_WENT_TO_PREVIOUS_SCREEN" };
@@ -51,7 +51,7 @@ export const createTrainingSessionCreationFormMachine = () =>
       states: {
         "Training session name step": {
           on: {
-            SET_ROOM_NAME_AND_GO_NEXT: {
+            SET_TRAINING_SESSION_NAME_AND_GO_NEXT: {
               target: "Form is completed",
               actions: "assignTrainingSessionNameToContext",
             },
@@ -62,7 +62,6 @@ export const createTrainingSessionCreationFormMachine = () =>
         },
 
         "Form is completed": {
-          entry: "popBackToTop",
           type: "final",
 
           data: ({ trainingSessionName, uuid }) => ({
@@ -71,7 +70,7 @@ export const createTrainingSessionCreationFormMachine = () =>
           }),
         },
       },
-      id: "ProgramBuilderMachine",
+      id: "TrainingSessionCreationFormMachine",
     },
     {
       actions: {

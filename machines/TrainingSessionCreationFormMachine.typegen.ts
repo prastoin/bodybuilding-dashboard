@@ -7,15 +7,14 @@ export interface Typegen0 {
   };
   invokeSrcNameMap: {};
   missingImplementations: {
-    actions: "popBackToTop";
+    actions: never;
     services: never;
     guards: never;
     delays: never;
   };
   eventsCausingActions: {
     "Notify parent that user exited the form": "USER_WENT_TO_PREVIOUS_SCREEN";
-    assignTrainingSessionNameToContext: "SET_ROOM_NAME_AND_GO_NEXT";
-    popBackToTop: "SET_ROOM_NAME_AND_GO_NEXT";
+    assignTrainingSessionNameToContext: "SET_TRAINING_SESSION_NAME_AND_GO_NEXT";
   };
   eventsCausingServices: {};
   eventsCausingGuards: {};
