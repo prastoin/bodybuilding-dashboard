@@ -26,7 +26,6 @@ export interface Typegen0 {
     "Navigate to training session name editor": "USER_ENTERED_TRAINING_SESSION_NAME_EDITOR";
     "Reset program builder stack": "done.invoke.ExerciseCreationForm";
     "Spawn and assign initial exercises": "";
-    "User added an exercise": "ADD_EXERCISE";
     "remove training session exercise from context": "_REMOVE_TRAINING_SESSION_EXERCISE";
     "update training session name": "USER_FINISHED_TRAINING_SESSION_NAME_EDITION";
   };

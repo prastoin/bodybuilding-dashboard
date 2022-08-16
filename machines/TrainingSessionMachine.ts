@@ -16,10 +16,6 @@ import {
 
 type TrainingSessionMachineEvents =
   | {
-      type: "ADD_EXERCISE";
-      name?: string;
-    }
-  | {
       type: "REMOVE_TRAINING_SESSION";
     }
   | {
@@ -100,10 +96,6 @@ export const createTrainingSessionMachine = ({
 
         Idle: {
           on: {
-            ADD_EXERCISE: {
-              actions: "User added an exercise",
-            },
-
             REMOVE_TRAINING_SESSION: {
               actions: "Forward training session deletion to program builder",
             },
@@ -182,13 +174,15 @@ export const createTrainingSessionMachine = ({
           );
 
           const exerciseActorRefCollection = initialExercisesToSpawn.map(
-            ({ exerciseName, uuid }) => {
+            ({ exerciseName, uuid, repCounter, setCounter }) => {
               const newTrainingSessionExerciseActorRef: TrainingSessionExerciseActorRef =
                 spawn(
                   createTrainingSessionExerciseMachine({
                     exerciseName,
                     uuid,
                     parentTrainingSessionId: trainingSessionId,
+                    repCounter,
+                    setCounter,
                   }),
                   { sync: true, name: uuid }
                 );
@@ -201,29 +195,6 @@ export const createTrainingSessionMachine = ({
             initialExercisesToSpawn: undefined,
             trainingSessionExerciseActorRefCollection:
               exerciseActorRefCollection,
-          };
-        }),
-
-        "User added an exercise": assign((context, _event) => {
-          const uuid = uuidv4();
-          const newTrainingSessionExerciseActorRef: TrainingSessionExerciseActorRef =
-            spawn(
-              createTrainingSessionExerciseMachine({
-                exerciseName: `Exercise_${
-                  context.trainingSessionExerciseActorRefCollection.length + 1
-                }`,
-                uuid: uuid,
-                parentTrainingSessionId: trainingSessionId,
-              }),
-              { sync: true, name: uuid }
-            );
-
-          return {
-            ...context,
-            trainingSessionExerciseActorRefCollection: [
-              ...context.trainingSessionExerciseActorRefCollection,
-              newTrainingSessionExerciseActorRef,
-            ],
           };
         }),
 
@@ -265,6 +236,8 @@ export const createTrainingSessionMachine = ({
               exerciseName,
               parentTrainingSessionId: trainingSessionId,
               uuid: newTrainingSessionId,
+              repCounter: 2, //TODO
+              setCounter: 4, //TODO to update after exercise creation form refactor
             }),
             { sync: true, name: newTrainingSessionId }
           );

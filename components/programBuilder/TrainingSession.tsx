@@ -47,7 +47,12 @@ export const TrainingSessionItem: React.FC<TrainingSessionProps> = ({
       style={tailwind("mb-1 p-1 flex-1 justify-center border-2 border-black")}
       testID={`training-session-container-${uuid}`}
     >
-      <Text onPress={handleEditTrainingSessionName}>{trainingSessionName}</Text>
+      <Text
+        style={tailwind("font-bold pb-2")}
+        onPress={handleEditTrainingSessionName}
+      >
+        {trainingSessionName}
+      </Text>
 
       <View>
         <FlatList<TrainingSessionExerciseActorRef>

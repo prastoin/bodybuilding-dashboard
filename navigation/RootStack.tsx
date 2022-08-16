@@ -7,6 +7,7 @@ import {
 import * as React from "react";
 import ExerciseCreationFormName from "../screens/ExerciseName/ExerciseCreationFormName";
 import ExerciseEditorFormName from "../screens/ExerciseName/ExerciseEditorFormName";
+import ExerciseSetAndRepEditor from "../screens/ExerciseSetAndRep/ExerciseSetAndRepEditor";
 import { HomeScreen } from "../screens/Home";
 import { ProgramBuilderScreen } from "../screens/ProgramBuilder";
 import TrainingSessionCreationFormName from "../screens/TrainingSessionName/TrainingSessionCreationFormName";
@@ -98,6 +99,10 @@ export type ProgramBuilderStackParamList = {
     exerciseId: string;
     trainingSessionId: string;
   };
+  ExerciseEditorFormSetAndRep: {
+    exerciseId: string;
+    trainingSessionId: string;
+  };
   ExerciseCreationFormName: {
     trainingSessionId: string;
   };
@@ -129,6 +134,12 @@ export type ProgramBuilderExerciseEditorFormNameScreenProps =
     "ExerciseEditorFormName"
   >;
 
+export type ProgramBuilderExerciseEditorFormSetAndRepScreenProps =
+  NativeStackScreenProps<
+    ProgramBuilderStackParamList,
+    "ExerciseEditorFormSetAndRep"
+  >;
+
 export type ProgramBuilderExerciseCreationFormNameScreenProps =
   NativeStackScreenProps<
     ProgramBuilderStackParamList,
@@ -158,9 +169,14 @@ const ProgramBuilderStackNavigator: React.FC = () => {
         name="TrainingSessionEditorFormName"
         component={TrainingSessionEditorFormName}
       />
+
       <ProgramBuilderStack.Screen
         name="ExerciseEditorFormName"
         component={ExerciseEditorFormName}
+      />
+      <ProgramBuilderStack.Screen
+        name="ExerciseEditorFormSetAndRep"
+        component={ExerciseSetAndRepEditor}
       />
 
       <ProgramBuilderStack.Screen

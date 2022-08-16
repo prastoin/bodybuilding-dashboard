@@ -5,6 +5,7 @@ import App from "../App";
 import { BodybuildingProgram } from "../types";
 import invariant from "invariant";
 import { ReactTestInstance } from "react-test-renderer";
+import { faker } from "@faker-js/faker";
 
 export * from "@testing-library/react-native";
 export const renderApp = () => {
@@ -18,43 +19,83 @@ export const SERVER_ENDPOINT = `http://${process.env.SERVER_HOST!}:${process.env
 
 export const getBodyBuildingProgram = (): BodybuildingProgram => {
   return {
-    programName: "Bodybuilding Program 1",
+    programName: faker.name.jobDescriptor(),
     trainingSessions: [
       {
         uuid: uuidv4(),
-        trainingSessionName: "Training session A",
+        trainingSessionName: faker.name.jobArea(),
         exercises: [
           {
             uuid: uuidv4(),
-            exerciseName: "Exercise A1",
+            exerciseName: faker.name.jobTitle(),
+            repCounter: faker.datatype.number({
+              max: 20,
+              min: 1,
+            }),
+            setCounter: faker.datatype.number({
+              max: 10,
+              min: 1,
+            }),
           },
           {
             uuid: uuidv4(),
-            exerciseName: "Exercise A2",
+            exerciseName: faker.name.jobTitle(),
+            repCounter: faker.datatype.number({
+              max: 20,
+              min: 1,
+            }),
+            setCounter: faker.datatype.number({
+              max: 10,
+              min: 1,
+            }),
           },
           {
             uuid: uuidv4(),
-            exerciseName: "Exercise A3",
+            exerciseName: faker.name.jobTitle(),
+            repCounter: faker.datatype.number({
+              max: 20,
+              min: 1,
+            }),
+            setCounter: faker.datatype.number({
+              max: 10,
+              min: 1,
+            }),
           },
         ],
       },
       {
         uuid: uuidv4(),
-        trainingSessionName: "Training session B",
+        trainingSessionName: faker.name.jobArea(),
         exercises: [
           {
             uuid: uuidv4(),
-            exerciseName: "Exercise B1",
+            exerciseName: faker.name.jobTitle(),
+            repCounter: faker.datatype.number({
+              max: 20,
+              min: 1,
+            }),
+            setCounter: faker.datatype.number({
+              max: 10,
+              min: 1,
+            }),
           },
           {
             uuid: uuidv4(),
-            exerciseName: "Exercise B2",
+            exerciseName: faker.name.jobTitle(),
+            repCounter: faker.datatype.number({
+              max: 20,
+              min: 1,
+            }),
+            setCounter: faker.datatype.number({
+              max: 10,
+              min: 1,
+            }),
           },
         ],
       },
       {
         uuid: uuidv4(),
-        trainingSessionName: "Training session C",
+        trainingSessionName: faker.name.jobArea(),
         exercises: [],
       },
     ],
