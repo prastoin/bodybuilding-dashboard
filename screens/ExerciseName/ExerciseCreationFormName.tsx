@@ -1,11 +1,11 @@
 import React from "react";
 import { Text, View } from "react-native";
 import { useExerciseCreationFormActor } from "../../hooks/useExerciseCreationFormActor";
-import { ProgramBuilderExerciseCreationFormNameScreenProps } from "../../navigation/RootStack";
+import { ExerciseCreationFormNameScreenProps } from "../../navigation/RootStack";
 import { ExerciseNameFormContent } from "./ExerciseNameFormContent";
 
 const ExerciseCreationFormName: React.FC<
-  ProgramBuilderExerciseCreationFormNameScreenProps
+  ExerciseCreationFormNameScreenProps
 > = ({ route }) => {
   const exerciseCreationFormActor = useExerciseCreationFormActor(
     route.params.trainingSessionId

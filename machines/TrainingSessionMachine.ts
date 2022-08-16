@@ -206,9 +206,12 @@ export const createTrainingSessionMachine = ({
 
         "Navigate to exercise creation form name step": () => {
           navigateFromRef("ProgramBuilder", {
-            screen: "ExerciseCreationFormName",
+            screen: "ExerciseCreationForm",
             params: {
-              trainingSessionId,
+              screen: "Name",
+              params: {
+                trainingSessionId,
+              },
             },
           });
         },

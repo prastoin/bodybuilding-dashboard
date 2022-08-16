@@ -103,9 +103,7 @@ export type ProgramBuilderStackParamList = {
     exerciseId: string;
     trainingSessionId: string;
   };
-  ExerciseCreationFormName: {
-    trainingSessionId: string;
-  };
+  ExerciseCreationForm: NavigatorScreenParams<ExerciseCreationFormParamList>;
 };
 
 const ProgramBuilderStack =
@@ -138,12 +136,6 @@ export type ProgramBuilderExerciseEditorFormSetAndRepScreenProps =
   NativeStackScreenProps<
     ProgramBuilderStackParamList,
     "ExerciseEditorFormSetAndRep"
-  >;
-
-export type ProgramBuilderExerciseCreationFormNameScreenProps =
-  NativeStackScreenProps<
-    ProgramBuilderStackParamList,
-    "ExerciseCreationFormName"
   >;
 
 const ProgramBuilderStackNavigator: React.FC = () => {
@@ -180,10 +172,44 @@ const ProgramBuilderStackNavigator: React.FC = () => {
       />
 
       <ProgramBuilderStack.Screen
-        name="ExerciseCreationFormName"
-        component={ExerciseCreationFormName}
+        name="ExerciseCreationForm"
+        component={ExerciseCreationFormStackNavigator}
       />
     </ProgramBuilderStack.Navigator>
+  );
+};
+
+///
+
+// ExerciseCreationForm stack
+
+export type ExerciseCreationFormParamList = {
+  Name: {
+    trainingSessionId: string;
+  };
+};
+
+const ExerciseCreationForm =
+  createNativeStackNavigator<ExerciseCreationFormParamList>();
+
+export type ExerciseCreationFormNameScreenProps = NativeStackScreenProps<
+  ExerciseCreationFormParamList,
+  "Name"
+>;
+
+const ExerciseCreationFormStackNavigator: React.FC = () => {
+  return (
+    <ExerciseCreationForm.Navigator
+      initialRouteName="Name"
+      screenOptions={{
+        headerShown: true,
+      }}
+    >
+      <ExerciseCreationForm.Screen
+        name="Name"
+        component={ExerciseCreationFormName}
+      />
+    </ExerciseCreationForm.Navigator>
   );
 };
 
