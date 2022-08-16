@@ -2,6 +2,18 @@
   position: static
 }
 
+.absolute {
+  position: absolute
+}
+
+.top-0 {
+  top: 0px
+}
+
+.right-0 {
+  right: 0px
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto
@@ -11,8 +23,8 @@
   margin-bottom: 0.25rem
 }
 
-.flex {
-  display: flex
+.hidden {
+  display: none
 }
 
 .w-11\/12 {
@@ -25,6 +37,10 @@
 
 .flex-row {
   flex-direction: row
+}
+
+.flex-col {
+  flex-direction: column
 }
 
 .items-center {
@@ -50,6 +66,18 @@
 
 .p-1 {
   padding: 0.25rem
+}
+
+.pb-1 {
+  padding-bottom: 0.25rem
+}
+
+.pb-2 {
+  padding-bottom: 0.5rem
+}
+
+.font-bold {
+  font-weight: 700
 }
 
 .text-blue-600 {
