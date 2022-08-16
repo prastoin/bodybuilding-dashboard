@@ -76,7 +76,7 @@ export const TrainingSessionExerciseItem: React.FC<
             name="edit"
             size={24}
             color="black"
-            testID="edit-exercise-name"
+            testID="edit-exercise-set-and-rep"
             onPress={handleEditSetAndRepOnPress}
           />
         </View>

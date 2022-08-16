@@ -63,6 +63,7 @@ export const ExerciseEditorFormSetAndRep: React.FC<
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Picker
+                testID={`set-counter-${value}`}
                 selectedValue={value}
                 onValueChange={onChange}
                 onBlur={onBlur}
@@ -102,6 +103,7 @@ export const ExerciseEditorFormSetAndRep: React.FC<
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Picker
+                testID={`rep-counter-${value}`}
                 selectedValue={value}
                 onValueChange={onChange}
                 onBlur={onBlur}
