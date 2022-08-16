@@ -1,6 +1,7 @@
 import { ActorRef, assign, createMachine, State } from "xstate";
 import { sendParent } from "xstate/lib/actions";
 import { goBackFromRef, navigateFromRef } from "../navigation/RootNavigation";
+import { TrainingSessionExercise } from "../types";
 
 type TrainingSessionExerciseMachineEvent =
   | {
@@ -17,14 +18,22 @@ type TrainingSessionExerciseMachineEvent =
       type: "USER_CANCELLED_NAME_EDITION_OPERATION";
     }
   | {
+      type: "USER_ENTERED_SET_AND_REP_EDITOR";
+    }
+  | {
+      type: "USER_CANCELLED_SET_AND_REP_EDITION";
+    }
+  | {
+      type: "USER_FINISHED_SET_AND_REP_EDITION";
+      setCounter: number;
+      repCounter: number;
+    }
+  | {
       type: "USER_FINISHED_NAME_EDITION_OPERATION";
       newExerciseName: string;
     };
 
-type TrainingSessionExerciseMachineContext = {
-  exerciseName: string;
-  uuid: string;
-};
+type TrainingSessionExerciseMachineContext = TrainingSessionExercise;
 
 type TrainingSessionExerciseMachineState = State<
   TrainingSessionExerciseMachineContext,
@@ -36,15 +45,18 @@ export type TrainingSessionExerciseActorRef = ActorRef<
   TrainingSessionExerciseMachineState
 >;
 
+type CreateTrainingSessionExerciseMachineArgs =
+  TrainingSessionExerciseMachineContext & {
+    parentTrainingSessionId: string;
+  };
+
 export const createTrainingSessionExerciseMachine = ({
   exerciseName,
   uuid,
+  repCounter,
+  setCounter,
   parentTrainingSessionId,
-}: {
-  exerciseName: string;
-  parentTrainingSessionId: string;
-  uuid: string;
-}) =>
+}: CreateTrainingSessionExerciseMachineArgs) =>
   createMachine(
     {
       tsTypes:
@@ -57,6 +69,8 @@ export const createTrainingSessionExerciseMachine = ({
       context: {
         exerciseName,
         uuid,
+        setCounter,
+        repCounter,
       },
       initial: "Idle",
       states: {
@@ -64,6 +78,10 @@ export const createTrainingSessionExerciseMachine = ({
           on: {
             USER_ENTERED_NAME_EDITION_OPERATION: {
               target: "User is editing exercise name",
+            },
+
+            USER_ENTERED_SET_AND_REP_EDITOR: {
+              target: "User is editing set and rep",
             },
 
             ADD_TRACKER_SECTION: {
@@ -93,6 +111,24 @@ export const createTrainingSessionExerciseMachine = ({
             },
           },
         },
+
+        "User is editing set and rep": {
+          entry: "Navigate to set and rep editor screen",
+
+          on: {
+            USER_FINISHED_SET_AND_REP_EDITION: {
+              target: "Idle",
+              actions: [
+                "Assign new set and rep to context",
+                "Navigate go back",
+              ],
+            },
+
+            USER_CANCELLED_SET_AND_REP_EDITION: {
+              target: "Idle",
+            },
+          },
+        },
       },
     },
     {
@@ -100,6 +136,16 @@ export const createTrainingSessionExerciseMachine = ({
         "Navigate to name editor screen": (context) => {
           navigateFromRef("ProgramBuilder", {
             screen: "ExerciseEditorFormName",
+            params: {
+              exerciseId: context.uuid,
+              trainingSessionId: parentTrainingSessionId,
+            },
+          });
+        },
+
+        "Navigate to set and rep editor screen": (context) => {
+          navigateFromRef("ProgramBuilder", {
+            screen: "ExerciseEditorFormSetAndRep",
             params: {
               exerciseId: context.uuid,
               trainingSessionId: parentTrainingSessionId,
@@ -116,6 +162,16 @@ export const createTrainingSessionExerciseMachine = ({
             return {
               ...context,
               exerciseName: newExerciseName,
+            };
+          }
+        ),
+
+        "Assign new set and rep to context": assign(
+          (context, { setCounter, repCounter }) => {
+            return {
+              ...context,
+              setCounter,
+              repCounter,
             };
           }
         ),
