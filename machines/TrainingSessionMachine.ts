@@ -122,7 +122,7 @@ export const createTrainingSessionMachine = ({
             id: "ExerciseCreationForm",
 
             src: () => {
-              return createExerciseCreationFormMachine();
+              return createExerciseCreationFormMachine(trainingSessionId);
             },
 
             onDone: {
@@ -169,6 +169,7 @@ export const createTrainingSessionMachine = ({
       actions: {
         "Spawn and assign initial exercises": assign((context, event) => {
           const { initialExercisesToSpawn } = context;
+
           invariant(
             initialExercisesToSpawn !== undefined,
             "should never occurs initialExercisesToSpawn is undefined"
@@ -232,7 +233,12 @@ export const createTrainingSessionMachine = ({
 
         "Assign created exercise to context": assign((context, event) => {
           const {
-            data: { exerciseName, uuid: newTrainingSessionId },
+            data: {
+              exerciseName,
+              uuid: newTrainingSessionId,
+              repCounter,
+              setCounter,
+            },
           } = event as ExerciseFormCreationDoneInvokeEvent;
 
           const newExerciseActor: TrainingSessionExerciseActorRef = spawn(
@@ -240,8 +246,8 @@ export const createTrainingSessionMachine = ({
               exerciseName,
               parentTrainingSessionId: trainingSessionId,
               uuid: newTrainingSessionId,
-              repCounter: 2, //TODO
-              setCounter: 4, //TODO to update after exercise creation form refactor
+              repCounter,
+              setCounter,
             }),
             { sync: true, name: newTrainingSessionId }
           );

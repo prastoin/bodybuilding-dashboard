@@ -7,6 +7,7 @@ import {
 import * as React from "react";
 import ExerciseCreationFormName from "../screens/ExerciseName/ExerciseCreationFormName";
 import ExerciseEditorFormName from "../screens/ExerciseName/ExerciseEditorFormName";
+import ExerciseCreationFormSetAndRep from "../screens/ExerciseSetAndRep/ExerciseSetAndRepCreationForm";
 import ExerciseSetAndRepEditor from "../screens/ExerciseSetAndRep/ExerciseSetAndRepEditor";
 import { HomeScreen } from "../screens/Home";
 import { ProgramBuilderScreen } from "../screens/ProgramBuilder";
@@ -173,6 +174,9 @@ const ProgramBuilderStackNavigator: React.FC = () => {
 
       <ProgramBuilderStack.Screen
         name="ExerciseCreationForm"
+        options={{
+          headerShown: false,
+        }}
         component={ExerciseCreationFormStackNavigator}
       />
     </ProgramBuilderStack.Navigator>
@@ -185,6 +189,9 @@ const ProgramBuilderStackNavigator: React.FC = () => {
 
 export type ExerciseCreationFormParamList = {
   Name: {
+    trainingSessionId: string;
+  };
+  SetAndRep: {
     trainingSessionId: string;
   };
 };
@@ -207,7 +214,17 @@ const ExerciseCreationFormStackNavigator: React.FC = () => {
     >
       <ExerciseCreationForm.Screen
         name="Name"
+        options={{
+          headerTitle: "Exercise Name",
+        }}
         component={ExerciseCreationFormName}
+      />
+      <ExerciseCreationForm.Screen
+        name="SetAndRep"
+        options={{
+          headerTitle: "Sets and Reps",
+        }}
+        component={ExerciseCreationFormSetAndRep}
       />
     </ExerciseCreationForm.Navigator>
   );
