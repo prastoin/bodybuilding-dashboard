@@ -1,12 +1,13 @@
-import "react-native-get-random-values";
 import { ActorRef, assign, createMachine, spawn, State } from "xstate";
 import {
   createTrainingSessionExerciseMachine,
   TrainingSessionExerciseActorRef,
 } from "./TrainingSessionExerciseMachine";
-import { v4 as uuidv4 } from "uuid";
 import { sendParent } from "xstate/lib/actions";
-import { goBackFromRef, navigateFromRef } from "../navigation/RootNavigation";
+import {
+  navigateBackFromRef,
+  navigateFromRef,
+} from "../navigation/RootNavigation";
 import { TrainingSessionExercise } from "../types";
 import invariant from "invariant";
 import {
@@ -226,7 +227,7 @@ export const createTrainingSessionMachine = ({
         },
 
         "Navigate go back": () => {
-          goBackFromRef();
+          navigateBackFromRef();
         },
 
         "Assign created exercise to context": assign((context, event) => {
