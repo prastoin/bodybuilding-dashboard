@@ -5,6 +5,8 @@ export const NonEmptyString = z.string().min(1);
 export const TrainingSessionExercise = z.object({
   uuid: z.string().uuid(),
   exerciseName: NonEmptyString,
+  setCounter: z.number().min(1).max(10),
+  repCounter: z.number().min(1).max(20),
 });
 export type TrainingSessionExercise = z.infer<typeof TrainingSessionExercise>;
 
