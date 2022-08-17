@@ -15,7 +15,6 @@ export interface Typegen0 {
   eventsCausingActions: {
     "Assign exercise name to context": "SET_EXERCISE_NAME_AND_GO_NEXT";
     "Assign exercise set and rep to context": "SET_EXERCISE_SET_AND_REP_AND_GO_NEXT";
-    "Navigate go back": "USER_WENT_TO_PREVIOUS_SCREEN";
     "Navigate to set and rep exercise creation form screen": "SET_EXERCISE_NAME_AND_GO_NEXT";
     "Notify parent that user exited the form": "USER_WENT_TO_PREVIOUS_SCREEN";
   };

@@ -84,7 +84,6 @@ export const createExerciseCreationFormMachine = (
 
             USER_WENT_TO_PREVIOUS_SCREEN: {
               target: "Exercise name step",
-              actions: "Navigate go back",
             },
           },
         },
@@ -126,8 +125,6 @@ export const createExerciseCreationFormMachine = (
               },
             },
           }),
-
-        "Navigate go back": () => navigateBackFromRef(),
 
         "Notify parent that user exited the form": sendParent({
           type: "_USER_CANCELLED_EXERCISE_CREATION_FORM",

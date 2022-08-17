@@ -1,6 +1,11 @@
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
-import { render, within } from "@testing-library/react-native";
+import {
+  fireEvent,
+  render,
+  waitFor,
+  within,
+} from "@testing-library/react-native";
 import App from "../App";
 import { BodybuildingProgram } from "../types";
 import invariant from "invariant";
@@ -213,6 +218,18 @@ export async function getProgramBuilderTabIcon(
   );
 
   return programBuilderBottomTab;
+}
+
+export async function userNavigatesBackFromHeaderBackButton(
+  screen: TestingScreen
+) {
+  await waitFor(() => {
+    const goBackButton = screen.queryAllByTestId("go-back-button").pop();
+    expect(goBackButton).toBeTruthy();
+
+    invariant(goBackButton !== undefined, "gobackButton is undefined");
+    fireEvent.press(goBackButton);
+  });
 }
 
 ///

@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { useExerciseCreationFormActor } from "../../hooks/useExerciseCreationFormActor";
 import { ExerciseCreationFormNameScreenProps } from "../../navigation/RootStack";
 import { ExerciseNameFormContent } from "./ExerciseNameFormContent";

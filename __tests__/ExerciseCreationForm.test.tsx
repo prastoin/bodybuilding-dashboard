@@ -5,6 +5,7 @@ import {
   render,
   renderApp,
   SERVER_ENDPOINT,
+  userNavigatesBackFromHeaderBackButton,
   within,
 } from "../tests/test.utils";
 import { createModel } from "@xstate/test";
@@ -22,8 +23,16 @@ const programBuilderTestMachine = createMachine({
   states: {
     "Exercise creation form name step": {
       meta: {
-        test: async ({ screen }: TestingContext) => {
-          await screen.findByTestId(/exercise-creation-form-name-.*-visible/i);
+        test: async ({ screen, createdExerciseName }: TestingContext) => {
+          const visibleContainer = await screen.findByTestId(
+            /exercise-creation-form-name-.*-visible/i
+          );
+
+          const nameTextInput = await within(
+            visibleContainer
+          ).findByPlaceholderText(/name/i);
+
+          expect(nameTextInput.props.value).toBe(createdExerciseName);
         },
       },
 
@@ -40,9 +49,24 @@ const programBuilderTestMachine = createMachine({
             },
           },
         },
+
+        "User went back on this form step": {
+          meta: {
+            test: async ({ screen }: TestingContext) => {
+              // This assertion is only to provide a full test coverage on every states node
+              await screen.findByTestId(
+                /exercise-creation-form-name-.*-visible/i
+              );
+            },
+          },
+        },
       },
 
       on: {
+        "User navigates back": {
+          target: "User exited exercise creation form",
+        },
+
         "User submitted empty exercise name": {
           target: ".User should see empty exercise name error label",
         },
@@ -81,6 +105,11 @@ const programBuilderTestMachine = createMachine({
       },
 
       on: {
+        "User navigates back": {
+          target:
+            "Exercise creation form name step.User went back on this form step",
+        },
+
         "User submitted null set and rep values": {
           target: ".User should see both set and rep empty value errors",
         },
@@ -100,15 +129,25 @@ const programBuilderTestMachine = createMachine({
         },
       },
     },
+
+    "User exited exercise creation form": {
+      type: "final",
+      meta: {
+        test: async ({ screen }: TestingContext) => {
+          await screen.findByTestId("program-builder-screen-container-visible");
+          //TODO Should make assertions on the created exercise data here too
+        },
+      },
+    },
   },
 });
 
 interface TestingContext {
   screen: ReturnType<typeof render>;
   defaultBodyBuildingProgram: BodybuildingProgram;
-  createdExerciseName?: string;
-  createdExerciseSetCounter?: number;
-  createdExerciseRepCounter?: number;
+  createdExerciseName: string;
+  createdExerciseSetCounter: number;
+  createdExerciseRepCounter: number;
 }
 
 const programBuilderTestModel = createModel<TestingContext>(
@@ -122,10 +161,14 @@ const programBuilderTestModel = createModel<TestingContext>(
         /exercise-creation-form-name-.*-visible/i
       );
 
+      const emptyExerciseName = "";
       const nameTextInput = await within(
         visibleScreenContainer
       ).findByPlaceholderText(/name/i);
-      expect(nameTextInput.props.value).toBe("");
+      context.createdExerciseName = emptyExerciseName;
+      fireEvent(nameTextInput, "focus");
+      fireEvent.changeText(nameTextInput, emptyExerciseName);
+
       const submitButton = await within(visibleScreenContainer).findByText(
         /submit/i
       );
@@ -165,6 +208,8 @@ const programBuilderTestModel = createModel<TestingContext>(
         /exercise-creation-form-set-and-rep-.*-visible/i
       );
 
+      context.createdExerciseRepCounter = 0;
+      context.createdExerciseSetCounter = 0;
       await within(visibleScreenContainer).findByTestId(`set-counter-0`);
       await within(visibleScreenContainer).findByTestId(`rep-counter-0`);
 
@@ -230,6 +275,12 @@ const programBuilderTestModel = createModel<TestingContext>(
       fireEvent.press(submitButton);
     },
   },
+
+  "User navigates back": {
+    exec: async (context) => {
+      userNavigatesBackFromHeaderBackButton(context.screen);
+    },
+  },
 });
 
 describe("Xstate tests generations", () => {
@@ -272,6 +323,9 @@ describe("Xstate tests generations", () => {
           await path.test({
             screen,
             defaultBodyBuildingProgram,
+            createdExerciseName: "",
+            createdExerciseRepCounter: 0,
+            createdExerciseSetCounter: 0,
           });
         });
       });
