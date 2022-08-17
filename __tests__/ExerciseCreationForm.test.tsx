@@ -5,7 +5,6 @@ import {
   render,
   renderApp,
   SERVER_ENDPOINT,
-  waitFor,
   within,
 } from "../tests/test.utils";
 import { createModel } from "@xstate/test";
@@ -93,6 +92,7 @@ const programBuilderTestMachine = createMachine({
     },
 
     "Exercise creation form is completed": {
+      type: "final",
       meta: {
         test: async ({ screen }: TestingContext) => {
           await screen.findByTestId("program-builder-screen-container-visible");
@@ -149,6 +149,80 @@ const programBuilderTestModel = createModel<TestingContext>(
       context.createdExerciseName = exerciseName;
       fireEvent(nameTextInput, "focus");
       fireEvent.changeText(nameTextInput, exerciseName);
+
+      const submitButton = await within(visibleScreenContainer).findByText(
+        /submit/i
+      );
+      fireEvent.press(submitButton);
+    },
+  },
+
+  "User submitted null set and rep values": {
+    exec: async (context) => {
+      const { screen } = context;
+
+      const visibleScreenContainer = await screen.findByTestId(
+        /exercise-creation-form-set-and-rep-.*-visible/i
+      );
+
+      await within(visibleScreenContainer).findByTestId(`set-counter-0`);
+      await within(visibleScreenContainer).findByTestId(`rep-counter-0`);
+
+      const submitButton = await within(visibleScreenContainer).findByText(
+        /submit/i
+      );
+      fireEvent.press(submitButton);
+    },
+  },
+
+  "User submitted valid set and rep values": {
+    exec: async (context) => {
+      const { screen } = context;
+
+      const visibleScreenContainer = await screen.findByTestId(
+        /exercise-creation-form-set-and-rep-.*-visible/i
+      );
+
+      const newSetCounterValue = faker.datatype.number({
+        min: 1,
+        max: 10,
+      });
+      context.createdExerciseSetCounter = newSetCounterValue;
+
+      const setCounterPicker = await within(
+        visibleScreenContainer
+      ).findByTestId(`set-counter-0`);
+
+      fireEvent(setCounterPicker, "focus");
+      fireEvent(setCounterPicker, "onValueChange", {
+        target: {
+          value: newSetCounterValue,
+        },
+      });
+
+      await within(visibleScreenContainer).findByTestId(
+        `set-counter-${newSetCounterValue}`
+      );
+
+      const newRepCounterValue = faker.datatype.number({
+        min: 1,
+        max: 20,
+      });
+      context.createdExerciseRepCounter = newRepCounterValue;
+      const repCounterPicker = await within(
+        visibleScreenContainer
+      ).findByTestId(`rep-counter-0`);
+
+      fireEvent(repCounterPicker, "focus");
+      fireEvent(repCounterPicker, "onValueChange", {
+        target: {
+          value: newRepCounterValue,
+        },
+      });
+
+      await within(visibleScreenContainer).findByTestId(
+        `rep-counter-${newRepCounterValue}`
+      );
 
       const submitButton = await within(visibleScreenContainer).findByText(
         /submit/i
