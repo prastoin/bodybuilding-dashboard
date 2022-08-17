@@ -71,7 +71,7 @@ test("User can edit an exercise name", async () => {
   );
 });
 
-test.only("User can edit an exercise set and rep fields", async () => {
+test("User can edit an exercise set and rep fields", async () => {
   const bodyBuildingProgram = getBodyBuildingProgram();
   server.use(
     rest.post<

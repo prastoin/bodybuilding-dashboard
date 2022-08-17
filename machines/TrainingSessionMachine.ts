@@ -1,12 +1,13 @@
-import "react-native-get-random-values";
 import { ActorRef, assign, createMachine, spawn, State } from "xstate";
 import {
   createTrainingSessionExerciseMachine,
   TrainingSessionExerciseActorRef,
 } from "./TrainingSessionExerciseMachine";
-import { v4 as uuidv4 } from "uuid";
 import { sendParent } from "xstate/lib/actions";
-import { goBackFromRef, navigateFromRef } from "../navigation/RootNavigation";
+import {
+  navigateBackFromRef,
+  navigateFromRef,
+} from "../navigation/RootNavigation";
 import { TrainingSessionExercise } from "../types";
 import invariant from "invariant";
 import {
@@ -121,7 +122,7 @@ export const createTrainingSessionMachine = ({
             id: "ExerciseCreationForm",
 
             src: () => {
-              return createExerciseCreationFormMachine();
+              return createExerciseCreationFormMachine(trainingSessionId);
             },
 
             onDone: {
@@ -168,6 +169,7 @@ export const createTrainingSessionMachine = ({
       actions: {
         "Spawn and assign initial exercises": assign((context, event) => {
           const { initialExercisesToSpawn } = context;
+
           invariant(
             initialExercisesToSpawn !== undefined,
             "should never occurs initialExercisesToSpawn is undefined"
@@ -206,9 +208,12 @@ export const createTrainingSessionMachine = ({
 
         "Navigate to exercise creation form name step": () => {
           navigateFromRef("ProgramBuilder", {
-            screen: "ExerciseCreationFormName",
+            screen: "ExerciseCreationForm",
             params: {
-              trainingSessionId,
+              screen: "Name",
+              params: {
+                trainingSessionId,
+              },
             },
           });
         },
@@ -223,12 +228,17 @@ export const createTrainingSessionMachine = ({
         },
 
         "Navigate go back": () => {
-          goBackFromRef();
+          navigateBackFromRef();
         },
 
         "Assign created exercise to context": assign((context, event) => {
           const {
-            data: { exerciseName, uuid: newTrainingSessionId },
+            data: {
+              exerciseName,
+              uuid: newTrainingSessionId,
+              repCounter,
+              setCounter,
+            },
           } = event as ExerciseFormCreationDoneInvokeEvent;
 
           const newExerciseActor: TrainingSessionExerciseActorRef = spawn(
@@ -236,8 +246,8 @@ export const createTrainingSessionMachine = ({
               exerciseName,
               parentTrainingSessionId: trainingSessionId,
               uuid: newTrainingSessionId,
-              repCounter: 2, //TODO
-              setCounter: 4, //TODO to update after exercise creation form refactor
+              repCounter,
+              setCounter,
             }),
             { sync: true, name: newTrainingSessionId }
           );

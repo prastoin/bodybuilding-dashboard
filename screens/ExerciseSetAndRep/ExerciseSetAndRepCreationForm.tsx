@@ -2,9 +2,9 @@ import React from "react";
 import { View } from "react-native";
 import { useExerciseCreationFormActor } from "../../hooks/useExerciseCreationFormActor";
 import { ExerciseCreationFormNameScreenProps } from "../../navigation/RootStack";
-import { ExerciseNameFormContent } from "./ExerciseNameFormContent";
+import { ExerciseEditorFormSetAndRep } from "./ExerciseSetAndRepFormContent";
 
-const ExerciseCreationFormName: React.FC<
+const ExerciseCreationFormSetAndRep: React.FC<
   ExerciseCreationFormNameScreenProps
 > = ({ route }) => {
   const exerciseCreationFormActor = useExerciseCreationFormActor(
@@ -12,13 +12,20 @@ const ExerciseCreationFormName: React.FC<
   );
 
   if (exerciseCreationFormActor === undefined) {
-    return <View testID="exercise-creation-form-name-default" />;
+    return <View testID="exercise-creation-form-set-and-rep-default" />;
   }
 
-  const handleGoNext = (exerciseName: string) => {
+  const handleGoNext = ({
+    repCounter,
+    setCounter,
+  }: {
+    repCounter: number;
+    setCounter: number;
+  }) => {
     exerciseCreationFormActor.send({
-      type: "SET_EXERCISE_NAME_AND_GO_NEXT",
-      name: exerciseName,
+      type: "SET_EXERCISE_SET_AND_REP_AND_GO_NEXT",
+      repCounter,
+      setCounter,
     });
   };
 
@@ -29,14 +36,14 @@ const ExerciseCreationFormName: React.FC<
   };
 
   return (
-    <ExerciseNameFormContent
-      testId={`exercise-creation-form-name-${exerciseCreationFormActor.id}`}
+    <ExerciseEditorFormSetAndRep
+      testId={`exercise-creation-form-set-and-rep-${exerciseCreationFormActor.id}`}
       handleOnGoBack={handleGoBack}
-      handleOnSubmit={({ exerciseName }) => {
-        handleGoNext(exerciseName);
+      handleOnSubmit={({ repCounter, setCounter }) => {
+        handleGoNext({ repCounter, setCounter });
       }}
     />
   );
 };
 
-export default ExerciseCreationFormName;
+export default ExerciseCreationFormSetAndRep;

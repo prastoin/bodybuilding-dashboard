@@ -11,7 +11,7 @@ import { BottomTabNavigatorParamList } from "./RootStack";
 export const navigationRef =
   createNavigationContainerRef<BottomTabNavigatorParamList>();
 
-export function goBackFromRef(): void {
+export function navigateBackFromRef(): void {
   if (navigationRef.isReady() && navigationRef.current) {
     // Perform navigation if the app has mounted
     navigationRef.current.goBack();

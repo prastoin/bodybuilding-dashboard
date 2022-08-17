@@ -1,6 +1,9 @@
 import { ActorRef, assign, createMachine, State } from "xstate";
 import { sendParent } from "xstate/lib/actions";
-import { goBackFromRef, navigateFromRef } from "../navigation/RootNavigation";
+import {
+  navigateBackFromRef,
+  navigateFromRef,
+} from "../navigation/RootNavigation";
 import { TrainingSessionExercise } from "../types";
 
 type TrainingSessionExerciseMachineEvent =
@@ -154,7 +157,7 @@ export const createTrainingSessionExerciseMachine = ({
         },
 
         "Navigate go back": () => {
-          goBackFromRef();
+          navigateBackFromRef();
         },
 
         "Assign new exercise name to context": assign(
