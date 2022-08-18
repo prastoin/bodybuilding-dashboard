@@ -4,13 +4,9 @@ import {
   navigateBackFromRef,
   navigateFromRef,
 } from "../navigation/RootNavigation";
-import { TrainingSessionExercise } from "../types";
+import { ExerciseLoad, TrainingSessionExercise } from "../types";
 
 type TrainingSessionExerciseMachineEvent =
-  | {
-      type: "ADD_TRACKER_SECTION";
-      name: string;
-    }
   | {
       type: "REMOVE_EXERCISE";
     }
@@ -19,6 +15,10 @@ type TrainingSessionExerciseMachineEvent =
     }
   | {
       type: "USER_CANCELLED_NAME_EDITION_OPERATION";
+    }
+  | {
+      type: "USER_FINISHED_NAME_EDITION_OPERATION";
+      newExerciseName: string;
     }
   | {
       type: "USER_ENTERED_SET_AND_REP_EDITOR";
@@ -32,8 +32,14 @@ type TrainingSessionExerciseMachineEvent =
       repCounter: number;
     }
   | {
-      type: "USER_FINISHED_NAME_EDITION_OPERATION";
-      newExerciseName: string;
+      type: "USER_ENTERED_LOAD_EDITOR";
+    }
+  | {
+      type: "USER_CANCELLED_LOAD_EDITION";
+    }
+  | {
+      type: "USER_FINISHED_LOAD_EDITION";
+      load: ExerciseLoad;
     };
 
 type TrainingSessionExerciseMachineContext = TrainingSessionExercise;
@@ -59,6 +65,7 @@ export const createTrainingSessionExerciseMachine = ({
   repCounter,
   setCounter,
   parentTrainingSessionId,
+  load,
 }: CreateTrainingSessionExerciseMachineArgs) =>
   createMachine(
     {
@@ -74,6 +81,7 @@ export const createTrainingSessionExerciseMachine = ({
         uuid,
         setCounter,
         repCounter,
+        load,
       },
       initial: "Idle",
       states: {
@@ -87,8 +95,8 @@ export const createTrainingSessionExerciseMachine = ({
               target: "User is editing set and rep",
             },
 
-            ADD_TRACKER_SECTION: {
-              actions: "User added a tracker section",
+            USER_ENTERED_LOAD_EDITOR: {
+              target: "User is editing load",
             },
 
             REMOVE_EXERCISE: {
@@ -128,6 +136,21 @@ export const createTrainingSessionExerciseMachine = ({
             },
 
             USER_CANCELLED_SET_AND_REP_EDITION: {
+              target: "Idle",
+            },
+          },
+        },
+
+        "User is editing load": {
+          entry: "Navigate to load editor screen",
+
+          on: {
+            USER_FINISHED_LOAD_EDITION: {
+              target: "Idle",
+              actions: ["Assign new load to context", "Navigate go back"],
+            },
+
+            USER_CANCELLED_LOAD_EDITION: {
               target: "Idle",
             },
           },
@@ -179,9 +202,21 @@ export const createTrainingSessionExerciseMachine = ({
           }
         ),
 
-        "User added a tracker section": assign((context, event) => {
-          return context;
+        "Assign new load to context": assign((context, { load }) => {
+          return {
+            ...context,
+            load: load,
+          };
         }),
+
+        "Navigate to load editor screen": (context) =>
+          navigateFromRef("ProgramBuilder", {
+            screen: "ExerciseEditorFormLoad",
+            params: {
+              exerciseId: context.uuid,
+              trainingSessionId: parentTrainingSessionId,
+            },
+          }),
 
         "Forward exercise deletion to program builder": sendParent({
           type: "_REMOVE_TRAINING_SESSION_EXERCISE",

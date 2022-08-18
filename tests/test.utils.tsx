@@ -41,6 +41,10 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
               max: 10,
               min: 1,
             }),
+            load: {
+              unit: "kg",
+              value: 42,
+            },
           },
           {
             uuid: uuidv4(),
@@ -53,6 +57,10 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
               max: 10,
               min: 1,
             }),
+            load: {
+              unit: "kg",
+              value: 42,
+            },
           },
           {
             uuid: uuidv4(),
@@ -65,6 +73,10 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
               max: 10,
               min: 1,
             }),
+            load: {
+              unit: "kg",
+              value: 42,
+            },
           },
         ],
       },
@@ -83,6 +95,10 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
               max: 10,
               min: 1,
             }),
+            load: {
+              unit: "kg",
+              value: 42,
+            },
           },
           {
             uuid: uuidv4(),
@@ -95,6 +111,10 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
               max: 10,
               min: 1,
             }),
+            load: {
+              unit: "kg",
+              value: 42,
+            },
           },
         ],
       },

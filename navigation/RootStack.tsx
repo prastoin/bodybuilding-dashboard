@@ -5,6 +5,7 @@ import {
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import * as React from "react";
+import ExerciseLoadEditor from "../screens/ExerciseLoad/ExerciseLoadEditor";
 import ExerciseCreationFormName from "../screens/ExerciseName/ExerciseCreationFormName";
 import ExerciseEditorFormName from "../screens/ExerciseName/ExerciseEditorFormName";
 import ExerciseCreationFormSetAndRep from "../screens/ExerciseSetAndRep/ExerciseSetAndRepCreationForm";
@@ -90,20 +91,20 @@ const HomeStackNavigator: React.FC = () => {
 
 // Program builder stack Navigator
 
+interface EditorFormScreenParams {
+  exerciseId: string;
+  trainingSessionId: string;
+}
+
 export type ProgramBuilderStackParamList = {
   Index: undefined;
   TrainingSesssionCreationFormName: undefined;
   TrainingSessionEditorFormName: {
     trainingSessionId: string;
   };
-  ExerciseEditorFormName: {
-    exerciseId: string;
-    trainingSessionId: string;
-  };
-  ExerciseEditorFormSetAndRep: {
-    exerciseId: string;
-    trainingSessionId: string;
-  };
+  ExerciseEditorFormName: EditorFormScreenParams;
+  ExerciseEditorFormSetAndRep: EditorFormScreenParams;
+  ExerciseEditorFormLoad: EditorFormScreenParams;
   ExerciseCreationForm: NavigatorScreenParams<ExerciseCreationFormParamList>;
 };
 
@@ -139,6 +140,12 @@ export type ProgramBuilderExerciseEditorFormSetAndRepScreenProps =
     "ExerciseEditorFormSetAndRep"
   >;
 
+export type ProgramBuilderExerciseEditorFormLoadScreenProps =
+  NativeStackScreenProps<
+    ProgramBuilderStackParamList,
+    "ExerciseEditorFormLoad"
+  >;
+
 const ProgramBuilderStackNavigator: React.FC = () => {
   return (
     <ProgramBuilderStack.Navigator
@@ -170,6 +177,11 @@ const ProgramBuilderStackNavigator: React.FC = () => {
       <ProgramBuilderStack.Screen
         name="ExerciseEditorFormSetAndRep"
         component={ExerciseSetAndRepEditor}
+      />
+
+      <ProgramBuilderStack.Screen
+        name="ExerciseEditorFormLoad"
+        component={ExerciseLoadEditor}
       />
 
       <ProgramBuilderStack.Screen

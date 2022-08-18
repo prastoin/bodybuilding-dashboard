@@ -6,6 +6,7 @@ import { TrainingSessionExerciseActorRef } from "../../machines/TrainingSessionE
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { navigateFromRef } from "../../navigation/RootNavigation";
+import { loadOptions } from "@babel/core";
 
 interface TrainingSessionExerciseProps {
   trainingSessionExerciseActorRef: TrainingSessionExerciseActorRef;
@@ -20,7 +21,7 @@ export const TrainingSessionExerciseItem: React.FC<
   );
   const tailwind = useTailwind();
 
-  const { exerciseName, uuid, repCounter, setCounter } =
+  const { exerciseName, uuid, repCounter, setCounter, load } =
     exerciseMachineState.context;
 
   function handleRemoveExerciseButtonOnPress() {
@@ -41,6 +42,12 @@ export const TrainingSessionExerciseItem: React.FC<
     });
   }
 
+  function handleEditLoadOnPress() {
+    sendToExerciseMachine({
+      type: "USER_ENTERED_LOAD_EDITOR",
+    });
+  }
+
   return (
     <View
       style={tailwind("flex-row")}
@@ -56,7 +63,7 @@ export const TrainingSessionExerciseItem: React.FC<
           testID={`remove-exercise-button-${uuid}`}
         />
 
-        <View style={tailwind("flex-row")}>
+        <View testID="exercise-name" style={tailwind("flex-row")}>
           <Text>{exerciseName}</Text>
           <AntDesign
             name="edit"
@@ -67,7 +74,7 @@ export const TrainingSessionExerciseItem: React.FC<
           />
         </View>
 
-        <View style={tailwind("flex-row")}>
+        <View testID="exercise-set-and-rep" style={tailwind("flex-row")}>
           <Text>
             {setCounter}X{repCounter}
           </Text>
@@ -78,6 +85,20 @@ export const TrainingSessionExerciseItem: React.FC<
             color="black"
             testID="edit-exercise-set-and-rep"
             onPress={handleEditSetAndRepOnPress}
+          />
+        </View>
+
+        <View testID="exercise-load" style={tailwind("flex-row")}>
+          <Text>
+            {load.value}_{load.unit}
+          </Text>
+
+          <AntDesign
+            name="edit"
+            size={24}
+            color="black"
+            testID="edit-exercise-load"
+            onPress={handleEditLoadOnPress}
           />
         </View>
       </View>

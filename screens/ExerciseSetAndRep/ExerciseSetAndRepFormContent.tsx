@@ -19,7 +19,7 @@ interface ExerciseSetAndRepFormContentProps {
   defaultRepCounter?: number;
 }
 
-export const ExerciseEditorFormSetAndRep: React.FC<
+export const ExerciseFormSetAndRepContent: React.FC<
   ExerciseSetAndRepFormContentProps
 > = ({
   handleOnSubmit,

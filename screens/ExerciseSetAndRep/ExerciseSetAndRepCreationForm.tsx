@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { useExerciseCreationFormActor } from "../../hooks/useExerciseCreationFormActor";
 import { ExerciseCreationFormNameScreenProps } from "../../navigation/RootStack";
-import { ExerciseEditorFormSetAndRep } from "./ExerciseSetAndRepFormContent";
+import { ExerciseFormSetAndRepContent } from "./ExerciseSetAndRepFormContent";
 
 const ExerciseCreationFormSetAndRep: React.FC<
   ExerciseCreationFormNameScreenProps
@@ -36,7 +36,7 @@ const ExerciseCreationFormSetAndRep: React.FC<
   };
 
   return (
-    <ExerciseEditorFormSetAndRep
+    <ExerciseFormSetAndRepContent
       testId={`exercise-creation-form-set-and-rep-${exerciseCreationFormActor.id}`}
       handleOnGoBack={handleGoBack}
       handleOnSubmit={({ repCounter, setCounter }) => {
