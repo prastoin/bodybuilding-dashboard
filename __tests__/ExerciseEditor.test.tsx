@@ -104,7 +104,10 @@ test("User can edit an exercise set and rep fields", async () => {
     programBuilderContainer
   ).findByTestId(`training-session-exercise-container-${exerciseId}`);
 
-  await within(firstTrainingSessionFirstExerciseContainer).findByText(
+  let setAndRepContainer = await within(
+    firstTrainingSessionFirstExerciseContainer
+  ).findByTestId("exercise-set-and-rep");
+  await within(setAndRepContainer).findByText(
     new RegExp(`${exercise.setCounter}.*${exercise.repCounter}`)
   );
 
@@ -167,7 +170,10 @@ test("User can edit an exercise set and rep fields", async () => {
     programBuilderContainer
   ).findByTestId(`training-session-exercise-container-${exerciseId}`);
 
-  await within(firstTrainingSessionFirstExerciseContainer).findByText(
+  setAndRepContainer = await within(
+    firstTrainingSessionFirstExerciseContainer
+  ).findByTestId("exercise-set-and-rep");
+  await within(setAndRepContainer).findByText(
     new RegExp(`${newSetCounterValue}.*${newRepCounterValue}`)
   );
 });
@@ -201,8 +207,10 @@ test("User can edit an exercise load field", async () => {
   let firstTrainingSessionFirstExerciseContainer = await within(
     programBuilderContainer
   ).findByTestId(`training-session-exercise-container-${exerciseId}`);
-
-  await within(firstTrainingSessionFirstExerciseContainer).findByText(
+  let loadContainer = await within(
+    firstTrainingSessionFirstExerciseContainer
+  ).findByTestId(`exercise-load`);
+  await within(loadContainer).findByText(
     new RegExp(`${exercise.load.value}.*${exercise.load.unit}`)
   );
 
@@ -250,8 +258,8 @@ test("User can edit an exercise load field", async () => {
   firstTrainingSessionFirstExerciseContainer = await within(
     programBuilderContainer
   ).findByTestId(`training-session-exercise-container-${exerciseId}`);
-
-  await within(firstTrainingSessionFirstExerciseContainer).findByText(
-    new RegExp(`${newLoad}.*${newUnit}`)
-  );
+  loadContainer = await within(
+    firstTrainingSessionFirstExerciseContainer
+  ).findByTestId(`exercise-load`);
+  await within(loadContainer).findByText(new RegExp(`${newLoad}.*${newUnit}`));
 });

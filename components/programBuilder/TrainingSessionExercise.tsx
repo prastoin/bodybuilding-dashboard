@@ -63,7 +63,7 @@ export const TrainingSessionExerciseItem: React.FC<
           testID={`remove-exercise-button-${uuid}`}
         />
 
-        <View style={tailwind("flex-row")}>
+        <View testID="exercise-name" style={tailwind("flex-row")}>
           <Text>{exerciseName}</Text>
           <AntDesign
             name="edit"
@@ -74,7 +74,7 @@ export const TrainingSessionExerciseItem: React.FC<
           />
         </View>
 
-        <View style={tailwind("flex-row")}>
+        <View testID="exercise-set-and-rep" style={tailwind("flex-row")}>
           <Text>
             {setCounter}X{repCounter}
           </Text>
@@ -88,7 +88,7 @@ export const TrainingSessionExerciseItem: React.FC<
           />
         </View>
 
-        <View style={tailwind("flex-row")}>
+        <View testID="exercise-load" style={tailwind("flex-row")}>
           <Text>
             {load.value}_{load.unit}
           </Text>
