@@ -5,6 +5,7 @@ import {
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import * as React from "react";
+import ExerciseLoadEditor from "../screens/ExerciseLoad/ExerciseLoadEditor";
 import ExerciseCreationFormName from "../screens/ExerciseName/ExerciseCreationFormName";
 import ExerciseEditorFormName from "../screens/ExerciseName/ExerciseEditorFormName";
 import ExerciseCreationFormSetAndRep from "../screens/ExerciseSetAndRep/ExerciseSetAndRepCreationForm";
@@ -180,7 +181,7 @@ const ProgramBuilderStackNavigator: React.FC = () => {
 
       <ProgramBuilderStack.Screen
         name="ExerciseEditorFormLoad"
-        component={ExerciseSetAndRepEditor}
+        component={ExerciseLoadEditor}
       />
 
       <ProgramBuilderStack.Screen

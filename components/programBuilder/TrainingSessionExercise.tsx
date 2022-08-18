@@ -6,6 +6,7 @@ import { TrainingSessionExerciseActorRef } from "../../machines/TrainingSessionE
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { navigateFromRef } from "../../navigation/RootNavigation";
+import { loadOptions } from "@babel/core";
 
 interface TrainingSessionExerciseProps {
   trainingSessionExerciseActorRef: TrainingSessionExerciseActorRef;
@@ -20,7 +21,7 @@ export const TrainingSessionExerciseItem: React.FC<
   );
   const tailwind = useTailwind();
 
-  const { exerciseName, uuid, repCounter, setCounter } =
+  const { exerciseName, uuid, repCounter, setCounter, load } =
     exerciseMachineState.context;
 
   function handleRemoveExerciseButtonOnPress() {
@@ -38,6 +39,12 @@ export const TrainingSessionExerciseItem: React.FC<
   function handleEditSetAndRepOnPress() {
     sendToExerciseMachine({
       type: "USER_ENTERED_SET_AND_REP_EDITOR",
+    });
+  }
+
+  function handleEditLoadOnPress() {
+    sendToExerciseMachine({
+      type: "USER_ENTERED_LOAD_EDITOR",
     });
   }
 
@@ -78,6 +85,20 @@ export const TrainingSessionExerciseItem: React.FC<
             color="black"
             testID="edit-exercise-set-and-rep"
             onPress={handleEditSetAndRepOnPress}
+          />
+        </View>
+
+        <View style={tailwind("flex-row")}>
+          <Text>
+            {load.value}_{load.unit}
+          </Text>
+
+          <AntDesign
+            name="edit"
+            size={24}
+            color="black"
+            testID="edit-exercise-load"
+            onPress={handleEditLoadOnPress}
           />
         </View>
       </View>

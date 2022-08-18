@@ -3,7 +3,7 @@ import React from "react";
 import { View } from "react-native";
 import { useExerciseActorRef } from "../../hooks/useExerciseActorRef";
 import { ProgramBuilderExerciseEditorFormNameScreenProps } from "../../navigation/RootStack";
-import { ExerciseEditorFormSetAndRep } from "./ExerciseSetAndRepFormContent";
+import { ExerciseFormSetAndRepContent } from "./ExerciseSetAndRepFormContent";
 
 const ExerciseSetAndRepEditor: React.FC<
   ProgramBuilderExerciseEditorFormNameScreenProps
@@ -48,7 +48,7 @@ const ExerciseSetAndRepEditor: React.FC<
   );
 
   return (
-    <ExerciseEditorFormSetAndRep
+    <ExerciseFormSetAndRepContent
       testId={`exercise-editor-form-set-and-rep-${exerciseActorRef.id}`}
       handleOnGoBack={handleGoBack}
       defaultRepCounter={defaultRepCounter}
