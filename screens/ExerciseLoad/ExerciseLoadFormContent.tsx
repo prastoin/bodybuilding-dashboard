@@ -24,7 +24,13 @@ export const ExerciseFormLoadContent: React.FC<
     handleSubmit,
     formState: { errors },
   } = useForm<ExerciseLoadFormFieldValues>({
-    defaultValues: defaultLoad,
+    defaultValues:
+      defaultLoad !== undefined
+        ? defaultLoad
+        : {
+            unit: "kg",
+            value: 0,
+          },
   });
 
   const navigation = useNavigation();

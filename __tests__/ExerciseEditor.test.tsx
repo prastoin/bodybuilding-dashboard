@@ -9,7 +9,10 @@ import {
   within,
 } from "../tests/test.utils";
 import { faker } from "@faker-js/faker";
-import { RetrieveUserBodyBuildingProgramResponseBody } from "../types";
+import {
+  LoadUnit,
+  RetrieveUserBodyBuildingProgramResponseBody,
+} from "../types";
 
 test("User can edit an exercise name", async () => {
   const bodyBuildingProgram = getBodyBuildingProgram();
@@ -166,5 +169,89 @@ test("User can edit an exercise set and rep fields", async () => {
 
   await within(firstTrainingSessionFirstExerciseContainer).findByText(
     new RegExp(`${newSetCounterValue}.*${newRepCounterValue}`)
+  );
+});
+
+test("User can edit an exercise load field", async () => {
+  const bodyBuildingProgram = getBodyBuildingProgram();
+  server.use(
+    rest.post<
+      undefined,
+      Record<string, never>,
+      RetrieveUserBodyBuildingProgramResponseBody
+    >(`${SERVER_ENDPOINT}/retrieve-program`, (_req, res, ctx) => {
+      return res(ctx.status(200), ctx.json(bodyBuildingProgram));
+    })
+  );
+
+  const screen = renderApp();
+
+  await screen.findByTestId("home-screen-container-visible");
+
+  const programBuilderBottomTab = await getProgramBuilderTabIcon(screen);
+
+  fireEvent.press(programBuilderBottomTab);
+
+  const programBuilderContainer = await screen.findByTestId(
+    "program-builder-screen-container-visible"
+  );
+
+  const exercise = bodyBuildingProgram.trainingSessions[0].exercises[0];
+  const exerciseId = exercise.uuid;
+  let firstTrainingSessionFirstExerciseContainer = await within(
+    programBuilderContainer
+  ).findByTestId(`training-session-exercise-container-${exerciseId}`);
+
+  await within(firstTrainingSessionFirstExerciseContainer).findByText(
+    new RegExp(`${exercise.load.value}.*${exercise.load.unit}`)
+  );
+
+  const editLoadButton = await within(
+    firstTrainingSessionFirstExerciseContainer
+  ).findByTestId(`edit-exercise-load`);
+
+  fireEvent.press(editLoadButton);
+
+  const loadEditorScreenContainer = await screen.findByTestId(
+    `exercise-editor-form-load-${exerciseId}-visible`
+  );
+
+  const laodValueTextInput = await within(
+    loadEditorScreenContainer
+  ).findByPlaceholderText("Load");
+  const newLoad = faker.datatype.number({
+    min: 1,
+    max: 1000,
+  });
+  expect(laodValueTextInput.props.value).toBe(`${exercise.load.value}`);
+
+  fireEvent(laodValueTextInput, "focus");
+  fireEvent.changeText(laodValueTextInput, newLoad);
+
+  const unitPicker = await within(loadEditorScreenContainer).findByTestId(
+    `load-unit-${exercise.load.unit}`
+  );
+  const newUnit = LoadUnit.Values.lbs;
+  fireEvent(unitPicker, "focus");
+  fireEvent(unitPicker, "onValueChange", {
+    target: {
+      value: newUnit,
+    },
+  });
+  await within(loadEditorScreenContainer).findByTestId(`load-unit-${newUnit}`);
+
+  const submitButton = await within(loadEditorScreenContainer).findByText(
+    /submit/i
+  );
+  fireEvent.press(submitButton);
+
+  await screen.findByTestId("program-builder-screen-container-visible");
+
+  firstTrainingSessionFirstExerciseContainer = await within(
+    programBuilderContainer
+  ).findByTestId(`training-session-exercise-container-${exerciseId}`);
+
+  await within(firstTrainingSessionFirstExerciseContainer).findByText(
+    new RegExp(`${newLoad}.*${newUnit}`)
   );
 });
