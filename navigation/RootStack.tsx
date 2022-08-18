@@ -90,20 +90,20 @@ const HomeStackNavigator: React.FC = () => {
 
 // Program builder stack Navigator
 
+interface EditorFormScreenParams {
+  exerciseId: string;
+  trainingSessionId: string;
+}
+
 export type ProgramBuilderStackParamList = {
   Index: undefined;
   TrainingSesssionCreationFormName: undefined;
   TrainingSessionEditorFormName: {
     trainingSessionId: string;
   };
-  ExerciseEditorFormName: {
-    exerciseId: string;
-    trainingSessionId: string;
-  };
-  ExerciseEditorFormSetAndRep: {
-    exerciseId: string;
-    trainingSessionId: string;
-  };
+  ExerciseEditorFormName: EditorFormScreenParams;
+  ExerciseEditorFormSetAndRep: EditorFormScreenParams;
+  ExerciseEditorFormLoad: EditorFormScreenParams;
   ExerciseCreationForm: NavigatorScreenParams<ExerciseCreationFormParamList>;
 };
 
@@ -139,6 +139,12 @@ export type ProgramBuilderExerciseEditorFormSetAndRepScreenProps =
     "ExerciseEditorFormSetAndRep"
   >;
 
+export type ProgramBuilderExerciseEditorFormLoadScreenProps =
+  NativeStackScreenProps<
+    ProgramBuilderStackParamList,
+    "ExerciseEditorFormLoad"
+  >;
+
 const ProgramBuilderStackNavigator: React.FC = () => {
   return (
     <ProgramBuilderStack.Navigator
@@ -169,6 +175,11 @@ const ProgramBuilderStackNavigator: React.FC = () => {
       />
       <ProgramBuilderStack.Screen
         name="ExerciseEditorFormSetAndRep"
+        component={ExerciseSetAndRepEditor}
+      />
+
+      <ProgramBuilderStack.Screen
+        name="ExerciseEditorFormLoad"
         component={ExerciseSetAndRepEditor}
       />
 

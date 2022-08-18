@@ -59,6 +59,7 @@ export const createTrainingSessionExerciseMachine = ({
   repCounter,
   setCounter,
   parentTrainingSessionId,
+  load,
 }: CreateTrainingSessionExerciseMachineArgs) =>
   createMachine(
     {
@@ -74,6 +75,7 @@ export const createTrainingSessionExerciseMachine = ({
         uuid,
         setCounter,
         repCounter,
+        load,
       },
       initial: "Idle",
       states: {

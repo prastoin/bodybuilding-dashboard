@@ -56,6 +56,10 @@ export const createExerciseCreationFormMachine = (
         repCounter: 0,
         setCounter: 0,
         uuid: uuidv4(),
+        load: {
+          unit: "kg",
+          value: 0,
+        },
       },
       initial: "Exercise name step",
       states: {
