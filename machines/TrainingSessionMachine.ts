@@ -168,7 +168,7 @@ export const createTrainingSessionMachine = ({
 
       actions: {
         "Spawn and assign initial exercises": assign((context, event) => {
-          const { initialExercisesToSpawn } = context;
+          const initialExercisesToSpawn = context.initialExercisesToSpawn;
 
           invariant(
             initialExercisesToSpawn !== undefined,
@@ -242,6 +242,7 @@ export const createTrainingSessionMachine = ({
               load,
             },
           } = event as ExerciseFormCreationDoneInvokeEvent;
+          console.log({ event });
 
           const newExerciseActor: TrainingSessionExerciseActorRef = spawn(
             createTrainingSessionExerciseMachine({

@@ -62,7 +62,6 @@ export const ExerciseFormLoadContent: React.FC<
             />
           )}
           name="value"
-          defaultValue={undefined}
         />
         {errors.value && (
           <Text style={tailwind("text-red-500")} accessibilityRole="alert">
@@ -88,7 +87,6 @@ export const ExerciseFormLoadContent: React.FC<
             </Picker>
           )}
           name="unit"
-          defaultValue={undefined}
         />
         {errors.unit && (
           <Text style={tailwind("text-red-500")} accessibilityRole="alert">
