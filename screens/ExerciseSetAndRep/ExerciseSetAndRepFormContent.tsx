@@ -82,7 +82,6 @@ export const ExerciseFormSetAndRepContent: React.FC<
               </Picker>
             )}
             name="setCounter"
-            defaultValue={undefined}
           />
           {errors.setCounter && (
             <Text style={tailwind("text-red-500")} accessibilityRole="alert">
@@ -132,7 +131,6 @@ export const ExerciseFormSetAndRepContent: React.FC<
               </Picker>
             )}
             name="repCounter"
-            defaultValue={undefined}
           />
         </>
         {errors.repCounter && (

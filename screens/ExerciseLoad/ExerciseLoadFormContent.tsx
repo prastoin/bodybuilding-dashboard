@@ -51,6 +51,7 @@ export const ExerciseFormLoadContent: React.FC<
           control={control}
           rules={{
             required: true,
+            min: 1,
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
@@ -62,7 +63,6 @@ export const ExerciseFormLoadContent: React.FC<
             />
           )}
           name="value"
-          defaultValue={undefined}
         />
         {errors.value && (
           <Text style={tailwind("text-red-500")} accessibilityRole="alert">
@@ -88,7 +88,6 @@ export const ExerciseFormLoadContent: React.FC<
             </Picker>
           )}
           name="unit"
-          defaultValue={undefined}
         />
         {errors.unit && (
           <Text style={tailwind("text-red-500")} accessibilityRole="alert">

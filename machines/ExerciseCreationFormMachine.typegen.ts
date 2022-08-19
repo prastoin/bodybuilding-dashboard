@@ -13,8 +13,10 @@ export interface Typegen0 {
     delays: never;
   };
   eventsCausingActions: {
+    "Assign exercise load to context": "SET_EXERCISE_LOAD_AND_GO_NEXT";
     "Assign exercise name to context": "SET_EXERCISE_NAME_AND_GO_NEXT";
     "Assign exercise set and rep to context": "SET_EXERCISE_SET_AND_REP_AND_GO_NEXT";
+    "Navigate to load exercise creation form screen": "SET_EXERCISE_SET_AND_REP_AND_GO_NEXT";
     "Navigate to set and rep exercise creation form screen": "SET_EXERCISE_NAME_AND_GO_NEXT";
     "Notify parent that user exited the form": "USER_WENT_TO_PREVIOUS_SCREEN";
   };
@@ -22,6 +24,7 @@ export interface Typegen0 {
   eventsCausingGuards: {};
   eventsCausingDelays: {};
   matchesStates:
+    | "Exercise load step"
     | "Exercise name step"
     | "Form is completed"
     | "Set and rep step";

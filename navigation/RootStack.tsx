@@ -5,6 +5,7 @@ import {
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import * as React from "react";
+import ExerciseCreationFormLoad from "../screens/ExerciseLoad/ExerciseCreationFormLoad";
 import ExerciseLoadEditor from "../screens/ExerciseLoad/ExerciseLoadEditor";
 import ExerciseCreationFormName from "../screens/ExerciseName/ExerciseCreationFormName";
 import ExerciseEditorFormName from "../screens/ExerciseName/ExerciseEditorFormName";
@@ -199,13 +200,14 @@ const ProgramBuilderStackNavigator: React.FC = () => {
 
 // ExerciseCreationForm stack
 
+interface ExerciseCreationFormScreenProps {
+  trainingSessionId: string;
+}
+
 export type ExerciseCreationFormParamList = {
-  Name: {
-    trainingSessionId: string;
-  };
-  SetAndRep: {
-    trainingSessionId: string;
-  };
+  Name: ExerciseCreationFormScreenProps;
+  SetAndRep: ExerciseCreationFormScreenProps;
+  Load: ExerciseCreationFormScreenProps;
 };
 
 const ExerciseCreationForm =
@@ -237,6 +239,13 @@ const ExerciseCreationFormStackNavigator: React.FC = () => {
           headerTitle: "Sets and Reps",
         }}
         component={ExerciseCreationFormSetAndRep}
+      />
+      <ExerciseCreationForm.Screen
+        name="Load"
+        options={{
+          headerTitle: "Exercise starting load",
+        }}
+        component={ExerciseCreationFormLoad}
       />
     </ExerciseCreationForm.Navigator>
   );

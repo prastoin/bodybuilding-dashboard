@@ -168,7 +168,7 @@ export const createTrainingSessionMachine = ({
 
       actions: {
         "Spawn and assign initial exercises": assign((context, event) => {
-          const { initialExercisesToSpawn } = context;
+          const initialExercisesToSpawn = context.initialExercisesToSpawn;
 
           invariant(
             initialExercisesToSpawn !== undefined,

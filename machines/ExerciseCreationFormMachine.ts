@@ -8,11 +8,8 @@ import {
   InterpreterFrom,
 } from "xstate";
 import { sendParent } from "xstate/lib/actions";
-import {
-  navigateBackFromRef,
-  navigateFromRef,
-} from "../navigation/RootNavigation";
-import { TrainingSessionExercise } from "../types";
+import { navigateFromRef } from "../navigation/RootNavigation";
+import { ExerciseLoad, TrainingSessionExercise } from "../types";
 
 export type ExerciseCreationFormMachineEvents =
   | {
@@ -24,6 +21,10 @@ export type ExerciseCreationFormMachineEvents =
       type: "SET_EXERCISE_SET_AND_REP_AND_GO_NEXT";
       setCounter: number;
       repCounter: number;
+    }
+  | {
+      type: "SET_EXERCISE_LOAD_AND_GO_NEXT";
+      load: ExerciseLoad;
     };
 
 export type ExerciseCreationFormMachineContext = TrainingSessionExercise;
@@ -82,12 +83,28 @@ export const createExerciseCreationFormMachine = (
         "Set and rep step": {
           on: {
             SET_EXERCISE_SET_AND_REP_AND_GO_NEXT: {
-              target: "Form is completed",
-              actions: "Assign exercise set and rep to context",
+              target: "Exercise load step",
+              actions: [
+                "Assign exercise set and rep to context",
+                "Navigate to load exercise creation form screen",
+              ],
             },
 
             USER_WENT_TO_PREVIOUS_SCREEN: {
               target: "Exercise name step",
+            },
+          },
+        },
+
+        "Exercise load step": {
+          on: {
+            SET_EXERCISE_LOAD_AND_GO_NEXT: {
+              target: "Form is completed",
+              actions: "Assign exercise load to context",
+            },
+
+            USER_WENT_TO_PREVIOUS_SCREEN: {
+              target: "Set and rep step",
             },
           },
         },
@@ -119,11 +136,29 @@ export const createExerciseCreationFormMachine = (
           }
         ),
 
+        "Assign exercise load to context": assign((context, { load }) => {
+          return {
+            ...context,
+            load,
+          };
+        }),
+
         "Navigate to set and rep exercise creation form screen": () =>
           navigateFromRef("ProgramBuilder", {
             screen: "ExerciseCreationForm",
             params: {
               screen: "SetAndRep",
+              params: {
+                trainingSessionId: parentTrainingSessionId,
+              },
+            },
+          }),
+
+        "Navigate to load exercise creation form screen": () =>
+          navigateFromRef("ProgramBuilder", {
+            screen: "ExerciseCreationForm",
+            params: {
+              screen: "Load",
               params: {
                 trainingSessionId: parentTrainingSessionId,
               },
