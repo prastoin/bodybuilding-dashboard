@@ -51,6 +51,7 @@ export const ExerciseFormLoadContent: React.FC<
           control={control}
           rules={{
             required: true,
+            min: 1,
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput

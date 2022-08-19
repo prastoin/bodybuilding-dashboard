@@ -13,6 +13,8 @@ import { server } from "../tests/mocks/server";
 import { rest } from "msw";
 import {
   BodybuildingProgram,
+  ExerciseLoad,
+  LoadUnit,
   RetrieveUserBodyBuildingProgramResponseBody,
 } from "../types";
 import { faker } from "@faker-js/faker";
@@ -79,9 +81,20 @@ const programBuilderTestMachine = createMachine({
 
     "Exercise creation form set and rep step": {
       meta: {
-        test: async ({ screen }: TestingContext) => {
-          await screen.findByTestId(
+        test: async ({
+          screen,
+          createdExerciseRepCounter,
+          createdExerciseSetCounter,
+        }: TestingContext) => {
+          const visibleContainer = await screen.findByTestId(
             /exercise-creation-form-set-and-rep-.*-visible/i
+          );
+
+          await within(visibleContainer).findByTestId(
+            `set-counter-${createdExerciseSetCounter}`
+          );
+          await within(visibleContainer).findByTestId(
+            `rep-counter-${createdExerciseRepCounter}`
           );
         },
       },
@@ -102,6 +115,17 @@ const programBuilderTestMachine = createMachine({
             },
           },
         },
+
+        "User went back on this form step": {
+          meta: {
+            test: async ({ screen }: TestingContext) => {
+              // This assertion is only to provide a full test coverage on every states node
+              await screen.findByTestId(
+                /exercise-creation-form-set-and-rep-.*-visible/i
+              );
+            },
+          },
+        },
       },
 
       on: {
@@ -115,6 +139,54 @@ const programBuilderTestMachine = createMachine({
         },
 
         "User submitted valid set and rep values": {
+          target: "Exercise creation form load step",
+        },
+      },
+    },
+
+    "Exercise creation form load step": {
+      meta: {
+        test: async ({ screen, load }: TestingContext) => {
+          const visibleContainer = await screen.findByTestId(
+            /exercise-creation-form-load-.*-visible/i
+          );
+
+          const loadInputValue = await within(
+            visibleContainer
+          ).findByPlaceholderText(/Load/i);
+          expect(loadInputValue.props.value).toBe(`${load.value}`);
+
+          await within(visibleContainer).findByTestId(`load-unit-${load.unit}`);
+        },
+      },
+
+      states: {
+        "User should see load empty field error": {
+          meta: {
+            test: async ({ screen }: TestingContext) => {
+              const visibleContainer = await screen.findByTestId(
+                /exercise-creation-form-load-.*-visible/i
+              );
+
+              await within(visibleContainer).findByText(
+                /A load value must be set/i
+              );
+            },
+          },
+        },
+      },
+
+      on: {
+        "User navigates back": {
+          target:
+            "Exercise creation form set and rep step.User went back on this form step",
+        },
+
+        "User submitted empty load value": {
+          target: ".User should see load empty field error",
+        },
+
+        "User submitted valid load an load unit": {
           target: "Exercise creation form is completed",
         },
       },
@@ -148,6 +220,7 @@ interface TestingContext {
   createdExerciseName: string;
   createdExerciseSetCounter: number;
   createdExerciseRepCounter: number;
+  load: ExerciseLoad;
 }
 
 const programBuilderTestModel = createModel<TestingContext>(
@@ -208,11 +281,28 @@ const programBuilderTestModel = createModel<TestingContext>(
         /exercise-creation-form-set-and-rep-.*-visible/i
       );
 
+      const setPicker = await within(visibleScreenContainer).findByTestId(
+        /set-counter.*/
+      );
+      fireEvent(setPicker, "focus");
+      fireEvent(setPicker, "onValueChange", {
+        target: {
+          value: 0,
+        },
+      });
+
+      const repPicker = await within(visibleScreenContainer).findByTestId(
+        /rep-counter.*/
+      );
+      fireEvent(repPicker, "focus");
+      fireEvent(repPicker, "onValueChange", {
+        target: {
+          value: 0,
+        },
+      });
+
       context.createdExerciseRepCounter = 0;
       context.createdExerciseSetCounter = 0;
-      await within(visibleScreenContainer).findByTestId(`set-counter-0`);
-      await within(visibleScreenContainer).findByTestId(`rep-counter-0`);
-
       const submitButton = await within(visibleScreenContainer).findByText(
         /submit/i
       );
@@ -232,11 +322,9 @@ const programBuilderTestModel = createModel<TestingContext>(
         min: 1,
         max: 10,
       });
-      context.createdExerciseSetCounter = newSetCounterValue;
-
       const setCounterPicker = await within(
         visibleScreenContainer
-      ).findByTestId(`set-counter-0`);
+      ).findByTestId(`set-counter-${context.createdExerciseSetCounter}`);
 
       fireEvent(setCounterPicker, "focus");
       fireEvent(setCounterPicker, "onValueChange", {
@@ -244,30 +332,93 @@ const programBuilderTestModel = createModel<TestingContext>(
           value: newSetCounterValue,
         },
       });
-
       await within(visibleScreenContainer).findByTestId(
         `set-counter-${newSetCounterValue}`
       );
+      context.createdExerciseSetCounter = newSetCounterValue;
 
       const newRepCounterValue = faker.datatype.number({
         min: 1,
         max: 20,
       });
-      context.createdExerciseRepCounter = newRepCounterValue;
       const repCounterPicker = await within(
         visibleScreenContainer
-      ).findByTestId(`rep-counter-0`);
-
+      ).findByTestId(`rep-counter-${context.createdExerciseRepCounter}`);
       fireEvent(repCounterPicker, "focus");
       fireEvent(repCounterPicker, "onValueChange", {
         target: {
           value: newRepCounterValue,
         },
       });
-
       await within(visibleScreenContainer).findByTestId(
         `rep-counter-${newRepCounterValue}`
       );
+      context.createdExerciseRepCounter = newRepCounterValue;
+
+      const submitButton = await within(visibleScreenContainer).findByText(
+        /submit/i
+      );
+      fireEvent.press(submitButton);
+    },
+  },
+
+  "User submitted empty load value": {
+    exec: async (context) => {
+      const { screen } = context;
+
+      const visibleScreenContainer = await screen.findByTestId(
+        /exercise-creation-form-load-.*-visible/i
+      );
+
+      const newLoadValue = 0;
+      context.load.value = newLoadValue;
+
+      const loadValueInput = await within(
+        visibleScreenContainer
+      ).findByPlaceholderText(/Load/);
+      fireEvent(loadValueInput, "focus");
+      fireEvent.changeText(loadValueInput, newLoadValue);
+
+      const submitButton = await within(visibleScreenContainer).findByText(
+        /submit/i
+      );
+      fireEvent.press(submitButton);
+    },
+  },
+
+  "User submitted valid load an load unit": {
+    exec: async (context) => {
+      const { screen } = context;
+
+      const visibleScreenContainer = await screen.findByTestId(
+        /exercise-creation-form-load-.*-visible/i
+      );
+
+      const newLoadUnit = LoadUnit.Values.lbs;
+      const newLoadValue = faker.datatype.number({
+        min: 1,
+        max: 1000,
+      });
+      context.load = {
+        unit: newLoadUnit,
+        value: newLoadValue,
+      };
+
+      const loadValueInput = await within(
+        visibleScreenContainer
+      ).findByPlaceholderText(/Load/);
+      fireEvent(loadValueInput, "focus");
+      fireEvent.changeText(loadValueInput, newLoadValue);
+
+      const loadUnitPicker = await within(visibleScreenContainer).findByTestId(
+        /load-unit-.*/
+      );
+      fireEvent(loadUnitPicker, "focus");
+      fireEvent(loadUnitPicker, "onValueChange", {
+        target: {
+          value: newLoadUnit,
+        },
+      });
 
       const submitButton = await within(visibleScreenContainer).findByText(
         /submit/i
@@ -326,6 +477,10 @@ describe("Xstate tests generations", () => {
             createdExerciseName: "",
             createdExerciseRepCounter: 0,
             createdExerciseSetCounter: 0,
+            load: {
+              unit: "kg",
+              value: 0,
+            },
           });
         });
       });

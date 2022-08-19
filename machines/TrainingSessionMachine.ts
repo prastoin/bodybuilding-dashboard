@@ -242,7 +242,6 @@ export const createTrainingSessionMachine = ({
               load,
             },
           } = event as ExerciseFormCreationDoneInvokeEvent;
-          console.log({ event });
 
           const newExerciseActor: TrainingSessionExerciseActorRef = spawn(
             createTrainingSessionExerciseMachine({
