@@ -20,7 +20,7 @@ export const renderApp = () => {
 const getRandomMinuteSecondDuration = () =>
   faker.datatype.number({
     min: 0,
-    max: 60,
+    max: 59,
   });
 
 export type TestingScreen = ReturnType<typeof render>;

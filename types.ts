@@ -2,7 +2,7 @@ import z from "zod";
 
 export const NonEmptyString = z.string().min(1);
 
-export const MinuteSecondDuration = z.number().min(0).max(60);
+export const MinuteSecondDuration = z.number().min(0).max(59);
 export type MinuteSecondDuration = z.infer<typeof MinuteSecondDuration>;
 
 export const LoadUnit = z.enum(["lbs", "kg"]);

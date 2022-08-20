@@ -9,6 +9,7 @@ import ExerciseCreationFormLoad from "../screens/ExerciseLoad/ExerciseCreationFo
 import ExerciseLoadEditor from "../screens/ExerciseLoad/ExerciseLoadEditor";
 import ExerciseCreationFormName from "../screens/ExerciseName/ExerciseCreationFormName";
 import ExerciseEditorFormName from "../screens/ExerciseName/ExerciseEditorFormName";
+import ExerciseRestEditor from "../screens/ExerciseRest/ExerciseRestEditor";
 import ExerciseCreationFormSetAndRep from "../screens/ExerciseSetAndRep/ExerciseSetAndRepCreationForm";
 import ExerciseSetAndRepEditor from "../screens/ExerciseSetAndRep/ExerciseSetAndRepEditor";
 import { HomeScreen } from "../screens/Home";
@@ -106,6 +107,7 @@ export type ProgramBuilderStackParamList = {
   ExerciseEditorFormName: EditorFormScreenParams;
   ExerciseEditorFormSetAndRep: EditorFormScreenParams;
   ExerciseEditorFormLoad: EditorFormScreenParams;
+  ExerciseEditorFormRest: EditorFormScreenParams;
   ExerciseCreationForm: NavigatorScreenParams<ExerciseCreationFormParamList>;
 };
 
@@ -147,6 +149,12 @@ export type ProgramBuilderExerciseEditorFormLoadScreenProps =
     "ExerciseEditorFormLoad"
   >;
 
+export type ProgramBuilderExerciseEditorFormRestScreenProps =
+  NativeStackScreenProps<
+    ProgramBuilderStackParamList,
+    "ExerciseEditorFormRest"
+  >;
+
 const ProgramBuilderStackNavigator: React.FC = () => {
   return (
     <ProgramBuilderStack.Navigator
@@ -170,7 +178,6 @@ const ProgramBuilderStackNavigator: React.FC = () => {
         name="TrainingSessionEditorFormName"
         component={TrainingSessionEditorFormName}
       />
-
       <ProgramBuilderStack.Screen
         name="ExerciseEditorFormName"
         component={ExerciseEditorFormName}
@@ -179,10 +186,13 @@ const ProgramBuilderStackNavigator: React.FC = () => {
         name="ExerciseEditorFormSetAndRep"
         component={ExerciseSetAndRepEditor}
       />
-
       <ProgramBuilderStack.Screen
         name="ExerciseEditorFormLoad"
         component={ExerciseLoadEditor}
+      />
+      <ProgramBuilderStack.Screen
+        name="ExerciseEditorFormRest"
+        component={ExerciseRestEditor}
       />
 
       <ProgramBuilderStack.Screen

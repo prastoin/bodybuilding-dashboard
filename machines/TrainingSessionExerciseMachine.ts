@@ -4,7 +4,7 @@ import {
   navigateBackFromRef,
   navigateFromRef,
 } from "../navigation/RootNavigation";
-import { ExerciseLoad, TrainingSessionExercise } from "../types";
+import { ExerciseLoad, ExerciseRest, TrainingSessionExercise } from "../types";
 
 type TrainingSessionExerciseMachineEvent =
   | {
@@ -40,6 +40,16 @@ type TrainingSessionExerciseMachineEvent =
   | {
       type: "USER_FINISHED_LOAD_EDITION";
       load: ExerciseLoad;
+    }
+  | {
+      type: "USER_ENTERED_REST_EDITOR";
+    }
+  | {
+      type: "USER_CANCELLED_REST_EDITION";
+    }
+  | {
+      type: "USER_FINISHED_REST_EDITION";
+      rest: ExerciseRest;
     };
 
 type TrainingSessionExerciseMachineContext = TrainingSessionExercise;
@@ -101,6 +111,10 @@ export const createTrainingSessionExerciseMachine = ({
               target: "User is editing load",
             },
 
+            USER_ENTERED_REST_EDITOR: {
+              target: "User is editing rest",
+            },
+
             REMOVE_EXERCISE: {
               actions: ["Forward exercise deletion to program builder"],
             },
@@ -157,6 +171,21 @@ export const createTrainingSessionExerciseMachine = ({
             },
           },
         },
+
+        "User is editing rest": {
+          entry: "Navigate to rest editor screen",
+
+          on: {
+            USER_FINISHED_REST_EDITION: {
+              target: "Idle",
+              actions: ["Assign new rest to context", "Navigate go back"],
+            },
+
+            USER_CANCELLED_REST_EDITION: {
+              target: "Idle",
+            },
+          },
+        },
       },
     },
     {
@@ -174,6 +203,16 @@ export const createTrainingSessionExerciseMachine = ({
         "Navigate to set and rep editor screen": (context) => {
           navigateFromRef("ProgramBuilder", {
             screen: "ExerciseEditorFormSetAndRep",
+            params: {
+              exerciseId: context.uuid,
+              trainingSessionId: parentTrainingSessionId,
+            },
+          });
+        },
+
+        "Navigate to rest editor screen": (context) => {
+          navigateFromRef("ProgramBuilder", {
+            screen: "ExerciseEditorFormRest",
             params: {
               exerciseId: context.uuid,
               trainingSessionId: parentTrainingSessionId,
@@ -208,6 +247,13 @@ export const createTrainingSessionExerciseMachine = ({
           return {
             ...context,
             load: load,
+          };
+        }),
+
+        "Assign new rest to context": assign((context, { rest }) => {
+          return {
+            ...context,
+            rest,
           };
         }),
 
