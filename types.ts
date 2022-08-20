@@ -1,5 +1,8 @@
 import z from "zod";
 
+export const SERVER_ENDPOINT = `http://${process.env.SERVER_HOST!}:${process.env
+  .SERVER_PORT!}`;
+
 export const NonEmptyString = z.string().min(1);
 
 export const MinuteSecondDuration = z.number().min(0).max(59);

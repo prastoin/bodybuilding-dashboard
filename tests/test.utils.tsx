@@ -25,9 +25,6 @@ const getRandomMinuteSecondDuration = () =>
 
 export type TestingScreen = ReturnType<typeof render>;
 
-export const SERVER_ENDPOINT = `http://${process.env.SERVER_HOST!}:${process.env
-  .SERVER_PORT!}`;
-
 export const getBodyBuildingProgram = (): BodybuildingProgram => {
   return {
     programName: faker.name.jobDescriptor(),
