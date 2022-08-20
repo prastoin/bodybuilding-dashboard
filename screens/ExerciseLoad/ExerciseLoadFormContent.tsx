@@ -46,7 +46,7 @@ export const ExerciseFormLoadContent: React.FC<
   const tailwind = useTailwind();
   return (
     <AppScreen testID={testId}>
-      <View style={tailwind("flex-row")}>
+      <View style={tailwind("flex-row w-full")}>
         <Controller
           control={control}
           rules={{
@@ -70,7 +70,7 @@ export const ExerciseFormLoadContent: React.FC<
           </Text>
         )}
       </View>
-      <View>
+      <View style={tailwind("flex-row w-full")}>
         <Controller
           control={control}
           rules={{
@@ -78,6 +78,7 @@ export const ExerciseFormLoadContent: React.FC<
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <Picker
+              style={tailwind("w-full")}
               testID={`load-unit-${value}`}
               selectedValue={value}
               onValueChange={onChange}

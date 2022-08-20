@@ -18,7 +18,6 @@ import {
   createTrainingSessionCreationFormMachine,
   TrainingSessionFormDoneInvokeEvent,
 } from "./TrainingSessionCreationFormMachine";
-import { TrainingSessionExerciseActorRef } from "./TrainingSessionExerciseMachine";
 import {
   createTrainingSessionMachine,
   TrainingSessionActorRef,
