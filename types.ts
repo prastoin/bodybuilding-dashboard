@@ -2,6 +2,9 @@ import z from "zod";
 
 export const NonEmptyString = z.string().min(1);
 
+export const MinuteSecondDuration = z.number().min(0).max(60);
+export type MinuteSecondDuration = z.infer<typeof MinuteSecondDuration>;
+
 export const LoadUnit = z.enum(["lbs", "kg"]);
 export type LoadUnit = z.infer<typeof LoadUnit>;
 
@@ -11,12 +14,19 @@ export const ExerciseLoad = z.object({
 });
 export type ExerciseLoad = z.infer<typeof ExerciseLoad>;
 
+export const ExerciseRest = z.object({
+  minute: MinuteSecondDuration,
+  second: MinuteSecondDuration,
+});
+export type ExerciseRest = z.infer<typeof ExerciseRest>;
+
 export const TrainingSessionExercise = z.object({
   uuid: z.string().uuid(),
   exerciseName: NonEmptyString,
   setCounter: z.number().min(1).max(10),
   repCounter: z.number().min(1).max(20),
   load: ExerciseLoad,
+  rest: ExerciseRest,
 });
 export type TrainingSessionExercise = z.infer<typeof TrainingSessionExercise>;
 
