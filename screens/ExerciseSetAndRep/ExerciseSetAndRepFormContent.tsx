@@ -52,8 +52,9 @@ export const ExerciseFormSetAndRepContent: React.FC<
   const tailwind = useTailwind();
   return (
     <AppScreen testID={testId}>
-      <View style={tailwind("flex-row")}>
+      <View style={tailwind("flex-col w-full")}>
         <>
+          <Text>Sets</Text>
           <Controller
             control={control}
             rules={{
@@ -63,6 +64,7 @@ export const ExerciseFormSetAndRepContent: React.FC<
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Picker
+                style={tailwind("w-full")}
                 testID={`set-counter-${value}`}
                 selectedValue={value}
                 onValueChange={onChange}
@@ -90,9 +92,9 @@ export const ExerciseFormSetAndRepContent: React.FC<
           )}
         </>
 
-        <Text>X</Text>
-
         <>
+          <Text>Reps</Text>
+
           <Controller
             control={control}
             rules={{
@@ -102,6 +104,7 @@ export const ExerciseFormSetAndRepContent: React.FC<
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Picker
+                style={tailwind("w-full")}
                 testID={`rep-counter-${value}`}
                 selectedValue={value}
                 onValueChange={onChange}

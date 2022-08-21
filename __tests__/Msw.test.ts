@@ -1,5 +1,5 @@
 import supertest from "supertest";
-import { SERVER_ENDPOINT } from "../tests/test.utils";
+import { SERVER_ENDPOINT } from "../types";
 
 test("allows user to log in", async () => {
   await supertest(SERVER_ENDPOINT)

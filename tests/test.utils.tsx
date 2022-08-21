@@ -17,10 +17,13 @@ export const renderApp = () => {
   return render(<App />);
 };
 
-export type TestingScreen = ReturnType<typeof render>;
+const getRandomMinuteSecondDuration = () =>
+  faker.datatype.number({
+    min: 0,
+    max: 59,
+  });
 
-export const SERVER_ENDPOINT = `http://${process.env.SERVER_HOST!}:${process.env
-  .SERVER_PORT!}`;
+export type TestingScreen = ReturnType<typeof render>;
 
 export const getBodyBuildingProgram = (): BodybuildingProgram => {
   return {
@@ -45,21 +48,9 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
               unit: "kg",
               value: 42,
             },
-          },
-          {
-            uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
-            repCounter: faker.datatype.number({
-              max: 20,
-              min: 1,
-            }),
-            setCounter: faker.datatype.number({
-              max: 10,
-              min: 1,
-            }),
-            load: {
-              unit: "kg",
-              value: 42,
+            rest: {
+              minute: getRandomMinuteSecondDuration(),
+              second: getRandomMinuteSecondDuration(),
             },
           },
           {
@@ -76,6 +67,30 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
             load: {
               unit: "kg",
               value: 42,
+            },
+            rest: {
+              minute: getRandomMinuteSecondDuration(),
+              second: getRandomMinuteSecondDuration(),
+            },
+          },
+          {
+            uuid: uuidv4(),
+            exerciseName: faker.name.jobTitle(),
+            repCounter: faker.datatype.number({
+              max: 20,
+              min: 1,
+            }),
+            setCounter: faker.datatype.number({
+              max: 10,
+              min: 1,
+            }),
+            load: {
+              unit: "kg",
+              value: 42,
+            },
+            rest: {
+              minute: getRandomMinuteSecondDuration(),
+              second: getRandomMinuteSecondDuration(),
             },
           },
         ],
@@ -99,6 +114,10 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
               unit: "kg",
               value: 42,
             },
+            rest: {
+              minute: getRandomMinuteSecondDuration(),
+              second: getRandomMinuteSecondDuration(),
+            },
           },
           {
             uuid: uuidv4(),
@@ -114,6 +133,10 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
             load: {
               unit: "kg",
               value: 42,
+            },
+            rest: {
+              minute: getRandomMinuteSecondDuration(),
+              second: getRandomMinuteSecondDuration(),
             },
           },
         ],

@@ -23,12 +23,16 @@
   margin-bottom: 0.25rem
 }
 
-.hidden {
-  display: none
+.w-8 {
+  width: 2rem
 }
 
 .w-11\/12 {
   width: 91.666667%
+}
+
+.w-full {
+  width: 100%
 }
 
 .flex-1 {
@@ -66,10 +70,6 @@
 
 .p-1 {
   padding: 0.25rem
-}
-
-.pb-1 {
-  padding-bottom: 0.25rem
 }
 
 .pb-2 {

@@ -61,6 +61,10 @@ export const createExerciseCreationFormMachine = (
           unit: "kg",
           value: 0,
         },
+        rest: {
+          minute: 0,
+          second: 0,
+        },
       },
       initial: "Exercise name step",
       states: {

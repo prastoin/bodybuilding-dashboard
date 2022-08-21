@@ -5,31 +5,31 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Button, Text, TextInput, View } from "react-native";
 import { useTailwind } from "tailwind-rn/dist";
 import AppScreen from "../../components/AppScreen";
-import { ExerciseLoad } from "../../types";
+import { ExerciseRest } from "../../types";
 
-export interface ExerciseLoadFormFieldValues extends ExerciseLoad {}
+export interface ExerciseRestFormFieldValues extends ExerciseRest {}
 
-interface ExerciseLoadFormContentProps {
-  handleOnSubmit: SubmitHandler<ExerciseLoadFormFieldValues>;
+interface ExerciseRestFormContentProps {
+  handleOnSubmit: SubmitHandler<ExerciseRestFormFieldValues>;
   handleOnGoBack: () => void;
   testId: string;
-  defaultLoad?: ExerciseLoad;
+  defaultRest?: ExerciseRest;
 }
 
-export const ExerciseFormLoadContent: React.FC<
-  ExerciseLoadFormContentProps
-> = ({ handleOnSubmit, handleOnGoBack, testId, defaultLoad }) => {
+export const ExerciseFormRestContent: React.FC<
+  ExerciseRestFormContentProps
+> = ({ handleOnSubmit, handleOnGoBack, testId, defaultRest }) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<ExerciseLoadFormFieldValues>({
+  } = useForm<ExerciseRestFormFieldValues>({
     defaultValues:
-      defaultLoad !== undefined
-        ? defaultLoad
+      defaultRest !== undefined
+        ? defaultRest
         : {
-            unit: "kg",
-            value: 0,
+            minute: 0,
+            second: 0,
           },
   });
 
@@ -43,56 +43,64 @@ export const ExerciseFormLoadContent: React.FC<
     [navigation]
   );
 
+  const getDurationPickerItems = () => {
+    return Array.from({ length: 60 }).map((_v, index) => (
+      <Picker.Item label={`${index}`} value={index} />
+    ));
+  };
+
   const tailwind = useTailwind();
   return (
     <AppScreen testID={testId}>
-      <View style={tailwind("flex-row w-full")}>
+      <View>
         <Controller
           control={control}
           rules={{
             required: true,
-            min: 1,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              value={`${value}`}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              placeholder="Load"
-              keyboardType="numeric"
-            />
-          )}
-          name="value"
-        />
-        {errors.value && (
-          <Text style={tailwind("text-red-500")} accessibilityRole="alert">
-            A load value must be set.
-          </Text>
-        )}
-      </View>
-      <View style={tailwind("flex-row w-full")}>
-        <Controller
-          control={control}
-          rules={{
-            required: true,
+            min: 0,
+            max: 59,
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <Picker
-              style={tailwind("w-full")}
-              testID={`load-unit-${value}`}
+              testID={`rest-minute-${value}`}
               selectedValue={value}
               onValueChange={onChange}
               onBlur={onBlur}
             >
-              <Picker.Item label="kg" value={"kg"} />
-              <Picker.Item label="lbs" value={"lbs"} />
+              {getDurationPickerItems()}
             </Picker>
           )}
-          name="unit"
+          name="minute"
         />
-        {errors.unit && (
+        {errors.minute && (
           <Text style={tailwind("text-red-500")} accessibilityRole="alert">
-            An unknown error occured with your load unit.
+            An unknown error occured with your minute duration.
+          </Text>
+        )}
+      </View>
+      <View>
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+            min: 0,
+            max: 60,
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Picker
+              testID={`rest-second-${value}`}
+              selectedValue={value}
+              onValueChange={onChange}
+              onBlur={onBlur}
+            >
+              {getDurationPickerItems()}
+            </Picker>
+          )}
+          name="second"
+        />
+        {errors.second && (
+          <Text style={tailwind("text-red-500")} accessibilityRole="alert">
+            An unknown error occured with your second duration.
           </Text>
         )}
       </View>

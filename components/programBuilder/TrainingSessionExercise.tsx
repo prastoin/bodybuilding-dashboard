@@ -21,7 +21,7 @@ export const TrainingSessionExerciseItem: React.FC<
   );
   const tailwind = useTailwind();
 
-  const { exerciseName, uuid, repCounter, setCounter, load } =
+  const { exerciseName, uuid, repCounter, setCounter, load, rest } =
     exerciseMachineState.context;
 
   function handleRemoveExerciseButtonOnPress() {
@@ -45,6 +45,12 @@ export const TrainingSessionExerciseItem: React.FC<
   function handleEditLoadOnPress() {
     sendToExerciseMachine({
       type: "USER_ENTERED_LOAD_EDITOR",
+    });
+  }
+
+  function handleEditRestOnPress() {
+    sendToExerciseMachine({
+      type: "USER_ENTERED_REST_EDITOR",
     });
   }
 
@@ -99,6 +105,19 @@ export const TrainingSessionExerciseItem: React.FC<
             color="black"
             testID="edit-exercise-load"
             onPress={handleEditLoadOnPress}
+          />
+        </View>
+
+        <View testID="exercise-rest" style={tailwind("flex-row")}>
+          <Text>{rest.minute} min</Text>
+          <Text>{rest.second} sec</Text>
+
+          <AntDesign
+            name="edit"
+            size={24}
+            color="black"
+            testID="edit-exercise-rest"
+            onPress={handleEditRestOnPress}
           />
         </View>
       </View>

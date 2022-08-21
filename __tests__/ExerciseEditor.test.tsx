@@ -5,13 +5,13 @@ import {
   getBodyBuildingProgram,
   getProgramBuilderTabIcon,
   renderApp,
-  SERVER_ENDPOINT,
   within,
 } from "../tests/test.utils";
 import { faker } from "@faker-js/faker";
 import {
   LoadUnit,
   RetrieveUserBodyBuildingProgramResponseBody,
+  SERVER_ENDPOINT,
 } from "../types";
 
 test("User can edit an exercise name", async () => {
@@ -262,4 +262,92 @@ test("User can edit an exercise load field", async () => {
     firstTrainingSessionFirstExerciseContainer
   ).findByTestId(`exercise-load`);
   await within(loadContainer).findByText(new RegExp(`${newLoad}.*${newUnit}`));
+});
+
+test("User can edit an exercise rest field", async () => {
+  const bodyBuildingProgram = getBodyBuildingProgram();
+  server.use(
+    rest.post<
+      undefined,
+      Record<string, never>,
+      RetrieveUserBodyBuildingProgramResponseBody
+    >(`${SERVER_ENDPOINT}/retrieve-program`, (_req, res, ctx) => {
+      return res(ctx.status(200), ctx.json(bodyBuildingProgram));
+    })
+  );
+
+  const screen = renderApp();
+
+  await screen.findByTestId("home-screen-container-visible");
+
+  const programBuilderBottomTab = await getProgramBuilderTabIcon(screen);
+
+  fireEvent.press(programBuilderBottomTab);
+
+  const programBuilderContainer = await screen.findByTestId(
+    "program-builder-screen-container-visible"
+  );
+
+  const exercise = bodyBuildingProgram.trainingSessions[0].exercises[0];
+  const exerciseId = exercise.uuid;
+  let firstTrainingSessionFirstExerciseContainer = await within(
+    programBuilderContainer
+  ).findByTestId(`training-session-exercise-container-${exerciseId}`);
+  let restContainer = await within(
+    firstTrainingSessionFirstExerciseContainer
+  ).findByTestId(`exercise-rest`);
+  await within(restContainer).findByText(
+    new RegExp(`${exercise.rest.minute}.*min`)
+  );
+  await within(restContainer).findByText(
+    new RegExp(`${exercise.rest.second}.*sec`)
+  );
+
+  const editRestButton = await within(
+    firstTrainingSessionFirstExerciseContainer
+  ).findByTestId(`edit-exercise-rest`);
+
+  fireEvent.press(editRestButton);
+
+  const restEditorScreenContainer = await screen.findByTestId(
+    `exercise-editor-form-rest-${exerciseId}-visible`
+  );
+
+  const minuteRestPicker = await within(restEditorScreenContainer).findByTestId(
+    `rest-minute-${exercise.rest.minute}`
+  );
+  const newMinuteValue = faker.datatype.number({
+    min: 0,
+    max: 60,
+  });
+  fireEvent(minuteRestPicker, "focus");
+  fireEvent(minuteRestPicker, "onValueChange", {
+    target: {
+      value: newMinuteValue,
+    },
+  });
+
+  const secondRestPicker = await within(restEditorScreenContainer).findByTestId(
+    `rest-second-${exercise.rest.second}`
+  );
+  const newSecondValue = faker.datatype.number({
+    min: 0,
+    max: 60,
+  });
+  fireEvent(secondRestPicker, "focus");
+  fireEvent(secondRestPicker, "onValueChange", {
+    target: {
+      value: newSecondValue,
+    },
+  });
+
+  const submitButton = await within(restEditorScreenContainer).findByText(
+    /Submit/i
+  );
+  fireEvent.press(submitButton);
+
+  await screen.findByTestId("program-builder-screen-container-visible");
+
+  await within(restContainer).findByText(new RegExp(`${newMinuteValue}.*min`));
+  await within(restContainer).findByText(new RegExp(`${newSecondValue}.*sec`));
 });

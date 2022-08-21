@@ -176,7 +176,7 @@ export const createTrainingSessionMachine = ({
           );
 
           const exerciseActorRefCollection = initialExercisesToSpawn.map(
-            ({ exerciseName, uuid, repCounter, setCounter, load }) => {
+            ({ exerciseName, uuid, repCounter, setCounter, load, rest }) => {
               const newTrainingSessionExerciseActorRef: TrainingSessionExerciseActorRef =
                 spawn(
                   createTrainingSessionExerciseMachine({
@@ -186,6 +186,7 @@ export const createTrainingSessionMachine = ({
                     repCounter,
                     setCounter,
                     load,
+                    rest,
                   }),
                   { sync: true, name: uuid }
                 );
@@ -240,6 +241,7 @@ export const createTrainingSessionMachine = ({
               repCounter,
               setCounter,
               load,
+              rest,
             },
           } = event as ExerciseFormCreationDoneInvokeEvent;
 
@@ -251,6 +253,7 @@ export const createTrainingSessionMachine = ({
               repCounter,
               setCounter,
               load,
+              rest,
             }),
             { sync: true, name: newTrainingSessionId }
           );
