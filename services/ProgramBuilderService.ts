@@ -1,6 +1,8 @@
 import redaxios from "redaxios";
-import { SERVER_ENDPOINT } from "../tests/test.utils";
-import { RetrieveUserBodyBuildingProgramResponseBody } from "../types";
+import {
+  RetrieveUserBodyBuildingProgramResponseBody,
+  SERVER_ENDPOINT,
+} from "../types";
 
 export async function sendRetrieveUserBodyBuildingProgram(): Promise<RetrieveUserBodyBuildingProgramResponseBody> {
   const response = await redaxios.post(`${SERVER_ENDPOINT}/retrieve-program`);

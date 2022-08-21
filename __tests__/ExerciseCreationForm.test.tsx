@@ -4,7 +4,6 @@ import {
   getBodyBuildingProgram,
   render,
   renderApp,
-  SERVER_ENDPOINT,
   userNavigatesBackFromHeaderBackButton,
   within,
 } from "../tests/test.utils";
@@ -16,6 +15,7 @@ import {
   ExerciseLoad,
   LoadUnit,
   RetrieveUserBodyBuildingProgramResponseBody,
+  SERVER_ENDPOINT,
 } from "../types";
 import { faker } from "@faker-js/faker";
 

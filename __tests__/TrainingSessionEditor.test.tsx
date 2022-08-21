@@ -7,11 +7,13 @@ import {
   getBodyBuildingProgram,
   getProgramBuilderTabIcon,
   renderApp,
-  SERVER_ENDPOINT,
   waitFor,
   within,
 } from "../tests/test.utils";
-import { RetrieveUserBodyBuildingProgramResponseBody } from "../types";
+import {
+  RetrieveUserBodyBuildingProgramResponseBody,
+  SERVER_ENDPOINT,
+} from "../types";
 
 test("On app start user program is retrieved", async () => {
   const bodyBuildingProgram = getBodyBuildingProgram();

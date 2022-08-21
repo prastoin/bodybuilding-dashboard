@@ -3,7 +3,6 @@ import {
   fireEvent,
   getAllTrainingSessionContainer,
   getLastTrainingSessionContainer,
-  getTrainingSessionLastExercise,
   render,
   renderApp,
   waitFor,
@@ -11,7 +10,6 @@ import {
 } from "../tests/test.utils";
 import { createModel } from "@xstate/test";
 import invariant from "invariant";
-import { faker } from "@faker-js/faker";
 
 test("User goes to program builder screen from home", async () => {
   const screen = renderApp();
