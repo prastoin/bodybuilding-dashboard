@@ -2,6 +2,7 @@ import { createMachine } from "xstate";
 import {
   fireEvent,
   getBodyBuildingProgram,
+  getRandomMinuteSecondDuration,
   render,
   renderApp,
   userNavigatesBackFromHeaderBackButton,
@@ -13,6 +14,7 @@ import { rest } from "msw";
 import {
   BodybuildingProgram,
   ExerciseLoad,
+  ExerciseRest,
   LoadUnit,
   RetrieveUserBodyBuildingProgramResponseBody,
   SERVER_ENDPOINT,
@@ -174,6 +176,17 @@ const programBuilderTestMachine = createMachine({
             },
           },
         },
+
+        "User went back on this form step": {
+          meta: {
+            test: async ({ screen }: TestingContext) => {
+              // This assertion is only to provide a full test coverage on every states node
+              await screen.findByTestId(
+                /exercise-creation-form-load-.*-visible/i
+              );
+            },
+          },
+        },
       },
 
       on: {
@@ -187,6 +200,34 @@ const programBuilderTestMachine = createMachine({
         },
 
         "User submitted valid load an load unit": {
+          target: "Exercise creation form rest step",
+        },
+      },
+    },
+
+    "Exercise creation form rest step": {
+      meta: {
+        test: async ({ screen, rest }: TestingContext) => {
+          const visibleContainer = await screen.findByTestId(
+            /exercise-creation-form-rest-.*-visible/i
+          );
+
+          await within(visibleContainer).findByTestId(
+            `rest-second-${rest.second}`
+          );
+          await within(visibleContainer).findByTestId(
+            `rest-minute-${rest.minute}`
+          );
+        },
+      },
+
+      on: {
+        "User navigates back": {
+          target:
+            "Exercise creation form load step.User went back on this form step",
+        },
+
+        "User submitted valid rest minute and second value": {
           target: "Exercise creation form is completed",
         },
       },
@@ -221,6 +262,7 @@ interface TestingContext {
   createdExerciseSetCounter: number;
   createdExerciseRepCounter: number;
   load: ExerciseLoad;
+  rest: ExerciseRest;
 }
 
 const programBuilderTestModel = createModel<TestingContext>(
@@ -427,6 +469,48 @@ const programBuilderTestModel = createModel<TestingContext>(
     },
   },
 
+  "User submitted valid rest minute and second value": {
+    exec: async (context) => {
+      const { screen } = context;
+
+      const visibleScreenContainer = await screen.findByTestId(
+        /exercise-creation-form-rest-.*-visible/i
+      );
+
+      const newMinuteValue = getRandomMinuteSecondDuration();
+      const restMinuePicker = await within(visibleScreenContainer).findByTestId(
+        /rest-minute-.*/
+      );
+      fireEvent(restMinuePicker, "focus");
+      fireEvent(restMinuePicker, "onValueChange", {
+        target: {
+          value: newMinuteValue,
+        },
+      });
+
+      const newSecondValue = getRandomMinuteSecondDuration();
+      const restSecondPicker = await within(
+        visibleScreenContainer
+      ).findByTestId(/rest-second-.*/);
+      fireEvent(restSecondPicker, "focus");
+      fireEvent(restSecondPicker, "onValueChange", {
+        target: {
+          value: newSecondValue,
+        },
+      });
+
+      const submitButton = await within(visibleScreenContainer).findByText(
+        /submit/i
+      );
+      fireEvent.press(submitButton);
+
+      context.rest = {
+        minute: newMinuteValue,
+        second: newSecondValue,
+      };
+    },
+  },
+
   "User navigates back": {
     exec: async (context) => {
       userNavigatesBackFromHeaderBackButton(context.screen);
@@ -480,6 +564,10 @@ describe("Xstate tests generations", () => {
             load: {
               unit: "kg",
               value: 0,
+            },
+            rest: {
+              minute: 0,
+              second: 0,
             },
           });
         });

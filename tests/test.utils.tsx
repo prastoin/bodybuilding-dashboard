@@ -17,7 +17,7 @@ export const renderApp = () => {
   return render(<App />);
 };
 
-const getRandomMinuteSecondDuration = () =>
+export const getRandomMinuteSecondDuration = () =>
   faker.datatype.number({
     min: 0,
     max: 59,
