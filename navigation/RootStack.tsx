@@ -9,6 +9,7 @@ import ExerciseCreationFormLoad from "../screens/ExerciseLoad/ExerciseCreationFo
 import ExerciseLoadEditor from "../screens/ExerciseLoad/ExerciseLoadEditor";
 import ExerciseCreationFormName from "../screens/ExerciseName/ExerciseCreationFormName";
 import ExerciseEditorFormName from "../screens/ExerciseName/ExerciseEditorFormName";
+import ExerciseCreationFormRest from "../screens/ExerciseRest/ExerciseCreationFormRest";
 import ExerciseRestEditor from "../screens/ExerciseRest/ExerciseRestEditor";
 import ExerciseCreationFormSetAndRep from "../screens/ExerciseSetAndRep/ExerciseSetAndRepCreationForm";
 import ExerciseSetAndRepEditor from "../screens/ExerciseSetAndRep/ExerciseSetAndRepEditor";
@@ -218,6 +219,7 @@ export type ExerciseCreationFormParamList = {
   Name: ExerciseCreationFormScreenProps;
   SetAndRep: ExerciseCreationFormScreenProps;
   Load: ExerciseCreationFormScreenProps;
+  Rest: ExerciseCreationFormScreenProps;
 };
 
 const ExerciseCreationForm =
@@ -256,6 +258,14 @@ const ExerciseCreationFormStackNavigator: React.FC = () => {
           headerTitle: "Exercise starting load",
         }}
         component={ExerciseCreationFormLoad}
+      />
+
+      <ExerciseCreationForm.Screen
+        name="Rest"
+        options={{
+          headerTitle: "Exercise default rest",
+        }}
+        component={ExerciseCreationFormRest}
       />
     </ExerciseCreationForm.Navigator>
   );

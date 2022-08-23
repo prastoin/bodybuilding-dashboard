@@ -9,7 +9,7 @@ import {
 } from "xstate";
 import { sendParent } from "xstate/lib/actions";
 import { navigateFromRef } from "../navigation/RootNavigation";
-import { ExerciseLoad, TrainingSessionExercise } from "../types";
+import { ExerciseLoad, ExerciseRest, TrainingSessionExercise } from "../types";
 
 export type ExerciseCreationFormMachineEvents =
   | {
@@ -25,6 +25,10 @@ export type ExerciseCreationFormMachineEvents =
   | {
       type: "SET_EXERCISE_LOAD_AND_GO_NEXT";
       load: ExerciseLoad;
+    }
+  | {
+      type: "SET_EXERCISE_REST_AND_GO_NEXT";
+      rest: ExerciseRest;
     };
 
 export type ExerciseCreationFormMachineContext = TrainingSessionExercise;
@@ -103,12 +107,28 @@ export const createExerciseCreationFormMachine = (
         "Exercise load step": {
           on: {
             SET_EXERCISE_LOAD_AND_GO_NEXT: {
-              target: "Form is completed",
-              actions: "Assign exercise load to context",
+              target: "Exercise rest step",
+              actions: [
+                "Assign exercise load to context",
+                "Navigate to rest exercise creation form screen",
+              ],
             },
 
             USER_WENT_TO_PREVIOUS_SCREEN: {
               target: "Set and rep step",
+            },
+          },
+        },
+
+        "Exercise rest step": {
+          on: {
+            SET_EXERCISE_REST_AND_GO_NEXT: {
+              target: "Form is completed",
+              actions: "Assign exercise rest to context",
+            },
+
+            USER_WENT_TO_PREVIOUS_SCREEN: {
+              target: "Exercise load step",
             },
           },
         },
@@ -123,6 +143,13 @@ export const createExerciseCreationFormMachine = (
     },
     {
       actions: {
+        "Assign exercise rest to context": assign((context, { rest }) => {
+          return {
+            ...context,
+            rest,
+          };
+        }),
+
         "Assign exercise name to context": assign((context, { name }) => {
           return {
             ...context,
@@ -163,6 +190,17 @@ export const createExerciseCreationFormMachine = (
             screen: "ExerciseCreationForm",
             params: {
               screen: "Load",
+              params: {
+                trainingSessionId: parentTrainingSessionId,
+              },
+            },
+          }),
+
+        "Navigate to rest exercise creation form screen": () =>
+          navigateFromRef("ProgramBuilder", {
+            screen: "ExerciseCreationForm",
+            params: {
+              screen: "Rest",
               params: {
                 trainingSessionId: parentTrainingSessionId,
               },
