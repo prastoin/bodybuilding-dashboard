@@ -16,7 +16,9 @@ export const SessionTrackerIndex: React.FC<SessionTrackIndexScreenProps> = ({
       </Text>
       <Button
         onPress={() => {
-          navigation.navigate("SessionTrackerCreationForm");
+          navigation.navigate("SessionTrackerCreationForm", {
+            screen: "Load",
+          });
         }}
         title="Start next training session tracker"
       ></Button>
