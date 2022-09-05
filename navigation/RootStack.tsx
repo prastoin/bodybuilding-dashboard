@@ -15,6 +15,8 @@ import ExerciseCreationFormSetAndRep from "../screens/ExerciseSetAndRep/Exercise
 import ExerciseSetAndRepEditor from "../screens/ExerciseSetAndRep/ExerciseSetAndRepEditor";
 import { HomeScreen } from "../screens/Home";
 import { ProgramBuilderScreen } from "../screens/ProgramBuilder";
+import { SessionTrackerFormLoad } from "../screens/SessionTracker/SessionTrackerFormLoad/SessionTrackerFormLoad";
+import { SessionTrackerIndex } from "../screens/SessionTracker/SessionTrackerIndex";
 import TrainingSessionCreationFormName from "../screens/TrainingSessionName/TrainingSessionCreationFormName";
 import TrainingSessionEditorFormName from "../screens/TrainingSessionName/TrainingSessionEditorFormName";
 
@@ -26,6 +28,7 @@ const BottomTabNavigator =
 export type BottomTabNavigatorParamList = {
   Home: NavigatorScreenParams<HomeStackParamList>;
   ProgramBuilder: NavigatorScreenParams<ProgramBuilderStackParamList>;
+  SessionTracker: NavigatorScreenParams<SessionTrackerCreationFormParamList>;
 };
 
 export type RootHomeScreenProps = NativeStackScreenProps<
@@ -50,6 +53,14 @@ export const BottomTab: React.FC = () => {
         options={{
           tabBarLabel: "Program Builder",
           tabBarTestID: "program-builder-bottom-tab",
+        }}
+      />
+      <BottomTabNavigator.Screen
+        name="SessionTracker"
+        component={SessionTrackerStackNavigator}
+        options={{
+          tabBarLabel: "Session tracker",
+          tabBarTestID: "session-tracker-bottom-tab",
         }}
       />
     </BottomTabNavigator.Navigator>
@@ -268,6 +279,84 @@ const ExerciseCreationFormStackNavigator: React.FC = () => {
         component={ExerciseCreationFormRest}
       />
     </ExerciseCreationForm.Navigator>
+  );
+};
+
+///
+
+// Session tracker stack
+
+export type SessionTrackerParamList = {
+  Index: undefined;
+  SessionTrackerCreationForm: NavigatorScreenParams<SessionTrackerCreationFormParamList>;
+};
+
+const SessionTracker = createNativeStackNavigator<SessionTrackerParamList>();
+
+export type SessionTrackIndexScreenProps = NativeStackScreenProps<
+  SessionTrackerParamList,
+  "Index"
+>;
+
+const SessionTrackerStackNavigator: React.FC = () => {
+  return (
+    <SessionTracker.Navigator
+      initialRouteName="Index"
+      screenOptions={{
+        headerShown: true,
+      }}
+    >
+      <SessionTracker.Screen
+        name="Index"
+        options={{
+          headerTitle: "Session trackers home",
+          headerShown: false,
+        }}
+        component={SessionTrackerIndex}
+      />
+
+      <SessionTracker.Screen
+        name="SessionTrackerCreationForm"
+        options={{
+          headerShown: false,
+        }}
+        component={SessionTrackerFormStackNavigator}
+      />
+    </SessionTracker.Navigator>
+  );
+};
+
+//
+
+// Session tracker form stack
+
+export type SessionTrackerCreationFormParamList = {
+  Load: undefined;
+};
+
+const SessionTrackerCreationForm =
+  createNativeStackNavigator<SessionTrackerCreationFormParamList>();
+
+export type SessionTrackFormLoadScreenProps = NativeStackScreenProps<
+  SessionTrackerCreationFormParamList,
+  "Load"
+>;
+
+const SessionTrackerFormStackNavigator: React.FC = () => {
+  return (
+    <SessionTrackerCreationForm.Navigator
+      screenOptions={{
+        headerShown: true,
+      }}
+    >
+      <SessionTrackerCreationForm.Screen
+        name="Load"
+        options={{
+          headerTitle: "Session tracker load",
+        }}
+        component={SessionTrackerFormLoad}
+      />
+    </SessionTrackerCreationForm.Navigator>
   );
 };
 

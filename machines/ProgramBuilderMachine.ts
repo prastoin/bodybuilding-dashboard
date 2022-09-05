@@ -34,7 +34,7 @@ export type ProgramBuilderMachineContext = Omit<
   trainingSessionActorRefCollection: TrainingSessionActorRef[];
 };
 
-export type AppMachineInterpreter = InterpreterFrom<
+export type ProgramBuilderMachineInterpreter = InterpreterFrom<
   ReturnType<typeof createProgramBuilderMachine>
 >;
 

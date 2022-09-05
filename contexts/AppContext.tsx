@@ -1,12 +1,18 @@
 import { useInterpret } from "@xstate/react";
 import React, { useContext, useMemo } from "react";
 import {
-  AppMachineInterpreter,
+  ProgramBuilderMachineInterpreter,
   createProgramBuilderMachine,
 } from "../machines/ProgramBuilderMachine";
+import {
+  createSessionTrackerMachine,
+  SessionTrackerMachineInterpreter,
+} from "../machines/SessionTrackerMachine";
+import { IS_TEST } from "../types";
 
 interface AppContextValue {
-  programBuilderService: AppMachineInterpreter;
+  programBuilderService: ProgramBuilderMachineInterpreter;
+  sessionTrackerService: SessionTrackerMachineInterpreter;
 }
 
 type AppContextProviderProps = {};
@@ -20,15 +26,26 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
     () => createProgramBuilderMachine(),
     []
   );
+
+  const sessionTrackerMachine = useMemo(
+    () => createSessionTrackerMachine(),
+    []
+  );
+
   const programBuilderService = useInterpret(programBuilderMachine, {
-    devTools: true,
+    devTools: IS_TEST,
+  });
+
+  const sessionTrackerService = useInterpret(sessionTrackerMachine, {
+    devTools: IS_TEST,
   });
   ///
 
   return (
     <AppContext.Provider
       value={{
-        programBuilderService: programBuilderService,
+        programBuilderService,
+        sessionTrackerService,
       }}
     >
       {children}
