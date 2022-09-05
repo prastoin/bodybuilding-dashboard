@@ -288,7 +288,7 @@ const ExerciseCreationFormStackNavigator: React.FC = () => {
 
 export type SessionTrackerParamList = {
   Index: undefined;
-  SessionTrackerCreationForm: undefined;
+  SessionTrackerCreationForm: NavigatorScreenParams<SessionTrackerCreationFormParamList>;
 };
 
 const SessionTracker = createNativeStackNavigator<SessionTrackerParamList>();
@@ -345,7 +345,6 @@ export type SessionTrackFormLoadScreenProps = NativeStackScreenProps<
 const SessionTrackerFormStackNavigator: React.FC = () => {
   return (
     <SessionTrackerCreationForm.Navigator
-      initialRouteName="Load"
       screenOptions={{
         headerShown: true,
       }}
