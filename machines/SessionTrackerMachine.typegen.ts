@@ -16,6 +16,6 @@ export interface Typegen0 {
   eventsCausingServices: {};
   eventsCausingGuards: {};
   eventsCausingDelays: {};
-  matchesStates: undefined;
+  matchesStates: "Idle" | "User entered session tracker instance";
   tags: never;
 }

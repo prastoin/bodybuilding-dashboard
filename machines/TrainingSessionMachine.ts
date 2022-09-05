@@ -40,7 +40,7 @@ type TrainingSessionMachineEvents =
       type: "_USER_CANCELLED_EXERCISE_CREATION_FORM";
     };
 
-type TrainingSessionMachineContext = {
+export type TrainingSessionMachineContext = {
   initialExercisesToSpawn?: TrainingSessionExercise[];
   trainingSessionName: string;
   uuid: string;
