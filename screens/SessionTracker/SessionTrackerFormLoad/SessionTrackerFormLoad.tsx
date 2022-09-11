@@ -3,7 +3,7 @@ import * as React from "react";
 import { Text } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppScreen from "../../../components/AppScreen";
-import { useSessionTrackerFormActorRef } from "../../../hooks/userSessionTrackerFormActorRef";
+import { retrieveSessionTrackerFormActorContext, useSessionTrackerFormActorRef } from "../../../hooks/userSessionTrackerFormActorRef";
 import { SessionTrackFormLoadScreenProps } from "../../../navigation/RootStack";
 
 export const SessionTrackerFormLoad: React.FC<
@@ -11,9 +11,9 @@ export const SessionTrackerFormLoad: React.FC<
 > = ({ navigation }) => {
   const tailwind = useTailwind();
 
-  const sessionTrackerFormActor = useSessionTrackerFormActorRef();
+  const sessionTrackerFormActorRef = useSessionTrackerFormActorRef();
 
-  if (sessionTrackerFormActor === undefined) {
+  if (sessionTrackerFormActorRef === undefined) {
     return (
       <AppScreen testID="session-tracker-form-load-container-error">
         <Text style={tailwind("text-blue-600")}>An unknown error occured</Text>
@@ -21,10 +21,7 @@ export const SessionTrackerFormLoad: React.FC<
     );
   }
 
-  const context = useSelector(
-    sessionTrackerFormActor,
-    (state) => state.trainingSessionMachineContext
-  );
+  const context = retrieveSessionTrackerFormActorContext({ actor: sessionTrackerFormActorRef, contextKey: "trainingSessionMachineContext" })
   return (
     <AppScreen testID="session-tracker-form-load-container">
       <Text style={tailwind("text-blue-600")}>Session tracker Load</Text>
