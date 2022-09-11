@@ -5,10 +5,10 @@ import { navigateFromRef } from "../navigation/RootNavigation";
 import { createSessionTrackerFormMachine } from "./SessionTrackerFormMachine";
 import { TrainingSessionMachineContext } from "./TrainingSessionMachine";
 
-export type SessionTrackerMachineEvents = EventFrom<
-  ReturnType<typeof createSessionTrackerMachine>
->;
-
+export type SessionTrackerMachineEvents = {
+  type: "USER_STARTED_NEXT_TRAINING_SESSION_TRACKER";
+  trainingSessionMachineContext: TrainingSessionMachineContext;
+}
 export type SessionTrackerMachineContext = {};
 
 export type SessionTrackerMachineInterpreter = InterpreterFrom<
@@ -21,10 +21,7 @@ export const createSessionTrackerMachine = () =>
     {
       schema: {
         context: {} as SessionTrackerMachineContext,
-        events: {} as {
-          type: "USER_STARTED_NEXT_TRAINING_SESSION_TRACKER";
-          trainingSessionMachineContext: TrainingSessionMachineContext;
-        },
+        events: {} as SessionTrackerMachineEvents,
       },
       context: {},
       tsTypes: {} as import("./SessionTrackerMachine.typegen").Typegen0,
@@ -33,7 +30,7 @@ export const createSessionTrackerMachine = () =>
         Idle: {
           on: {
             USER_STARTED_NEXT_TRAINING_SESSION_TRACKER: {
-              // entry: "Navigate to session tracker first step",
+              target: "User entered session tracker instance"
             },
           },
         },
@@ -43,12 +40,10 @@ export const createSessionTrackerMachine = () =>
 
           invoke: {
             id: "InvokedSessionTrackerForm",
-            src: () => {
-              return createSessionTrackerFormMachine();
-            },
+            src: createSessionTrackerFormMachine,
 
             data: (_context, { trainingSessionMachineContext }) => ({
-              trainingSessionMachineContext,
+              trainingSessionMachineContext: trainingSessionMachineContext,
               sessionTrackerId: uuidv4(),
             }),
           },
@@ -58,11 +53,13 @@ export const createSessionTrackerMachine = () =>
     },
     {
       actions: {
-        "Navigate to session tracker first step": () => {
+        "Navigate to session tracker first step": () =>
           navigateFromRef("SessionTracker", {
-            screen: "Load",
-          });
-        },
+            screen: "SessionTrackerCreationForm",
+            params: {
+              screen: "Load"
+            }
+          }),
       },
     }
   );
