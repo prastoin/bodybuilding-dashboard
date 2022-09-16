@@ -2,6 +2,7 @@ import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import {
   ActorRef,
+  ActorRefFrom,
   assign,
   createMachine,
   DoneInvokeEvent,
@@ -13,23 +14,23 @@ import { ExerciseLoad, ExerciseRest, TrainingSessionExercise } from "../types";
 
 export type ExerciseCreationFormMachineEvents =
   | {
-      type: "SET_EXERCISE_NAME_AND_GO_NEXT";
-      name: string;
-    }
+    type: "SET_EXERCISE_NAME_AND_GO_NEXT";
+    name: string;
+  }
   | { type: "USER_WENT_TO_PREVIOUS_SCREEN" }
   | {
-      type: "SET_EXERCISE_SET_AND_REP_AND_GO_NEXT";
-      setCounter: number;
-      repCounter: number;
-    }
+    type: "SET_EXERCISE_SET_AND_REP_AND_GO_NEXT";
+    setCounter: number;
+    repCounter: number;
+  }
   | {
-      type: "SET_EXERCISE_LOAD_AND_GO_NEXT";
-      load: ExerciseLoad;
-    }
+    type: "SET_EXERCISE_LOAD_AND_GO_NEXT";
+    load: ExerciseLoad;
+  }
   | {
-      type: "SET_EXERCISE_REST_AND_GO_NEXT";
-      rest: ExerciseRest;
-    };
+    type: "SET_EXERCISE_REST_AND_GO_NEXT";
+    rest: ExerciseRest;
+  };
 
 export type ExerciseCreationFormMachineContext = TrainingSessionExercise;
 
@@ -37,9 +38,8 @@ export type AppMachineInterpreter = InterpreterFrom<
   ReturnType<typeof createExerciseCreationFormMachine>
 >;
 
-export type ExerciseCreationFormActorRef = ActorRef<
-  ExerciseCreationFormMachineEvents,
-  ExerciseCreationFormMachineContext
+export type ExerciseCreationFormActorRef = ActorRefFrom<
+  typeof createExerciseCreationFormMachine
 >;
 
 export type ExerciseFormCreationDoneInvokeEvent =

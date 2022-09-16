@@ -12,7 +12,9 @@ export interface Typegen0 {
     guards: never;
     delays: never;
   };
-  eventsCausingActions: {};
+  eventsCausingActions: {
+    "Navigate to session tracker first step": "USER_STARTED_NEXT_TRAINING_SESSION_TRACKER";
+  };
   eventsCausingServices: {};
   eventsCausingGuards: {};
   eventsCausingDelays: {};

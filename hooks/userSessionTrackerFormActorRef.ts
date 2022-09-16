@@ -12,16 +12,8 @@ export function useSessionTrackerFormActorRef():
 
   const sessionTrackerFormActorRef = useSelector(
     sessionTrackerService,
-    (state) => state.children.InvokedSessionTrackerForm
+    (state) => state.children.InvokedSessionTrackerForm as SessionTrackerFormActorRef
   );
 
   return sessionTrackerFormActorRef;
-}
-
-export function retrieveSessionTrackerFormActorContext<ContextKey extends keyof SessionTrackerFormMachineContext>({ actor, contextKey }: { actor: SessionTrackerFormActorRef, contextKey: ContextKey }): SessionTrackerFormMachineContext[ContextKey] {
-  function useSelectorHandlerForSessionTrackerFormState(state: SessionTrackerFormMachineState) {
-    return state.context[contextKey]
-  }
-
-  return useSelector(actor, useSelectorHandlerForSessionTrackerFormState);
 }

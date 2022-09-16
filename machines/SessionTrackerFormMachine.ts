@@ -1,6 +1,6 @@
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
-import { ActorRef, createMachine, State } from "xstate";
+import { ActorRef, ActorRefFrom, createMachine, State } from "xstate";
 import { TrainingSessionMachineContext } from "./TrainingSessionMachine";
 
 export type SessionTrackerFormMachineContext = {
@@ -14,9 +14,8 @@ type SessionTrackerFormMachineEvents = {
 
 export type SessionTrackerFormMachineState = State<SessionTrackerFormMachineContext, SessionTrackerFormMachineEvents>
 
-export type SessionTrackerFormActorRef = ActorRef<
-  SessionTrackerFormMachineEvents,
-  SessionTrackerFormMachineContext
+export type SessionTrackerFormActorRef = ActorRefFrom<
+  typeof createSessionTrackerFormMachine
 >;
 
 export const createSessionTrackerFormMachine = () =>

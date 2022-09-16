@@ -12,7 +12,7 @@ export type SessionTrackerMachineEvents = {
 export type SessionTrackerMachineContext = {};
 
 export type SessionTrackerMachineInterpreter = InterpreterFrom<
-  ReturnType<typeof createSessionTrackerMachine>
+  typeof createSessionTrackerMachine
 >;
 
 export const createSessionTrackerMachine = () =>

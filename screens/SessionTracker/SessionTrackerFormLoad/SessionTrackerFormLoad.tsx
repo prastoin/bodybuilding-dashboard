@@ -3,7 +3,7 @@ import * as React from "react";
 import { Text } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppScreen from "../../../components/AppScreen";
-import { retrieveSessionTrackerFormActorContext, useSessionTrackerFormActorRef } from "../../../hooks/userSessionTrackerFormActorRef";
+import { useSessionTrackerFormActorRef } from "../../../hooks/userSessionTrackerFormActorRef";
 import { SessionTrackFormLoadScreenProps } from "../../../navigation/RootStack";
 
 export const SessionTrackerFormLoad: React.FC<
@@ -21,7 +21,9 @@ export const SessionTrackerFormLoad: React.FC<
     );
   }
 
-  const context = retrieveSessionTrackerFormActorContext({ actor: sessionTrackerFormActorRef, contextKey: "trainingSessionMachineContext" })
+  // should create child component to avoid conditionnal react hooks usage
+  const context = useSelector(sessionTrackerFormActorRef, (state) => state.context.trainingSessionMachineContext);
+
   return (
     <AppScreen testID="session-tracker-form-load-container">
       <Text style={tailwind("text-blue-600")}>Session tracker Load</Text>
