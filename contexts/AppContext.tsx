@@ -1,5 +1,5 @@
 import { useInterpret } from "@xstate/react";
-import React, { useContext, useMemo } from "react";
+import React, { ReactNode, useContext, useMemo } from "react";
 import {
   ProgramBuilderMachineInterpreter,
   createProgramBuilderMachine,
@@ -15,7 +15,9 @@ interface AppContextValue {
   sessionTrackerService: SessionTrackerMachineInterpreter;
 }
 
-type AppContextProviderProps = {};
+type AppContextProviderProps = {
+  children: ReactNode
+};
 
 const AppContext = React.createContext<AppContextValue | undefined>(undefined);
 
