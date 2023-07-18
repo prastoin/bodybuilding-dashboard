@@ -1,6 +1,6 @@
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import invariant from "invariant";
-import React from "react";
+import React, { ReactNode } from "react";
 import { View } from "react-native";
 import { HeaderBackButton } from "@react-navigation/elements";
 import { IS_TEST } from "../types";
@@ -8,6 +8,7 @@ import { useTailwind } from "tailwind-rn/dist";
 
 export interface AppScreenProps {
   testID: string;
+  children: ReactNode
 }
 
 const AppScreen: React.FC<AppScreenProps> = ({ testID, children }) => {
