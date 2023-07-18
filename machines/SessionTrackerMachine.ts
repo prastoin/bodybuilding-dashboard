@@ -1,15 +1,18 @@
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import { createMachine, EventFrom, InterpreterFrom } from "xstate";
+import { navigateFromRef } from "../navigation/RootNavigation";
+import { createSessionTrackerFormMachine } from "./SessionTrackerFormMachine";
+import { TrainingSessionMachineContext } from "./TrainingSessionMachine";
 
-export type SessionTrackerMachineEvents = EventFrom<
-  ReturnType<typeof createSessionTrackerMachine>
->;
-
+export type SessionTrackerMachineEvents = {
+  type: "USER_STARTED_NEXT_TRAINING_SESSION_TRACKER";
+  trainingSessionMachineContext: TrainingSessionMachineContext;
+}
 export type SessionTrackerMachineContext = {};
 
 export type SessionTrackerMachineInterpreter = InterpreterFrom<
-  ReturnType<typeof createSessionTrackerMachine>
+  typeof createSessionTrackerMachine
 >;
 
 export const createSessionTrackerMachine = () =>
@@ -18,14 +21,58 @@ export const createSessionTrackerMachine = () =>
     {
       schema: {
         context: {} as SessionTrackerMachineContext,
-        events: {} as {
-          type: "ENTER_TRAINING_SESSION_CREATION_FORM";
+        events: {} as SessionTrackerMachineEvents,
+      },
+      context: {},
+      tsTypes: {} as import("./SessionTrackerMachine.typegen").Typegen0,
+      initial: "Idle",
+      states: {
+        Idle: {
+          on: {
+            USER_STARTED_NEXT_TRAINING_SESSION_TRACKER: {
+              target: "User entered session tracker instance"
+            },
+          },
+        },
+
+        "User entered session tracker instance": {
+          entry: "Navigate to session tracker first step",
+
+          invoke: {
+            id: "InvokedSessionTrackerForm",
+            src: createSessionTrackerFormMachine,
+
+            data: (_context, { trainingSessionMachineContext }) => ({
+              trainingSessionMachineContext: trainingSessionMachineContext,
+              sessionTrackerId: uuidv4(),
+            }),
+          },
         },
       },
-      tsTypes: {} as import("./SessionTrackerMachine.typegen").Typegen0,
-      context: {},
-      states: {},
       id: "SessionTrackerMachine",
     },
-    {}
+    {
+      actions: {
+        "Navigate to session tracker first step": () =>
+          navigateFromRef("SessionTracker", {
+            screen: "SessionTrackerCreationForm",
+            params: {
+              screen: "Load"
+            }
+          }),
+      },
+    }
   );
+
+// invoke: {
+//   id: "SessionTrackerForm",
+
+//   src: () => {
+//     return createSessionTrackerFormMachine();
+//   },
+
+//   data: {
+//     trainingSessionId: (context) => context.
+//   },
+
+// },

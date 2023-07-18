@@ -28,7 +28,7 @@ const BottomTabNavigator =
 export type BottomTabNavigatorParamList = {
   Home: NavigatorScreenParams<HomeStackParamList>;
   ProgramBuilder: NavigatorScreenParams<ProgramBuilderStackParamList>;
-  SessionTracker: NavigatorScreenParams<SessionTrackerCreationFormParamList>;
+  SessionTracker: NavigatorScreenParams<SessionTrackerParamList>;
 };
 
 export type RootHomeScreenProps = NativeStackScreenProps<

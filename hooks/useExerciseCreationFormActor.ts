@@ -15,7 +15,9 @@ export function useExerciseCreationFormActor(
 
   const exerciseCreationForm = useSelector(
     trainingSessionActor,
-    (state) => state.children.ExerciseCreationForm
+    (state) => state.children.ExerciseCreationForm as
+    | ExerciseCreationFormActorRef
+    | undefined
   );
 
   return exerciseCreationForm;
