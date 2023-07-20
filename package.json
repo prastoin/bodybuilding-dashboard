@@ -15,12 +15,12 @@
   },
   "dependencies": {
     "@expo/webpack-config": "^18.1.1",
+    "@react-native-community/hooks": "^3.0.0",
     "@react-native-picker/picker": "2.4.10",
     "@react-navigation/bottom-tabs": "^6.3.2",
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/native-stack": "^6.7.0",
     "@xstate/react": "^3.0.0",
-    "babel-plugin-inline-dotenv": "^1.7.0",
     "expo": "^49.0.0",
     "expo-status-bar": "~1.6.0",
     "install": "^0.13.0",

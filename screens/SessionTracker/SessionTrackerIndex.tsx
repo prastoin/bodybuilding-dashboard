@@ -19,16 +19,18 @@ export const SessionTrackerIndex: React.FC<SessionTrackIndexScreenProps> = ({
     (state) => state.context.trainingSessionActorRefCollection[0]
   );
 
+  const firstTrainingSessionSnapshot = useSelector(
+    programBuilderService,
+    (_state) => {
+      if (firstTrainingSessionActor !== undefined) { return firstTrainingSessionActor.getSnapshot() }
+    }
+  );
+
   if (firstTrainingSessionActor === undefined) {
     return (<AppScreen testID="session-tracker-index-no-program-container">
       <Text>Please create your program first</Text>
     </AppScreen>)
   }
-
-  const firstTrainingSessionSnapshot = useSelector(
-    programBuilderService,
-    (state) => firstTrainingSessionActor.getSnapshot()
-  );
 
   if (firstTrainingSessionSnapshot === undefined) {
     return (<AppScreen testID="session-tracker-index-error-container">

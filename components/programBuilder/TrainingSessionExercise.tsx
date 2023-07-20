@@ -1,12 +1,9 @@
 import { useActor } from "@xstate/react";
 import * as React from "react";
-import { Button, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import { TrainingSessionExerciseActorRef } from "../../machines/TrainingSessionExerciseMachine";
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { navigateFromRef } from "../../navigation/RootNavigation";
-import { loadOptions } from "@babel/core";
 
 interface TrainingSessionExerciseProps {
   trainingSessionExerciseActorRef: TrainingSessionExerciseActorRef;

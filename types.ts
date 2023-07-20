@@ -1,7 +1,7 @@
 import z from "zod";
 
-export const SERVER_ENDPOINT = `http://${process.env.SERVER_HOST!}:${process.env
-  .SERVER_PORT!}`;
+export const SERVER_ENDPOINT = `http://${process.env.EXPO_PUBLIC_SERVER_HOST!}:${process.env
+  .EXPO_PUBLIC_SERVER_PORT!}`;
 
 export const NonEmptyString = z.string().min(1);
 
@@ -55,4 +55,4 @@ export type RetrieveUserBodyBuildingProgramResponseBody = z.infer<
   typeof RetrieveUserBodyBuildingProgramResponseBody
 >;
 
-export const IS_TEST = process.env.NODE_ENV == "test";
+export const IS_TEST = process.env.EXPO_PUBLIC_NODE_ENV == "test";
