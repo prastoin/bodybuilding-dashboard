@@ -1,9 +1,15 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
+import { NativeWindStyleSheet } from "nativewind";
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
+
+// Should not be required but does not work without https://www.nativewind.dev/quick-starts/expo
+NativeWindStyleSheet.setOutput({
+  default: "native",
+});
 
 export {
   // Catch any errors thrown by the Layout component.
