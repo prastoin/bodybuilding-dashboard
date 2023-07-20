@@ -1,8 +1,9 @@
+import { AppContextProvider } from '@/context/appContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { NativeWindStyleSheet } from "nativewind";
 import { SplashScreen, Stack } from 'expo-router';
+import { NativeWindStyleSheet } from "nativewind";
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 
@@ -12,8 +13,7 @@ NativeWindStyleSheet.setOutput({
 });
 
 export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
+  ErrorBoundary
 } from 'expo-router';
 
 export const unstable_settings = {
@@ -53,10 +53,12 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
+      <AppContextProvider>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        </Stack>
+      </AppContextProvider>
     </ThemeProvider>
   );
 }
