@@ -6,7 +6,7 @@ export default function SessionLayout() {
             <Stack.Screen
                 name="createName"
                 options={{
-                    headerTitle: "Exercise Name",
+                    headerTitle: "Pick a session name",
                 }}
             />
             <Stack.Screen
