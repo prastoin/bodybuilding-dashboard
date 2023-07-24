@@ -163,7 +163,7 @@ export const createProgramBuilderMachine = () =>
 
         resetProgramBuilderStackNavigator: (_context, _event) => {
           // Note: imported imperative nagivation router is not typed ?
-          router.push("/(tabs)/programBuilder/")
+          router.push('/(tabs)/programBuilder')
         },
 
         addTrainingSessionToContext: assign((context, event) => {
