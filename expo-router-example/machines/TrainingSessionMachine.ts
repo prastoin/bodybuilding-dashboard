@@ -1,39 +1,41 @@
 import { router } from "expo-router";
 import invariant from "invariant";
-import { ActorRef, assign, createMachine, State } from "xstate";
+import { ActorRef, assign, createMachine, spawn, State } from "xstate";
 import { sendParent } from "xstate/lib/actions";
 import { TrainingSessionExercise } from "../types";
+import { createExerciseCreationFormMachine, ExerciseFormCreationDoneInvokeEvent } from "./ExerciseCreationFormMachine";
+import { createTrainingSessionExerciseMachine, TrainingSessionExerciseActorRef } from "./TrainingSessionExerciseMachine";
 
 type TrainingSessionMachineEvents =
   | {
-      type: "REMOVE_TRAINING_SESSION";
-    }
+    type: "REMOVE_TRAINING_SESSION";
+  }
   | {
-      type: "_REMOVE_TRAINING_SESSION_EXERCISE";
-      exerciseId: string;
-    }
+    type: "_REMOVE_TRAINING_SESSION_EXERCISE";
+    exerciseId: string;
+  }
   | {
-      type: "USER_FINISHED_TRAINING_SESSION_NAME_EDITION";
-      newName: string;
-    }
+    type: "USER_FINISHED_TRAINING_SESSION_NAME_EDITION";
+    newName: string;
+  }
   | {
-      type: "USER_ENTERED_TRAINING_SESSION_NAME_EDITOR";
-    }
+    type: "USER_ENTERED_TRAINING_SESSION_NAME_EDITOR";
+  }
   | {
-      type: "USER_CANCELED_TRAINING_SESSION_NAME_EDITION";
-    }
+    type: "USER_CANCELED_TRAINING_SESSION_NAME_EDITION";
+  }
   | {
-      type: "USER_ENTERED_EXERCISE_CREATION_FORM";
-    }
+    type: "USER_ENTERED_EXERCISE_CREATION_FORM";
+  }
   | {
-      type: "_USER_CANCELLED_EXERCISE_CREATION_FORM";
-    };
+    type: "_USER_CANCELLED_EXERCISE_CREATION_FORM";
+  };
 
 export type TrainingSessionMachineContext = {
   initialExercisesToSpawn?: TrainingSessionExercise[];
   trainingSessionName: string;
   uuid: string;
-  trainingSessionExerciseActorRefCollection: any//TrainingSessionExerciseActorRef[];
+  trainingSessionExerciseActorRefCollection: TrainingSessionExerciseActorRef[];
 };
 
 type TrainingSessionMachineState = State<
@@ -107,22 +109,22 @@ export const createTrainingSessionMachine = ({
         "User is creating an exercise": {
           entry: "Navigate to exercise creation form name step",
 
-          // invoke: {
-          //   id: "ExerciseCreationForm",
+          invoke: {
+            id: "ExerciseCreationForm",
 
-          //   src: () => {
-          //     return createExerciseCreationFormMachine(trainingSessionId);
-          //   },
+            src: () => {
+              return createExerciseCreationFormMachine(trainingSessionId);
+            },
 
-          //   onDone: {
-          //     target: "Idle",
-          //     actions: [
-          //       "Assign created exercise to context",
-          //       // Should not be required as handled by the parent machine
-          //       // "Reset program builder stack",
-          //     ],
-          //   },
-          // },
+            onDone: {
+              target: "Idle",
+              actions: [
+                "Assign created exercise to context",
+                // Might not be required as handled by the parent machine
+                "Reset program builder stack",
+              ],
+            },
+          },
 
           on: {
             _USER_CANCELLED_EXERCISE_CREATION_FORM: {
@@ -165,25 +167,24 @@ export const createTrainingSessionMachine = ({
             "should never occurs initialExercisesToSpawn is undefined"
           );
 
-          const exerciseActorRefCollection = undefined;
-          // const exerciseActorRefCollection = initialExercisesToSpawn.map(
-          //   ({ exerciseName, uuid, repCounter, setCounter, load, rest }) => {
-          //     const newTrainingSessionExerciseActorRef: TrainingSessionExerciseActorRef =
-          //       spawn(
-          //         createTrainingSessionExerciseMachine({
-          //           exerciseName,
-          //           uuid,
-          //           parentTrainingSessionId: trainingSessionId,
-          //           repCounter,
-          //           setCounter,
-          //           load,
-          //           rest,
-          //         }),
-          //         { sync: true, name: uuid }
-          //       );
-          //     return newTrainingSessionExerciseActorRef;
-          //   }
-          // );
+          const exerciseActorRefCollection = initialExercisesToSpawn.map(
+            ({ exerciseName, uuid, repCounter, setCounter, load, rest }) => {
+              const newTrainingSessionExerciseActorRef: TrainingSessionExerciseActorRef =
+                spawn(
+                  createTrainingSessionExerciseMachine({
+                    exerciseName,
+                    uuid,
+                    parentTrainingSessionId: trainingSessionId,
+                    repCounter,
+                    setCounter,
+                    load,
+                    rest,
+                  }),
+                  { sync: true, name: uuid }
+                );
+              return newTrainingSessionExerciseActorRef;
+            }
+          );
 
           return {
             ...context,
@@ -193,29 +194,24 @@ export const createTrainingSessionMachine = ({
           };
         }),
 
-        // "Reset program builder stack": () => {
-        //   navigateFromRef("ProgramBuilder", {
-        //     screen: "Index",
-        //   });
-        // },
-
-        "Navigate to exercise creation form name step": () => {
-          // navigateFromRef("ProgramBuilder", {
-          //   screen: "ExerciseCreationForm",
-          //   params: {
-          //     screen: "Name",
-          //     params: {
-          //       trainingSessionId,
-          //     },
-          //   },
-          // });
+        "Reset program builder stack": () => {
+          router.push("/(tabs)/programBuilder")
         },
 
-        "Navigate to training session name editor": (context) => {
+        "Navigate to exercise creation form name step": ({ uuid: sessionId }) => {
+          router.push({
+            pathname: "/(tabs)/programBuilder/exercise/[sessionId]/name",
+            params: {
+              sessionId,
+            }
+          })
+        },
+
+        "Navigate to training session name editor": ({ uuid: sessionId }) => {
           router.push({
             pathname: "/(tabs)/programBuilder/session/[sessionId]",
             params: {
-              sessionId: "sessionId"
+              sessionId
             }
           })
         },
@@ -224,39 +220,39 @@ export const createTrainingSessionMachine = ({
           router.back()
         },
 
-        // "Assign created exercise to context": assign((context, event) => {
-        //   const {
-        //     data: {
-        //       exerciseName,
-        //       uuid: newTrainingSessionId,
-        //       repCounter,
-        //       setCounter,
-        //       load,
-        //       rest,
-        //     },
-        //   } = event as ExerciseFormCreationDoneInvokeEvent;
+        "Assign created exercise to context": assign((context, event) => {
+          const {
+            data: {
+              exerciseName,
+              uuid: newTrainingSessionId,
+              repCounter,
+              setCounter,
+              load,
+              rest,
+            },
+          } = event as ExerciseFormCreationDoneInvokeEvent;
 
-        //   const newExerciseActor: TrainingSessionExerciseActorRef = spawn(
-        //     createTrainingSessionExerciseMachine({
-        //       exerciseName,
-        //       parentTrainingSessionId: trainingSessionId,
-        //       uuid: newTrainingSessionId,
-        //       repCounter,
-        //       setCounter,
-        //       load,
-        //       rest,
-        //     }),
-        //     { sync: true, name: newTrainingSessionId }
-        //   );
+          const newExerciseActor: TrainingSessionExerciseActorRef = spawn(
+            createTrainingSessionExerciseMachine({
+              exerciseName,
+              parentTrainingSessionId: trainingSessionId,
+              uuid: newTrainingSessionId,
+              repCounter,
+              setCounter,
+              load,
+              rest,
+            }),
+            { sync: true, name: newTrainingSessionId }
+          );
 
-        //   return {
-        //     ...context,
-        //     trainingSessionExerciseActorRefCollection: [
-        //       ...context.trainingSessionExerciseActorRefCollection,
-        //       newExerciseActor,
-        //     ],
-        //   };
-        // }),
+          return {
+            ...context,
+            trainingSessionExerciseActorRefCollection: [
+              ...context.trainingSessionExerciseActorRefCollection,
+              newExerciseActor,
+            ],
+          };
+        }),
 
         "update training session name": assign((context, { newName }) => {
           return {
