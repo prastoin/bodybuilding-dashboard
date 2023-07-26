@@ -8,7 +8,7 @@ import {
 import invariant from "invariant";
 import "react-native-get-random-values";
 import { ReactTestInstance } from "react-test-renderer";
-import RootLayoutNav from "../app/_layout";
+import { v4 as uuidv4 } from "uuid";
 import { BodybuildingProgram } from "../types";
 
 export * from "@testing-library/react-native";

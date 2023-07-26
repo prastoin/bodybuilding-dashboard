@@ -28,8 +28,8 @@
     ],
     "roots": ["<rootDir>"],
     "moduleNameMapper": {
-        "^@/(.*)$": "<rootDir>/$1",
-        "^uuid$": "uuid"
+      "^@/(.*)$": "<rootDir>/$1",
+      "^uuid$": "uuid"
     }
   },
   "dependencies": {

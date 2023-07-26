@@ -1,14 +1,10 @@
 import { rest } from "msw";
 import "react-native-get-random-values";
-// import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import {
   RetrieveUserBodyBuildingProgramResponseBody,
   SERVER_ENDPOINT
 } from "../../types";
-
-function uuidv4() {
-  return ""
-}
 
 export const handlers = [
   // Handles a POST /login request
