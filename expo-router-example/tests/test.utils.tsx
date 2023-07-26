@@ -5,6 +5,8 @@ import {
   waitFor,
   within
 } from "@testing-library/react-native";
+// Please refer to alpha docs https://github.com/expo/router/pull/447
+import { renderRouter } from "expo-router/src/testing-library";
 import invariant from "invariant";
 import "react-native-get-random-values";
 import { ReactTestInstance } from "react-test-renderer";
@@ -13,12 +15,8 @@ import { BodybuildingProgram } from "../types";
 
 export * from "@testing-library/react-native";
 export const renderApp = () => {
-  return render(<RootLayoutNav />);
+  return renderRouter();
 };
-
-function uuidv4() {
-  return faker.string.uuid()
-}
 
 export const getRandomMinuteSecondDuration = () =>
   faker.datatype.number({
