@@ -19,6 +19,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
+      initialRouteName='programBuilder'
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
       }}>
