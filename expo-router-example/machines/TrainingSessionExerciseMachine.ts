@@ -5,49 +5,49 @@ import { ExerciseLoad, ExerciseRest, TrainingSessionExercise } from "../types";
 
 type TrainingSessionExerciseMachineEvent =
   | {
-      type: "REMOVE_EXERCISE";
-    }
+    type: "REMOVE_EXERCISE";
+  }
   | {
-      type: "USER_ENTERED_NAME_EDITION_OPERATION";
-    }
+    type: "USER_ENTERED_NAME_EDITION_OPERATION";
+  }
   | {
-      type: "USER_CANCELLED_NAME_EDITION_OPERATION";
-    }
+    type: "USER_CANCELLED_NAME_EDITION_OPERATION";
+  }
   | {
-      type: "USER_FINISHED_NAME_EDITION_OPERATION";
-      newExerciseName: string;
-    }
+    type: "USER_FINISHED_NAME_EDITION_OPERATION";
+    newExerciseName: string;
+  }
   | {
-      type: "USER_ENTERED_SET_AND_REP_EDITOR";
-    }
+    type: "USER_ENTERED_SET_AND_REP_EDITOR";
+  }
   | {
-      type: "USER_CANCELLED_SET_AND_REP_EDITION";
-    }
+    type: "USER_CANCELLED_SET_AND_REP_EDITION";
+  }
   | {
-      type: "USER_FINISHED_SET_AND_REP_EDITION";
-      setCounter: number;
-      repCounter: number;
-    }
+    type: "USER_FINISHED_SET_AND_REP_EDITION";
+    setCounter: number;
+    repCounter: number;
+  }
   | {
-      type: "USER_ENTERED_LOAD_EDITOR";
-    }
+    type: "USER_ENTERED_LOAD_EDITOR";
+  }
   | {
-      type: "USER_CANCELLED_LOAD_EDITION";
-    }
+    type: "USER_CANCELLED_LOAD_EDITION";
+  }
   | {
-      type: "USER_FINISHED_LOAD_EDITION";
-      load: ExerciseLoad;
-    }
+    type: "USER_FINISHED_LOAD_EDITION";
+    load: ExerciseLoad;
+  }
   | {
-      type: "USER_ENTERED_REST_EDITOR";
-    }
+    type: "USER_ENTERED_REST_EDITOR";
+  }
   | {
-      type: "USER_CANCELLED_REST_EDITION";
-    }
+    type: "USER_CANCELLED_REST_EDITION";
+  }
   | {
-      type: "USER_FINISHED_REST_EDITION";
-      rest: ExerciseRest;
-    };
+    type: "USER_FINISHED_REST_EDITION";
+    rest: ExerciseRest;
+  };
 
 type TrainingSessionExerciseMachineContext = TrainingSessionExercise;
 
@@ -77,6 +77,7 @@ export const createTrainingSessionExerciseMachine = ({
 }: CreateTrainingSessionExerciseMachineArgs) =>
   createMachine(
     {
+      predictableActionArguments: true,
       tsTypes:
         {} as import("./TrainingSessionExerciseMachine.typegen").Typegen0,
       id: uuid,
@@ -188,7 +189,7 @@ export const createTrainingSessionExerciseMachine = ({
     {
       // Please refactor this within only one action taking the typed field to avoid repetition
       actions: {
-        "Navigate to name editor screen": ({uuid: exerciseId}) => {
+        "Navigate to name editor screen": ({ uuid: exerciseId }) => {
           router.push({
             pathname: "/(tabs)/programBuilder/exercise/[sessionId]/[exerciseId]/name",
             params: {
@@ -198,7 +199,7 @@ export const createTrainingSessionExerciseMachine = ({
           })
         },
 
-        "Navigate to set and rep editor screen": ({uuid: exerciseId}) => {
+        "Navigate to set and rep editor screen": ({ uuid: exerciseId }) => {
           router.push({
             pathname: "/(tabs)/programBuilder/exercise/[sessionId]/[exerciseId]/setRep",
             params: {
@@ -208,7 +209,7 @@ export const createTrainingSessionExerciseMachine = ({
           })
         },
 
-        "Navigate to rest editor screen": ({uuid: exerciseId}) => {
+        "Navigate to rest editor screen": ({ uuid: exerciseId }) => {
           router.push({
             pathname: "/(tabs)/programBuilder/exercise/[sessionId]/[exerciseId]/rest",
             params: {
@@ -218,7 +219,7 @@ export const createTrainingSessionExerciseMachine = ({
           })
         },
 
-        "Navigate to load editor screen": ({uuid: exerciseId}) => {
+        "Navigate to load editor screen": ({ uuid: exerciseId }) => {
           router.push({
             pathname: "/(tabs)/programBuilder/exercise/[sessionId]/[exerciseId]/load",
             params: {
