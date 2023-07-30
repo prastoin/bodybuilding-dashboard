@@ -55,4 +55,4 @@ export type RetrieveUserBodyBuildingProgramResponseBody = z.infer<
   typeof RetrieveUserBodyBuildingProgramResponseBody
 >;
 
-export const IS_TEST = process.env.EXPO_PUBLIC_NODE_ENV == "test";
+export const IS_TEST = process.env.NODE_ENV == "test";

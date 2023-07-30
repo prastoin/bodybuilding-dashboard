@@ -59,6 +59,7 @@ export const createTrainingSessionMachine = ({
 }) => {
   return createMachine(
     {
+      predictableActionArguments: true,
       tsTypes: {} as import("./TrainingSessionMachine.typegen").Typegen0,
       id: trainingSessionId,
       schema: {

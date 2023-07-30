@@ -6,6 +6,8 @@ module.exports = function (api) {
       // Required for expo-router
      "nativewind/babel", 
      'expo-router/babel',
+     '@babel/plugin-proposal-export-namespace-from',
+     'react-native-reanimated/plugin'
     ],
   };
 };

@@ -19,12 +19,25 @@ export default function TabLayout() {
 
   return (
     <Tabs
+      initialRouteName='programBuilder'
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
       }}>
       <Tabs.Screen
+        name="home"
+        options={{
+          tabBarLabel: "Home",
+          tabBarTestID: "home-bottom-tab",
+          title: 'Home',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="programBuilder"
         options={{
+          tabBarLabel: "Program Builder",
+          tabBarTestID: "program-builder-bottom-tab",
           headerShown: false,
           title: 'Program',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
@@ -33,6 +46,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="sessionTracker"
         options={{
+          tabBarLabel: "Session tracker",
+          tabBarTestID: "session-tracker-bottom-tab",
           title: 'Session tracker',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
