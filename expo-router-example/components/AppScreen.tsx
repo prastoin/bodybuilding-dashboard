@@ -1,5 +1,5 @@
 import { HeaderBackButton } from "@react-navigation/elements";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import invariant from "invariant";
 import React, { ReactNode } from "react";
 import { View } from "react-native";
@@ -11,6 +11,8 @@ export interface AppScreenProps {
 }
 
 const AppScreen: React.FC<AppScreenProps> = ({ testID, children }) => {
+  const navigation = useNavigation();
+
   invariant(
     children !== undefined,
     "You need to provide children to AppScreen"
@@ -18,7 +20,6 @@ const AppScreen: React.FC<AppScreenProps> = ({ testID, children }) => {
 
   // In tests we manually add an go back reference within the DOM
   if (IS_TEST) {
-    const navigation = useNavigation();
     React.useLayoutEffect(() => {
       navigation.setOptions({
         headerLeft: (props: any) => {
@@ -32,9 +33,6 @@ const AppScreen: React.FC<AppScreenProps> = ({ testID, children }) => {
         },
       });
     }, [navigation]);
-
-    const isFocused = useIsFocused();
-    testID = isFocused ? testID + "-visible" : testID;
   }
 
   return (
