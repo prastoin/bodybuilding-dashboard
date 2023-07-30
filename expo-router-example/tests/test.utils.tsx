@@ -257,11 +257,9 @@ export function getTrainingSessionLastExercise({
 export async function getProgramBuilderTabIcon(
   screen: TestingScreen
 ): Promise<ReactTestInstance> {
-  const programBuilderBottomTab = await screen.findByTestId(
+  return await screen.findByTestId(
     `program-builder-bottom-tab`
   );
-
-  return programBuilderBottomTab;
 }
 
 export async function userNavigatesBackFromHeaderBackButton(
