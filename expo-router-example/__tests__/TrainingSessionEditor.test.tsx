@@ -8,11 +8,11 @@ import {
   getProgramBuilderTabIcon,
   renderApp,
   waitFor,
-  within,
+  within
 } from "../tests/test.utils";
 import {
   RetrieveUserBodyBuildingProgramResponseBody,
-  SERVER_ENDPOINT,
+  SERVER_ENDPOINT
 } from "../types";
 
 test("On app start user program is retrieved", async () => {
@@ -29,13 +29,13 @@ test("On app start user program is retrieved", async () => {
 
   const screen = renderApp();
 
-  await screen.findByTestId("home-screen-container-visible");
+  await screen.findByTestId("home-screen-container");
 
   const programBuilderBottomTab = await getProgramBuilderTabIcon(screen);
 
   fireEvent.press(programBuilderBottomTab);
 
-  await screen.findByTestId("program-builder-screen-container-visible");
+  await screen.findByTestId("program-builder-screen-container");
 
   // Checking is spawned correctly
   const allTrainingSessionContainer = await waitFor(() => {
@@ -87,13 +87,13 @@ test("User can re-enter training session editor name", async () => {
 
   const screen = renderApp();
 
-  await screen.findByTestId("home-screen-container-visible");
+  await screen.findByTestId("home-screen-container");
 
   const programBuilderBottomTab = await getProgramBuilderTabIcon(screen);
 
   fireEvent.press(programBuilderBottomTab);
 
-  await screen.findByTestId("program-builder-screen-container-visible");
+  await screen.findByTestId("program-builder-screen-container");
 
   const firstTrainingSession = bodyBuildingProgram.trainingSessions[0];
   const allTrainingSessionContainer = getAllTrainingSessionContainer(screen);
@@ -104,7 +104,7 @@ test("User can re-enter training session editor name", async () => {
   fireEvent.press(firstTrainingSessionName);
 
   await screen.findByTestId(
-    `training-session-editor-form-name-${firstTrainingSession.uuid}-visible`
+    `training-session-editor-form-name-${firstTrainingSession.uuid}`
   );
 
   await waitFor(() => {
@@ -115,7 +115,7 @@ test("User can re-enter training session editor name", async () => {
     fireEvent.press(goBackButton);
   });
 
-  await screen.findByTestId("program-builder-screen-container-visible");
+  await screen.findByTestId("program-builder-screen-container");
 
   // Hitting training session name again
   fireEvent.press(
@@ -123,6 +123,6 @@ test("User can re-enter training session editor name", async () => {
   );
 
   await screen.findByTestId(
-    `training-session-editor-form-name-${firstTrainingSession.uuid}-visible`
+    `training-session-editor-form-name-${firstTrainingSession.uuid}`
   );
 });

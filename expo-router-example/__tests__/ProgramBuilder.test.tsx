@@ -191,11 +191,11 @@ describe("Xstate tests generations", () => {
         it(path.description, async () => {
           const screen = renderApp();
 
-          await screen.findByTestId("home-screen-container-visible");
+          await screen.findByTestId("home-screen-container");
           const goToProgramBuilderButton =
             screen.getByText(/.*Program.*Builder.*/i);
           fireEvent.press(goToProgramBuilderButton);
-          await screen.findByTestId("program-builder-screen-container-visible");
+          await screen.findByTestId("program-builder-screen-container");
           // do any setup, then...
 
           await path.test({

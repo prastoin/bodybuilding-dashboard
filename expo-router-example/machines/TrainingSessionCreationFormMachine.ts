@@ -5,7 +5,7 @@ import {
   assign,
   createMachine,
   DoneInvokeEvent,
-  InterpreterFrom,
+  InterpreterFrom
 } from "xstate";
 import { sendParent } from "xstate/lib/actions";
 

@@ -9,8 +9,7 @@ import {
   getRandomMinuteSecondDuration,
   render,
   renderApp,
-  userNavigatesBackFromHeaderBackButton,
-  within
+  userNavigatesBackFromHeaderBackButton, within
 } from "../tests/test.utils";
 import {
   BodybuildingProgram,
@@ -29,7 +28,7 @@ const programBuilderTestMachine = createMachine({
       meta: {
         test: async ({ screen, createdExerciseName }: TestingContext) => {
           const visibleContainer = await screen.findByTestId(
-            /exercise-creation-form-name-.*-visible/i
+            /exercise-creation-form-name-.*/i
           );
 
           const nameTextInput = await within(
@@ -45,7 +44,7 @@ const programBuilderTestMachine = createMachine({
           meta: {
             test: async ({ screen }: TestingContext) => {
               const visibleScreenContainer = await screen.findByTestId(
-                /exercise-creation-form-name-.*-visible/i
+                /exercise-creation-form-name-.*/i
               );
               await within(visibleScreenContainer).findByText(
                 /An exercise name must be set./i
@@ -59,7 +58,7 @@ const programBuilderTestMachine = createMachine({
             test: async ({ screen }: TestingContext) => {
               // This assertion is only to provide a full test coverage on every states node
               await screen.findByTestId(
-                /exercise-creation-form-name-.*-visible/i
+                /exercise-creation-form-name-.*/i
               );
             },
           },
@@ -89,7 +88,7 @@ const programBuilderTestMachine = createMachine({
           createdExerciseSetCounter,
         }: TestingContext) => {
           const visibleContainer = await screen.findByTestId(
-            /exercise-creation-form-set-and-rep-.*-visible/i
+            /exercise-creation-form-set-and-rep-.*/i
           );
 
           await within(visibleContainer).findByTestId(
@@ -106,7 +105,7 @@ const programBuilderTestMachine = createMachine({
           meta: {
             test: async ({ screen }: TestingContext) => {
               const visibleScreenContainer = await screen.findByTestId(
-                /exercise-creation-form-set-and-rep-.*-visible/i
+                /exercise-creation-form-set-and-rep-.*/i
               );
               await within(visibleScreenContainer).findByText(
                 /A set number must be set./i
@@ -123,7 +122,7 @@ const programBuilderTestMachine = createMachine({
             test: async ({ screen }: TestingContext) => {
               // This assertion is only to provide a full test coverage on every states node
               await screen.findByTestId(
-                /exercise-creation-form-set-and-rep-.*-visible/i
+                /exercise-creation-form-set-and-rep-.*/i
               );
             },
           },
@@ -150,7 +149,7 @@ const programBuilderTestMachine = createMachine({
       meta: {
         test: async ({ screen, load }: TestingContext) => {
           const visibleContainer = await screen.findByTestId(
-            /exercise-creation-form-load-.*-visible/i
+            /exercise-creation-form-load-.*/i
           );
 
           const loadInputValue = await within(
@@ -167,7 +166,7 @@ const programBuilderTestMachine = createMachine({
           meta: {
             test: async ({ screen }: TestingContext) => {
               const visibleContainer = await screen.findByTestId(
-                /exercise-creation-form-load-.*-visible/i
+                /exercise-creation-form-load-.*/i
               );
 
               await within(visibleContainer).findByText(
@@ -179,10 +178,10 @@ const programBuilderTestMachine = createMachine({
 
         "User went back on this form step": {
           meta: {
-            test: async ({ screen }: TestingContext) => {
+            test: async ({ screen, load }: TestingContext) => {
               // This assertion is only to provide a full test coverage on every states node
               await screen.findByTestId(
-                /exercise-creation-form-load-.*-visible/i
+                /exercise-creation-form-load-.*/i
               );
             },
           },
@@ -209,7 +208,7 @@ const programBuilderTestMachine = createMachine({
       meta: {
         test: async ({ screen, rest }: TestingContext) => {
           const visibleContainer = await screen.findByTestId(
-            /exercise-creation-form-rest-.*-visible/i
+            /exercise-creation-form-rest-.*/i
           );
 
           await within(visibleContainer).findByTestId(
@@ -237,7 +236,7 @@ const programBuilderTestMachine = createMachine({
       type: "final",
       meta: {
         test: async ({ screen }: TestingContext) => {
-          await screen.findByTestId("program-builder-screen-container-visible");
+          await screen.findByTestId("program-builder-screen-container");
           //TODO Should make assertions on the created exercise data here too
         },
       },
@@ -247,7 +246,7 @@ const programBuilderTestMachine = createMachine({
       type: "final",
       meta: {
         test: async ({ screen }: TestingContext) => {
-          await screen.findByTestId("program-builder-screen-container-visible");
+          await screen.findByTestId("program-builder-screen-container");
           //TODO Should make assertions on the created exercise data here too
         },
       },
@@ -273,7 +272,7 @@ const programBuilderTestModel = createModel<TestingContext>(
       const { screen } = context;
 
       const visibleScreenContainer = await screen.findByTestId(
-        /exercise-creation-form-name-.*-visible/i
+        /exercise-creation-form-name-.*/i
       );
 
       const emptyExerciseName = "";
@@ -296,7 +295,7 @@ const programBuilderTestModel = createModel<TestingContext>(
       const { screen } = context;
 
       const visibleScreenContainer = await screen.findByTestId(
-        /exercise-creation-form-name-.*-visible/i
+        /exercise-creation-form-name-.*/i
       );
 
       const nameTextInput = await within(
@@ -320,7 +319,7 @@ const programBuilderTestModel = createModel<TestingContext>(
       const { screen } = context;
 
       const visibleScreenContainer = await screen.findByTestId(
-        /exercise-creation-form-set-and-rep-.*-visible/i
+        /exercise-creation-form-set-and-rep-.*/i
       );
 
       const setPicker = await within(visibleScreenContainer).findByTestId(
@@ -357,7 +356,7 @@ const programBuilderTestModel = createModel<TestingContext>(
       const { screen } = context;
 
       const visibleScreenContainer = await screen.findByTestId(
-        /exercise-creation-form-set-and-rep-.*-visible/i
+        /exercise-creation-form-set-and-rep-.*/i
       );
 
       const newSetCounterValue = faker.datatype.number({
@@ -409,7 +408,7 @@ const programBuilderTestModel = createModel<TestingContext>(
       const { screen } = context;
 
       const visibleScreenContainer = await screen.findByTestId(
-        /exercise-creation-form-load-.*-visible/i
+        /exercise-creation-form-load-.*/i
       );
 
       const newLoadValue = 0;
@@ -433,7 +432,7 @@ const programBuilderTestModel = createModel<TestingContext>(
       const { screen } = context;
 
       const visibleScreenContainer = await screen.findByTestId(
-        /exercise-creation-form-load-.*-visible/i
+        /exercise-creation-form-load-.*/i
       );
 
       const newLoadUnit = LoadUnit.Values.lbs;
@@ -474,7 +473,7 @@ const programBuilderTestModel = createModel<TestingContext>(
       const { screen } = context;
 
       const visibleScreenContainer = await screen.findByTestId(
-        /exercise-creation-form-rest-.*-visible/i
+        /exercise-creation-form-rest-.*/i
       );
 
       const newMinuteValue = getRandomMinuteSecondDuration();
@@ -537,11 +536,11 @@ describe("Xstate tests generations", () => {
           );
           const screen = renderApp();
 
-          await screen.findByTestId("home-screen-container-visible");
+          await screen.findByTestId("home-screen-container");
           const goToProgramBuilderButton =
             screen.getByText(/.*Program.*Builder.*/i);
           fireEvent.press(goToProgramBuilderButton);
-          await screen.findByTestId("program-builder-screen-container-visible");
+          await screen.findByTestId("program-builder-screen-container");
 
           const firstTrainingSessionId =
             defaultBodyBuildingProgram.trainingSessions[0].uuid;
