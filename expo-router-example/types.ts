@@ -23,7 +23,7 @@ export const ExerciseRest = z.object({
 });
 export type ExerciseRest = z.infer<typeof ExerciseRest>;
 
-export const TrainingSessionExercise = z.object({
+export const Exercise = z.object({
   uuid: z.string().uuid(),
   exerciseName: NonEmptyString,
   setCounter: z.number().min(1).max(10),
@@ -31,28 +31,28 @@ export const TrainingSessionExercise = z.object({
   load: ExerciseLoad,
   rest: ExerciseRest,
 });
-export type TrainingSessionExercise = z.infer<typeof TrainingSessionExercise>;
+export type Exercise = z.infer<typeof Exercise>;
 
-export const TrainingSession = z.object({
+export const Session = z.object({
   uuid: z.string().uuid(),
   trainingSessionName: NonEmptyString,
-  exercises: TrainingSessionExercise.array(),
+  exercises: Exercise.array(),
 });
-export type TrainingSession = z.infer<typeof TrainingSession>;
-export type TrainingSessionCollection = TrainingSession[];
+export type Session = z.infer<typeof Session>;
+export type SessionCollection = Session[];
 
-export const BodybuildingProgram = z.object({
+export const Program = z.object({
   uuid: z.string().uuid(),
   programName: NonEmptyString,
-  trainingSessions: TrainingSession.array(),
+  trainingSessions: Session.array(),
 });
-export type BodybuildingProgram = z.infer<typeof BodybuildingProgram>;
+export type Program = z.infer<typeof Program>;
 
 // Http types
 
-export const RetrieveUserBodyBuildingProgramResponseBody = BodybuildingProgram;
-export type RetrieveUserBodyBuildingProgramResponseBody = z.infer<
-  typeof RetrieveUserBodyBuildingProgramResponseBody
+export const RetrieveUserProgramResponseBody = Program;
+export type RetrieveUserProgramResponseBody = z.infer<
+  typeof RetrieveUserProgramResponseBody
 >;
 
 export const IS_TEST = process.env.NODE_ENV == "test";

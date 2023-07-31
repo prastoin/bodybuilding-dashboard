@@ -1,10 +1,10 @@
 import { useAppContext } from "@/context/appContext";
+import { SessionActorRef } from "@/machines/SessionMachine";
 import { useSelector } from "@xstate/react";
-import { TrainingSessionActorRef } from "../machines/TrainingSessionMachine";
 
 export function useTrainingSessionActorRef(
   trainingSessionActorId: string
-): TrainingSessionActorRef | undefined {
+): SessionActorRef | undefined {
   const { programBuilderService } = useAppContext();
 
   const trainingSessionActorRefCollection = useSelector(

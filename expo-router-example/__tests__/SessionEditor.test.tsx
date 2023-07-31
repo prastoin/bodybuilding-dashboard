@@ -11,7 +11,7 @@ import {
   within
 } from "../tests/test.utils";
 import {
-  RetrieveUserBodyBuildingProgramResponseBody,
+  RetrieveUserProgramResponseBody,
   SERVER_ENDPOINT
 } from "../types";
 
@@ -21,7 +21,7 @@ test("On app start user program is retrieved", async () => {
     rest.post<
       undefined,
       Record<string, never>,
-      RetrieveUserBodyBuildingProgramResponseBody
+      RetrieveUserProgramResponseBody
     >(`${SERVER_ENDPOINT}/retrieve-program`, (_req, res, ctx) => {
       return res(ctx.status(200), ctx.json(bodyBuildingProgram));
     })
@@ -79,7 +79,7 @@ test("User can re-enter training session editor name", async () => {
     rest.post<
       undefined,
       Record<string, never>,
-      RetrieveUserBodyBuildingProgramResponseBody
+      RetrieveUserProgramResponseBody
     >(`${SERVER_ENDPOINT}/retrieve-program`, (_req, res, ctx) => {
       return res(ctx.status(200), ctx.json(bodyBuildingProgram));
     })

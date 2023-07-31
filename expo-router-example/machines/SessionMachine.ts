@@ -1,12 +1,12 @@
+import { Exercise } from "@/types";
 import { router } from "expo-router";
 import invariant from "invariant";
 import { ActorRef, assign, createMachine, spawn, State } from "xstate";
 import { sendParent } from "xstate/lib/actions";
-import { TrainingSessionExercise } from "../types";
-import { createExerciseCreationFormMachine, ExerciseFormCreationDoneInvokeEvent } from "./ExerciseCreationFormMachine";
-import { createTrainingSessionExerciseMachine, TrainingSessionExerciseActorRef } from "./TrainingSessionExerciseMachine";
+import { createExerciseFormMachine, ExerciseFormDoneInvokeEvent } from "./ExerciseFormMachine";
+import { createExerciseMachine, ExerciseActorRef as SessionExerciseActorRef } from "./ExerciseMachine";
 
-type TrainingSessionMachineEvents =
+type SessionMachineEvents =
   | {
     type: "REMOVE_TRAINING_SESSION";
   }
@@ -31,40 +31,40 @@ type TrainingSessionMachineEvents =
     type: "_USER_CANCELLED_EXERCISE_CREATION_FORM";
   };
 
-export type TrainingSessionMachineContext = {
-  initialExercisesToSpawn?: TrainingSessionExercise[];
+export type SessionMachineContext = {
+  initialExercisesToSpawn?: Exercise[];
   trainingSessionName: string;
   uuid: string;
-  trainingSessionExerciseActorRefCollection: TrainingSessionExerciseActorRef[];
+  trainingSessionExerciseActorRefCollection: SessionExerciseActorRef[];
 };
 
-type TrainingSessionMachineState = State<
-  TrainingSessionMachineContext,
-  TrainingSessionMachineEvents
+type SessionMachineState = State<
+  SessionMachineContext,
+  SessionMachineEvents
 >;
 
-export type TrainingSessionActorRef = ActorRef<
-  TrainingSessionMachineEvents,
-  TrainingSessionMachineState
+export type SessionActorRef = ActorRef<
+  SessionMachineEvents,
+  SessionMachineState
 >;
 
-export const createTrainingSessionMachine = ({
+export const createSessionMachine = ({
   trainingSessionName,
   uuid: trainingSessionId,
   exerciseCollection,
 }: {
   trainingSessionName: string;
   uuid: string;
-  exerciseCollection?: TrainingSessionExercise[];
+  exerciseCollection?: Exercise[];
 }) => {
   return createMachine(
     {
       predictableActionArguments: true,
-      tsTypes: {} as import("./TrainingSessionMachine.typegen").Typegen0,
+      tsTypes: {} as import("./SessionMachine.typegen").Typegen0,
       id: trainingSessionId,
       schema: {
-        context: {} as TrainingSessionMachineContext,
-        events: {} as TrainingSessionMachineEvents,
+        context: {} as SessionMachineContext,
+        events: {} as SessionMachineEvents,
       },
       context: {
         initialExercisesToSpawn: exerciseCollection,
@@ -114,7 +114,7 @@ export const createTrainingSessionMachine = ({
             id: "ExerciseCreationForm",
 
             src: () => {
-              return createExerciseCreationFormMachine(trainingSessionId);
+              return createExerciseFormMachine(trainingSessionId);
             },
 
             onDone: {
@@ -170,9 +170,9 @@ export const createTrainingSessionMachine = ({
 
           const exerciseActorRefCollection = initialExercisesToSpawn.map(
             ({ exerciseName, uuid, repCounter, setCounter, load, rest }) => {
-              const newTrainingSessionExerciseActorRef: TrainingSessionExerciseActorRef =
+              const newTrainingSessionExerciseActorRef: SessionExerciseActorRef =
                 spawn(
-                  createTrainingSessionExerciseMachine({
+                  createExerciseMachine({
                     exerciseName,
                     uuid,
                     parentTrainingSessionId: trainingSessionId,
@@ -231,10 +231,10 @@ export const createTrainingSessionMachine = ({
               load,
               rest,
             },
-          } = event as ExerciseFormCreationDoneInvokeEvent;
+          } = event as ExerciseFormDoneInvokeEvent;
 
-          const newExerciseActor: TrainingSessionExerciseActorRef = spawn(
-            createTrainingSessionExerciseMachine({
+          const newExerciseActor: SessionExerciseActorRef = spawn(
+            createExerciseMachine({
               exerciseName,
               parentTrainingSessionId: trainingSessionId,
               uuid: newTrainingSessionId,

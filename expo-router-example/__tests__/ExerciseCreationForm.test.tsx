@@ -12,12 +12,9 @@ import {
   userNavigatesBackFromHeaderBackButton, within
 } from "../tests/test.utils";
 import {
-  BodybuildingProgram,
   ExerciseLoad,
   ExerciseRest,
-  LoadUnit,
-  RetrieveUserBodyBuildingProgramResponseBody,
-  SERVER_ENDPOINT
+  LoadUnit, Program, RetrieveUserProgramResponseBody, SERVER_ENDPOINT
 } from "../types";
 
 const programBuilderTestMachine = createMachine({
@@ -256,7 +253,7 @@ const programBuilderTestMachine = createMachine({
 
 interface TestingContext {
   screen: ReturnType<typeof render>;
-  defaultBodyBuildingProgram: BodybuildingProgram;
+  defaultBodyBuildingProgram: Program;
   createdExerciseName: string;
   createdExerciseSetCounter: number;
   createdExerciseRepCounter: number;
@@ -529,7 +526,7 @@ describe("Xstate tests generations", () => {
             rest.post<
               undefined,
               Record<string, never>,
-              RetrieveUserBodyBuildingProgramResponseBody
+              RetrieveUserProgramResponseBody
             >(`${SERVER_ENDPOINT}/retrieve-program`, (_req, res, ctx) => {
               return res(ctx.status(200), ctx.json(defaultBodyBuildingProgram));
             })

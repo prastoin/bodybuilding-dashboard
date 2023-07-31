@@ -1,11 +1,11 @@
+import { ExerciseActorRef } from "@/machines/ExerciseMachine";
 import { AntDesign } from "@expo/vector-icons";
 import { useActor } from "@xstate/react";
 import * as React from "react";
 import { Text, View } from "react-native";
-import { TrainingSessionExerciseActorRef } from "../../machines/TrainingSessionExerciseMachine";
 
 interface TrainingSessionExerciseProps {
-  trainingSessionExerciseActorRef: TrainingSessionExerciseActorRef;
+  trainingSessionExerciseActorRef: ExerciseActorRef;
   index: number;
 }
 

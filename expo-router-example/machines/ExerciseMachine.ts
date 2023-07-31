@@ -1,9 +1,9 @@
 import { router } from "expo-router";
 import { ActorRef, assign, createMachine, State } from "xstate";
 import { sendParent } from "xstate/lib/actions";
-import { ExerciseLoad, ExerciseRest, TrainingSessionExercise } from "../types";
+import { Exercise, ExerciseLoad, ExerciseRest } from "../types";
 
-type TrainingSessionExerciseMachineEvent =
+type ExerciseMachineEvent =
   | {
     type: "REMOVE_EXERCISE";
   }
@@ -49,24 +49,24 @@ type TrainingSessionExerciseMachineEvent =
     rest: ExerciseRest;
   };
 
-type TrainingSessionExerciseMachineContext = TrainingSessionExercise;
+type ExerciseMachineContext = Exercise;
 
-type TrainingSessionExerciseMachineState = State<
-  TrainingSessionExerciseMachineContext,
-  TrainingSessionExerciseMachineEvent
+type ExerciseMachineState = State<
+  ExerciseMachineContext,
+  ExerciseMachineEvent
 >;
 
-export type TrainingSessionExerciseActorRef = ActorRef<
-  TrainingSessionExerciseMachineEvent,
-  TrainingSessionExerciseMachineState
+export type ExerciseActorRef = ActorRef<
+  ExerciseMachineEvent,
+  ExerciseMachineState
 >;
 
-type CreateTrainingSessionExerciseMachineArgs =
-  TrainingSessionExerciseMachineContext & {
+type CreateExerciseMachineArgs =
+  ExerciseMachineContext & {
     parentTrainingSessionId: string;
   };
 
-export const createTrainingSessionExerciseMachine = ({
+export const createExerciseMachine = ({
   exerciseName,
   uuid,
   repCounter,
@@ -74,16 +74,16 @@ export const createTrainingSessionExerciseMachine = ({
   parentTrainingSessionId,
   load,
   rest,
-}: CreateTrainingSessionExerciseMachineArgs) =>
+}: CreateExerciseMachineArgs) =>
   createMachine(
     {
       predictableActionArguments: true,
       tsTypes:
-        {} as import("./TrainingSessionExerciseMachine.typegen").Typegen0,
+        {} as import("./ExerciseMachine.typegen").Typegen0,
       id: uuid,
       schema: {
-        context: {} as TrainingSessionExerciseMachineContext,
-        events: {} as TrainingSessionExerciseMachineEvent,
+        context: {} as ExerciseMachineContext,
+        events: {} as ExerciseMachineEvent,
       },
       context: {
         exerciseName,

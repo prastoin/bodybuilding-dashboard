@@ -4,46 +4,45 @@ import {
   ActorRef,
   assign,
   createMachine,
-  DoneInvokeEvent,
-  InterpreterFrom
+  DoneInvokeEvent
 } from "xstate";
 import { sendParent } from "xstate/lib/actions";
 
-export type TrainingSessionCreationFormMachineEvents =
+export type SessionFormMachineEvents =
   | {
     type: "SET_TRAINING_SESSION_NAME_AND_GO_NEXT";
     name: string;
   }
   | { type: "USER_WENT_TO_PREVIOUS_SCREEN" };
 
-export type TrainingSessionCreationFormMachineContext = {
+export type SessionFormMachineContext = {
   trainingSessionName: string;
   uuid: string;
 };
 
-export type AppMachineInterpreter = InterpreterFrom<
-  ReturnType<typeof createTrainingSessionCreationFormMachine>
+// export type AppMachineInterpreter = InterpreterFrom<
+//   ReturnType<typeof createSessionFormMachine>
+// >;
+
+export type SessionFormActorRef = ActorRef<
+  SessionFormMachineEvents,
+  SessionFormMachineContext
 >;
 
-export type TrainingSessionCreationFormActorRef = ActorRef<
-  TrainingSessionCreationFormMachineEvents,
-  TrainingSessionCreationFormMachineContext
->;
+export type SessionFormDoneInvokeEvent =
+  DoneInvokeEvent<SessionFormMachineContext>;
 
-export type TrainingSessionFormDoneInvokeEvent =
-  DoneInvokeEvent<TrainingSessionCreationFormMachineContext>;
-
-export const createTrainingSessionCreationFormMachine = () =>
+export const createSessionFormMachine = () =>
   /** @xstate-layout N4IgpgJg5mDOIC5QAUBOB7KqCGBbAQgK4CWANhGKgLLYDGAFsQHZgB0AkhKWAMQCCECAAIAKjmbMoQgMpxYxdE0SgADunkAXBUqQgAHogAsh1gDYArAA4AnAHYAjJYBMAZgAMpp7YA0IAJ6I9k7mrPa2hm5elpa2LjYuAL5JvkzoFPC6aJg4BCTklDQMzGyc3Mogapra5QYI1k6sroZOhqaWxkERTr4BCBGsbubW9m5u4aamYfbmySBZWHhEZBTUdIwsrCwA7kKwGtgaYEL25ZXEWoo1gW4m1obmLU71praTLj2ILi4NLhG2TjFHJZftYZglfPMckt8qsiixTupztVdLUnG4zFY7I5XB4vB8EABab6sYZOFqg1rmQykpJJIA */
   createMachine(
     {
       predictableActionArguments: true,
       schema: {
-        context: {} as TrainingSessionCreationFormMachineContext,
-        events: {} as TrainingSessionCreationFormMachineEvents,
+        context: {} as SessionFormMachineContext,
+        events: {} as SessionFormMachineEvents,
       },
       tsTypes:
-        {} as import("./TrainingSessionCreationFormMachine.typegen").Typegen0,
+        {} as import("./SessionFormMachine.typegen").Typegen0,
       context: {
         trainingSessionName: "",
         uuid: uuidv4(),

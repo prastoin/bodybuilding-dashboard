@@ -9,9 +9,7 @@ import {
   within
 } from "../tests/test.utils";
 import {
-  LoadUnit,
-  RetrieveUserBodyBuildingProgramResponseBody,
-  SERVER_ENDPOINT
+  LoadUnit, RetrieveUserProgramResponseBody, SERVER_ENDPOINT
 } from "../types";
 
 test("User can edit an exercise name", async () => {
@@ -20,7 +18,7 @@ test("User can edit an exercise name", async () => {
     rest.post<
       undefined,
       Record<string, never>,
-      RetrieveUserBodyBuildingProgramResponseBody
+      RetrieveUserProgramResponseBody
     >(`${SERVER_ENDPOINT}/retrieve-program`, (_req, res, ctx) => {
       return res(ctx.status(200), ctx.json(bodyBuildingProgram));
     })
@@ -80,7 +78,7 @@ test("User can edit an exercise set and rep fields", async () => {
     rest.post<
       undefined,
       Record<string, never>,
-      RetrieveUserBodyBuildingProgramResponseBody
+      RetrieveUserProgramResponseBody
     >(`${SERVER_ENDPOINT}/retrieve-program`, (_req, res, ctx) => {
       return res(ctx.status(200), ctx.json(bodyBuildingProgram));
     })
@@ -184,7 +182,7 @@ test("User can edit an exercise load field", async () => {
     rest.post<
       undefined,
       Record<string, never>,
-      RetrieveUserBodyBuildingProgramResponseBody
+      RetrieveUserProgramResponseBody
     >(`${SERVER_ENDPOINT}/retrieve-program`, (_req, res, ctx) => {
       return res(ctx.status(200), ctx.json(bodyBuildingProgram));
     })
@@ -270,7 +268,7 @@ test("User can edit an exercise rest field", async () => {
     rest.post<
       undefined,
       Record<string, never>,
-      RetrieveUserBodyBuildingProgramResponseBody
+      RetrieveUserProgramResponseBody
     >(`${SERVER_ENDPOINT}/retrieve-program`, (_req, res, ctx) => {
       return res(ctx.status(200), ctx.json(bodyBuildingProgram));
     })

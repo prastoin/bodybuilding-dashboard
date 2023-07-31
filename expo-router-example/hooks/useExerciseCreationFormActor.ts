@@ -1,11 +1,11 @@
+import { ExerciseFormActorRef } from "@/machines/ExerciseFormMachine";
 import { useSelector } from "@xstate/react";
 import invariant from "invariant";
-import { ExerciseCreationFormActorRef } from "../machines/ExerciseCreationFormMachine";
 import { useTrainingSessionActorRef } from "./useTrainingSessionActorRef";
 
 export function useExerciseCreationFormActor(
   trainingSessionId: string
-): ExerciseCreationFormActorRef | undefined {
+): ExerciseFormActorRef | undefined {
   const trainingSessionActor = useTrainingSessionActorRef(trainingSessionId);
 
   invariant(
@@ -16,8 +16,8 @@ export function useExerciseCreationFormActor(
   const exerciseCreationForm = useSelector(
     trainingSessionActor,
     (state) => state.children.ExerciseCreationForm as
-    | ExerciseCreationFormActorRef
-    | undefined
+      | ExerciseFormActorRef
+      | undefined
   );
 
   return exerciseCreationForm;

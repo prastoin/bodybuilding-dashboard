@@ -1,9 +1,9 @@
 import { useAppContext } from "@/context/appContext";
 import { useSelector } from "@xstate/react";
-import { TrainingSessionCreationFormActorRef } from "../machines/TrainingSessionCreationFormMachine";
+import { SessionFormActorRef } from "../machines/SessionFormMachine";
 
 export function useTrainingSessionCreationFormActor():
-  | TrainingSessionCreationFormActorRef
+  | SessionFormActorRef
   | undefined {
   const { programBuilderService } = useAppContext();
 
@@ -11,8 +11,8 @@ export function useTrainingSessionCreationFormActor():
     programBuilderService,
     (state) =>
       state.children.TrainingSessionCreationForm as
-        | TrainingSessionCreationFormActorRef
-        | undefined
+      | SessionFormActorRef
+      | undefined
   );
 
   return trainingSessionCreationFormActor;

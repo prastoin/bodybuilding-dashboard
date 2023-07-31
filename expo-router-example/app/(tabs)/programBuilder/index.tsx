@@ -1,7 +1,7 @@
 import AppScreen from "@/components/AppScreen";
 import { TrainingSessionItem } from "@/components/programBuilder/TrainingSession";
 import { useAppContext } from "@/context/appContext";
-import { TrainingSessionActorRef } from "@/machines/TrainingSessionMachine";
+import { SessionActorRef } from "@/machines/SessionMachine";
 import { useActor } from "@xstate/react";
 import * as React from "react";
 import { Button, FlatList, Text, View } from "react-native";
@@ -24,7 +24,7 @@ export default function ProgramBuilderScreen() {
     <AppScreen testID={"program-builder-screen-container"}>
       <View>
         <Text>{programBuilderContext.programName}</Text>
-        <FlatList<TrainingSessionActorRef>
+        <FlatList<SessionActorRef>
           data={programBuilderContext.trainingSessionActorRefCollection}
           renderItem={({ index, item }) => (
             <TrainingSessionItem trainingSessionActorRef={item} index={index} />

@@ -5,13 +5,12 @@ import {
   ActorRefFrom,
   assign,
   createMachine,
-  DoneInvokeEvent,
-  InterpreterFrom
+  DoneInvokeEvent
 } from "xstate";
 import { sendParent } from "xstate/lib/actions";
-import { ExerciseLoad, ExerciseRest, TrainingSessionExercise } from "../types";
+import { Exercise, ExerciseLoad, ExerciseRest } from "../types";
 
-export type ExerciseCreationFormMachineEvents =
+export type ExerciseFormMachineEvents =
   | {
     type: "SET_EXERCISE_NAME_AND_GO_NEXT";
     name: string;
@@ -31,20 +30,20 @@ export type ExerciseCreationFormMachineEvents =
     rest: ExerciseRest;
   };
 
-export type ExerciseCreationFormMachineContext = TrainingSessionExercise;
+export type ExerciseFormMachineContext = Exercise;
 
-export type AppMachineInterpreter = InterpreterFrom<
-  ReturnType<typeof createExerciseCreationFormMachine>
+// export type AppMachineInterpreter = InterpreterFrom<
+//   ReturnType<typeof createExerciseCreationFormMachine>
+// >;
+
+export type ExerciseFormActorRef = ActorRefFrom<
+  typeof createExerciseFormMachine
 >;
 
-export type ExerciseCreationFormActorRef = ActorRefFrom<
-  typeof createExerciseCreationFormMachine
->;
+export type ExerciseFormDoneInvokeEvent =
+  DoneInvokeEvent<ExerciseFormMachineContext>;
 
-export type ExerciseFormCreationDoneInvokeEvent =
-  DoneInvokeEvent<ExerciseCreationFormMachineContext>;
-
-export const createExerciseCreationFormMachine = (
+export const createExerciseFormMachine = (
   parentTrainingSessionId: string
 ) =>
   /** @xstate-layout N4IgpgJg5mDOIC5QAUBOB7KqCGBbAQgK4CWANhGKgLLYDGAFsQHZgB0AkhKWAMQCCECAAIAKjmbMoQgMpxYxdE0SgADunkAXBUqQgAHogAsh1gDYArAA4AnAHYAjJYBMAZgAMpp7YA0IAJ6I9k7mrPa2hm5elpa2LjYuAL5JvkzoFPC6aJg4BCTklDQMzGyc3Mogapra5QYI1k6sroZOhqaWxkERTr4BCBGsbubW9m5u4aamYfbmySBZWHhEZBTUdIwsrCwA7kKwGtgaYEL25ZXEWoo1gW4m1obmLU71praTLj2ILi4NLhG2TjFHJZftYZglfPMckt8qsiixTupztVdLUnG4zFY7I5XB4vB8EABab6sYZOFqg1rmQykpJJIA */
@@ -52,10 +51,10 @@ export const createExerciseCreationFormMachine = (
     {
       predictableActionArguments: true,
       schema: {
-        context: {} as ExerciseCreationFormMachineContext,
-        events: {} as ExerciseCreationFormMachineEvents,
+        context: {} as ExerciseFormMachineContext,
+        events: {} as ExerciseFormMachineEvents,
       },
-      tsTypes: {} as import("./ExerciseCreationFormMachine.typegen").Typegen0,
+      tsTypes: {} as import("./ExerciseFormMachine.typegen").Typegen0,
       context: {
         exerciseName: "",
         repCounter: 0,

@@ -1,12 +1,12 @@
+import { ExerciseActorRef } from "@/machines/ExerciseMachine";
+import { SessionActorRef } from "@/machines/SessionMachine";
 import { useActor } from "@xstate/react";
 import * as React from "react";
 import { Button, FlatList, Text, View } from "react-native";
-import { TrainingSessionExerciseActorRef } from "../../machines/TrainingSessionExerciseMachine";
-import { TrainingSessionActorRef } from "../../machines/TrainingSessionMachine";
 import { TrainingSessionExerciseItem } from "./TrainingSessionExercise";
 
 interface TrainingSessionProps {
-  trainingSessionActorRef: TrainingSessionActorRef;
+  trainingSessionActorRef: SessionActorRef;
   index: number;
 }
 
@@ -53,7 +53,7 @@ export const TrainingSessionItem: React.FC<TrainingSessionProps> = ({
       </Text>
 
       <View>
-        <FlatList<TrainingSessionExerciseActorRef>
+        <FlatList<ExerciseActorRef>
           data={trainingSessionExerciseActorRefCollection}
           renderItem={({ item, index }) => (
             <TrainingSessionExerciseItem

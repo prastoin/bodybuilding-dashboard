@@ -1,6 +1,6 @@
+import { ExerciseActorRef } from "@/machines/ExerciseMachine";
 import { useSelector } from "@xstate/react";
 import invariant from "invariant";
-import { TrainingSessionExerciseActorRef } from "../machines/TrainingSessionExerciseMachine";
 import { useTrainingSessionActorRef } from "./useTrainingSessionActorRef";
 
 /**
@@ -12,7 +12,7 @@ export function useExerciseActorRef({
 }: {
   sessionId: string;
   exerciseId: string;
-}): TrainingSessionExerciseActorRef | undefined {
+}): ExerciseActorRef | undefined {
   const relatedTrainingSessionActorRef =
     useTrainingSessionActorRef(sessionId);
 

@@ -1,3 +1,4 @@
+import { Program, RetrieveUserProgramResponseBody } from '@/types';
 import { router } from 'expo-router';
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
@@ -10,41 +11,32 @@ import {
   spawn
 } from "xstate";
 import { sendRetrieveUserBodyBuildingProgram } from "../services/ProgramBuilderService";
-import {
-  BodybuildingProgram,
-  RetrieveUserBodyBuildingProgramResponseBody
-} from "../types";
-import {
-  createTrainingSessionCreationFormMachine,
-  TrainingSessionFormDoneInvokeEvent
-} from "./TrainingSessionCreationFormMachine";
-import {
-  createTrainingSessionMachine,
-  TrainingSessionActorRef
-} from "./TrainingSessionMachine";
+import { createSessionFormMachine, SessionFormDoneInvokeEvent } from './SessionFormMachine';
+import { createSessionMachine, SessionActorRef } from './SessionMachine';
 
-export type ProgramBuilderMachineEvents = EventFrom<
-  ReturnType<typeof createProgramBuilderMachine>
+
+export type ProgramMachineEvents = EventFrom<
+  ReturnType<typeof createProgramMachine>
 >;
 
-export type ProgramBuilderMachineContext = Omit<
-  BodybuildingProgram,
+export type ProgramMachineContext = Omit<
+  Program,
   "trainingSessions"
 > & {
-  trainingSessionActorRefCollection: TrainingSessionActorRef[];
+  trainingSessionActorRefCollection: SessionActorRef[];
 };
 
-export type ProgramBuilderMachineInterpreter = InterpreterFrom<
-  ReturnType<typeof createProgramBuilderMachine>
+export type ProgramMachineInterpreter = InterpreterFrom<
+  ReturnType<typeof createProgramMachine>
 >;
 
-export const createProgramBuilderMachine = () =>
+export const createProgramMachine = () =>
   /** @xstate-layout N4IgpgJg5mDOIC5QAUBOB7KqCGBbAQgK4CWANhGKgLLYDGAFsQHZgB0AkhKWAMQCCECAAIAKjmbMoQgMpxYxdE0SgADunkAXBUqQgAHogAsh1gDYArAA4AnAHYAjJYBMAZgAMpp7YA0IAJ6I9k7mrPa2hm5elpa2LjYuAL5JvkzoFPC6aJg4BCTklDQMzGyc3Mogapra5QYI1k6sroZOhqaWxkERTr4BCBGsbubW9m5u4aamYfbmySBZWHhEZBTUdIwsrCwA7kKwGtgaYEL25ZXEWoo1gW4m1obmLU71praTLj2ILi4NLhG2TjFHJZftYZglfPMckt8qsiixTupztVdLUnG4zFY7I5XB4vB8EABab6sYZOFqg1rmQykpJJIA */
   createMachine(
     {
       predictableActionArguments: true,
       schema: {
-        context: {} as ProgramBuilderMachineContext,
+        context: {} as ProgramMachineContext,
         events: {} as
           | {
             type: "ENTER_TRAINING_SESSION_CREATION_FORM";
@@ -52,7 +44,7 @@ export const createProgramBuilderMachine = () =>
           | { type: "_REMOVE_TRAINING_SESSION"; trainingSessionId: string }
           | { type: "_CANCEL_TRAINING_SESSION_CREATION_FORM" },
       },
-      tsTypes: {} as import("./ProgramBuilderMachine.typegen").Typegen0,
+      tsTypes: {} as import("./ProgramMachine.typegen").Typegen0,
       context: {
         programName: "Program name",
         uuid: uuidv4(),
@@ -97,7 +89,7 @@ export const createProgramBuilderMachine = () =>
             id: "TrainingSessionCreationForm",
 
             src: () => {
-              return createTrainingSessionCreationFormMachine();
+              return createSessionFormMachine();
             },
 
             onDone: {
@@ -128,7 +120,7 @@ export const createProgramBuilderMachine = () =>
       actions: {
         assignMergeRetrievedUserProgram: assign((_context, e) => {
           const event =
-            e as DoneInvokeEvent<RetrieveUserBodyBuildingProgramResponseBody>;
+            e as DoneInvokeEvent<RetrieveUserProgramResponseBody>;
 
           const {
             programName,
@@ -137,11 +129,11 @@ export const createProgramBuilderMachine = () =>
           } = event.data;
 
           const trainingSessionActorRefCollection =
-            trainingSessionCollection.map<TrainingSessionActorRef>(
+            trainingSessionCollection.map<SessionActorRef>(
               (trainingSession) =>
                 spawn(
                   // TODO Refactor below function to spawn exercises
-                  createTrainingSessionMachine({
+                  createSessionMachine({
                     trainingSessionName: trainingSession.trainingSessionName,
                     uuid: trainingSession.uuid,
                     exerciseCollection: trainingSession.exercises,
@@ -171,10 +163,10 @@ export const createProgramBuilderMachine = () =>
           // TODO search for a better typing solution to avoid the `as TrainingSessionFormDoneInvokeEvent`
           const {
             data: { trainingSessionName, uuid: newTrainingSessionId },
-          } = event as TrainingSessionFormDoneInvokeEvent;
+          } = event as SessionFormDoneInvokeEvent;
 
-          const newTrainingSessionActor: TrainingSessionActorRef = spawn(
-            createTrainingSessionMachine({
+          const newTrainingSessionActor: SessionActorRef = spawn(
+            createSessionMachine({
               trainingSessionName: trainingSessionName,
               uuid: newTrainingSessionId,
             }),
