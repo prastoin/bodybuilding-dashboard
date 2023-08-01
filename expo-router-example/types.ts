@@ -25,7 +25,7 @@ export type ExerciseRest = z.infer<typeof ExerciseRest>;
 
 export const Exercise = z.object({
   uuid: z.string().uuid(),
-  exerciseName: NonEmptyString,
+  name: NonEmptyString,
   setCounter: z.number().min(1).max(10),
   repCounter: z.number().min(1).max(20),
   load: ExerciseLoad,
@@ -35,16 +35,16 @@ export type Exercise = z.infer<typeof Exercise>;
 
 export const Session = z.object({
   uuid: z.string().uuid(),
-  trainingSessionName: NonEmptyString,
-  exercises: Exercise.array(),
+  name: NonEmptyString,
+  exerciseList: Exercise.array(),
 });
 export type Session = z.infer<typeof Session>;
-export type SessionCollection = Session[];
+export type SessionList = Session[];
 
 export const Program = z.object({
   uuid: z.string().uuid(),
   programName: NonEmptyString,
-  trainingSessions: Session.array(),
+  sessionList: Session.array(),
 });
 export type Program = z.infer<typeof Program>;
 
