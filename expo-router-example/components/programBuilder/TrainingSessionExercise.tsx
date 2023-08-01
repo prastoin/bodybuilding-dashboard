@@ -16,7 +16,7 @@ export const TrainingSessionExerciseItem: React.FC<
     trainingSessionExerciseActorRef
   );
 
-  const { exerciseName, uuid, repCounter, setCounter, load, rest } =
+  const { name, uuid, repCounter, setCounter, load, rest } =
     exerciseMachineState.context;
 
   function handleRemoveExerciseButtonOnPress() {
@@ -65,7 +65,7 @@ export const TrainingSessionExerciseItem: React.FC<
         />
 
         <View testID="exercise-name" className="flex-row">
-          <Text>{exerciseName}</Text>
+          <Text>{name}</Text>
           <AntDesign
             name="edit"
             size={24}

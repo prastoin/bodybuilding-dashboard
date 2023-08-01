@@ -1,4 +1,4 @@
-import { Exercise } from "@/types";
+import { Exercise, Session } from "@/types";
 import { router } from "expo-router";
 import invariant from "invariant";
 import { ActorRef, assign, createMachine, spawn, State } from "xstate";
@@ -48,29 +48,28 @@ export type SessionActorRef = ActorRef<
   SessionMachineState
 >;
 
+type CreateSessionMachineArgs = Partial<Session> & Pick<Session, 'name' | 'uuid'>
+
 export const createSessionMachine = ({
-  trainingSessionName,
-  uuid: trainingSessionId,
-  exerciseCollection,
-}: {
-  trainingSessionName: string;
-  uuid: string;
-  exerciseCollection?: Exercise[];
-}) => {
+  exerciseList,
+  name,
+  uuid: sessionId
+}: CreateSessionMachineArgs) => {
   return createMachine(
     {
       predictableActionArguments: true,
       tsTypes: {} as import("./SessionMachine.typegen").Typegen0,
-      id: trainingSessionId,
+      id: sessionId,
       schema: {
         context: {} as SessionMachineContext,
         events: {} as SessionMachineEvents,
       },
       context: {
-        initialExercisesToSpawn: exerciseCollection,
+        initialExercisesToSpawn: exerciseList,
         trainingSessionExerciseActorRefCollection: [],
-        trainingSessionName,
-        uuid: trainingSessionId,
+        trainingSessionName: name
+        ,
+        uuid: sessionId,
       },
       initial: "Spawning initial exercises",
       states: {
@@ -114,7 +113,7 @@ export const createSessionMachine = ({
             id: "ExerciseCreationForm",
 
             src: () => {
-              return createExerciseFormMachine(trainingSessionId);
+              return createExerciseFormMachine(sessionId);
             },
 
             onDone: {
@@ -169,13 +168,13 @@ export const createSessionMachine = ({
           );
 
           const exerciseActorRefCollection = initialExercisesToSpawn.map(
-            ({ exerciseName, uuid, repCounter, setCounter, load, rest }) => {
+            ({ name, uuid, repCounter, setCounter, load, rest }) => {
               const newTrainingSessionExerciseActorRef: SessionExerciseActorRef =
                 spawn(
                   createExerciseMachine({
-                    exerciseName,
+                    name,
                     uuid,
-                    parentTrainingSessionId: trainingSessionId,
+                    parentTrainingSessionId: sessionId,
                     repCounter,
                     setCounter,
                     load,
@@ -224,7 +223,7 @@ export const createSessionMachine = ({
         "Assign created exercise to context": assign((context, event) => {
           const {
             data: {
-              exerciseName,
+              name,
               uuid: newTrainingSessionId,
               repCounter,
               setCounter,
@@ -235,8 +234,8 @@ export const createSessionMachine = ({
 
           const newExerciseActor: SessionExerciseActorRef = spawn(
             createExerciseMachine({
-              exerciseName,
-              parentTrainingSessionId: trainingSessionId,
+              name,
+              parentTrainingSessionId: sessionId,
               uuid: newTrainingSessionId,
               repCounter,
               setCounter,
@@ -265,7 +264,7 @@ export const createSessionMachine = ({
         // Could make typings works here
         "Forward training session deletion to program builder": sendParent({
           type: "_REMOVE_TRAINING_SESSION",
-          trainingSessionId: trainingSessionId,
+          trainingSessionId: sessionId,
         }),
 
         "remove training session exercise from context": assign(

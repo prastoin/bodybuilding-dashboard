@@ -29,14 +29,14 @@ export type TestingScreen = ReturnType<typeof render>;
 export const getBodyBuildingProgram = (): Program => {
   return {
     programName: faker.name.jobDescriptor(),
-    trainingSessions: [
+    sessionList: [
       {
         uuid: uuidv4(),
-        trainingSessionName: faker.name.jobArea(),
-        exercises: [
+        name: faker.name.jobArea(),
+        exerciseList: [
           {
             uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
+            name: faker.name.jobTitle(),
             repCounter: faker.datatype.number({
               max: 20,
               min: 1,
@@ -56,7 +56,7 @@ export const getBodyBuildingProgram = (): Program => {
           },
           {
             uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
+            name: faker.name.jobTitle(),
             repCounter: faker.datatype.number({
               max: 20,
               min: 1,
@@ -76,7 +76,7 @@ export const getBodyBuildingProgram = (): Program => {
           },
           {
             uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
+            name: faker.name.jobTitle(),
             repCounter: faker.datatype.number({
               max: 20,
               min: 1,
@@ -98,11 +98,11 @@ export const getBodyBuildingProgram = (): Program => {
       },
       {
         uuid: uuidv4(),
-        trainingSessionName: faker.name.jobArea(),
-        exercises: [
+        name: faker.name.jobArea(),
+        exerciseList: [
           {
             uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
+            name: faker.name.jobTitle(),
             repCounter: faker.datatype.number({
               max: 20,
               min: 1,
@@ -122,7 +122,7 @@ export const getBodyBuildingProgram = (): Program => {
           },
           {
             uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
+            name: faker.name.jobTitle(),
             repCounter: faker.datatype.number({
               max: 20,
               min: 1,
@@ -144,8 +144,8 @@ export const getBodyBuildingProgram = (): Program => {
       },
       {
         uuid: uuidv4(),
-        trainingSessionName: faker.name.jobArea(),
-        exercises: [],
+        name: faker.name.jobArea(),
+        exerciseList: [],
       },
     ],
     uuid: uuidv4(),

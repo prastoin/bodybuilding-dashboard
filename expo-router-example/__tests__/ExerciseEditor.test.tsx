@@ -36,7 +36,7 @@ test("User can edit an exercise name", async () => {
     "program-builder-screen-container"
   );
 
-  const exerciseId = bodyBuildingProgram.trainingSessions[0].exercises[0].uuid;
+  const exerciseId = bodyBuildingProgram.sessionList[0].exerciseList[0].uuid;
   const firstTrainingSessionFirstExerciseContainer = await within(
     programBuilderContainer
   ).findByTestId(`training-session-exercise-container-${exerciseId}`);
@@ -96,7 +96,7 @@ test("User can edit an exercise set and rep fields", async () => {
     "program-builder-screen-container"
   );
 
-  const exercise = bodyBuildingProgram.trainingSessions[0].exercises[0];
+  const exercise = bodyBuildingProgram.sessionList[0].exerciseList[0];
   const exerciseId = exercise.uuid;
   let firstTrainingSessionFirstExerciseContainer = await within(
     programBuilderContainer
@@ -200,7 +200,7 @@ test("User can edit an exercise load field", async () => {
     "program-builder-screen-container"
   );
 
-  const exercise = bodyBuildingProgram.trainingSessions[0].exercises[0];
+  const exercise = bodyBuildingProgram.sessionList[0].exerciseList[0];
   const exerciseId = exercise.uuid;
   let firstTrainingSessionFirstExerciseContainer = await within(
     programBuilderContainer
@@ -286,7 +286,7 @@ test("User can edit an exercise rest field", async () => {
     "program-builder-screen-container"
   );
 
-  const exercise = bodyBuildingProgram.trainingSessions[0].exercises[0];
+  const exercise = bodyBuildingProgram.sessionList[0].exerciseList[0];
   const exerciseId = exercise.uuid;
   let firstTrainingSessionFirstExerciseContainer = await within(
     programBuilderContainer

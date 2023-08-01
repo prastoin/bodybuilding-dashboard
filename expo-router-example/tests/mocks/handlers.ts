@@ -21,7 +21,7 @@ export const handlers = [
       ctx.status(200),
       ctx.json({
         programName: "Default msw bodybuilding program",
-        trainingSessions: [],
+        sessionList: [],
         uuid: uuidv4(),
       })
     );

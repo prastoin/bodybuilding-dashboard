@@ -540,7 +540,7 @@ describe("Xstate tests generations", () => {
           await screen.findByTestId("program-builder-screen-container");
 
           const firstTrainingSessionId =
-            defaultBodyBuildingProgram.trainingSessions[0].uuid;
+            defaultBodyBuildingProgram.sessionList[0].uuid;
           const firstTrainingSessionContainer = await screen.findByTestId(
             `training-session-container-${firstTrainingSessionId}`
           );

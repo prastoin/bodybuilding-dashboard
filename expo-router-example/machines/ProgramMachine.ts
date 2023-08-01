@@ -21,7 +21,7 @@ export type ProgramMachineEvents = EventFrom<
 
 export type ProgramMachineContext = Omit<
   Program,
-  "trainingSessions"
+  "sessionList"
 > & {
   trainingSessionActorRefCollection: SessionActorRef[];
 };
@@ -124,21 +124,17 @@ export const createProgramMachine = () =>
 
           const {
             programName,
-            trainingSessions: trainingSessionCollection,
+            sessionList,
             uuid,
           } = event.data;
 
           const trainingSessionActorRefCollection =
-            trainingSessionCollection.map<SessionActorRef>(
-              (trainingSession) =>
+            sessionList.map<SessionActorRef>(
+              (session) =>
                 spawn(
                   // TODO Refactor below function to spawn exercises
-                  createSessionMachine({
-                    trainingSessionName: trainingSession.trainingSessionName,
-                    uuid: trainingSession.uuid,
-                    exerciseCollection: trainingSession.exercises,
-                  }),
-                  { sync: true, name: trainingSession.uuid }
+                  createSessionMachine(session),
+                  { sync: true, name: session.uuid }
                 )
             );
 
@@ -167,7 +163,7 @@ export const createProgramMachine = () =>
 
           const newTrainingSessionActor: SessionActorRef = spawn(
             createSessionMachine({
-              trainingSessionName: trainingSessionName,
+              name: trainingSessionName,
               uuid: newTrainingSessionId,
             }),
             { sync: true, name: newTrainingSessionId }

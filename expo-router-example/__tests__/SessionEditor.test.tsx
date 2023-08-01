@@ -41,7 +41,7 @@ test("On app start user program is retrieved", async () => {
   const allTrainingSessionContainer = await waitFor(() => {
     const allTrainingSessionContainer = getAllTrainingSessionContainer(screen);
     expect(allTrainingSessionContainer.length).toBe(
-      bodyBuildingProgram.trainingSessions.length
+      bodyBuildingProgram.sessionList.length
     );
 
     return allTrainingSessionContainer;
@@ -50,7 +50,7 @@ test("On app start user program is retrieved", async () => {
   //Checking training session
   await Promise.all(
     allTrainingSessionContainer.map(async (trainingSessionContainer) => {
-      const matchingTrainingSession = bodyBuildingProgram.trainingSessions.find(
+      const matchingTrainingSession = bodyBuildingProgram.sessionList.find(
         (trainingSession) =>
           trainingSessionContainer.props.testID ===
           `training-session-container-${trainingSession.uuid}`
@@ -63,7 +63,7 @@ test("On app start user program is retrieved", async () => {
 
       //Checking training session exercises
       await Promise.all(
-        matchingTrainingSession.exercises.map(async (exercise) => {
+        matchingTrainingSession.exerciseList.map(async (exercise) => {
           await within(trainingSessionContainer).findByTestId(
             `training-session-exercise-container-${exercise.uuid}`
           );
@@ -95,11 +95,11 @@ test("User can re-enter training session editor name", async () => {
 
   await screen.findByTestId("program-builder-screen-container");
 
-  const firstTrainingSession = bodyBuildingProgram.trainingSessions[0];
+  const firstTrainingSession = bodyBuildingProgram.sessionList[0];
   const allTrainingSessionContainer = getAllTrainingSessionContainer(screen);
 
   const firstTrainingSessionName = await screen.findByText(
-    firstTrainingSession.trainingSessionName
+    firstTrainingSession.name
   );
   fireEvent.press(firstTrainingSessionName);
 
@@ -119,7 +119,7 @@ test("User can re-enter training session editor name", async () => {
 
   // Hitting training session name again
   fireEvent.press(
-    await screen.findByText(firstTrainingSession.trainingSessionName)
+    await screen.findByText(firstTrainingSession.name)
   );
 
   await screen.findByTestId(

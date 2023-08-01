@@ -67,7 +67,7 @@ type CreateExerciseMachineArgs =
   };
 
 export const createExerciseMachine = ({
-  exerciseName,
+  name,
   uuid,
   repCounter,
   setCounter,
@@ -86,7 +86,7 @@ export const createExerciseMachine = ({
         events: {} as ExerciseMachineEvent,
       },
       context: {
-        exerciseName,
+        name,
         uuid,
         setCounter,
         repCounter,

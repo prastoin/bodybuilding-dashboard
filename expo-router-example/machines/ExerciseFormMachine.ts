@@ -56,7 +56,7 @@ export const createExerciseFormMachine = (
       },
       tsTypes: {} as import("./ExerciseFormMachine.typegen").Typegen0,
       context: {
-        exerciseName: "",
+        name: "",
         repCounter: 0,
         setCounter: 0,
         uuid: uuidv4(),
