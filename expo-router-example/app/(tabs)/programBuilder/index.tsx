@@ -1,5 +1,5 @@
 import AppScreen from "@/components/AppScreen";
-import { TrainingSessionItem } from "@/components/programBuilder/TrainingSession";
+import { TrainingSessionItem } from "@/components/programBuilder/SessionItem";
 import { useAppContext } from "@/context/appContext";
 import { SessionActorRef } from "@/machines/SessionMachine";
 import { useActor } from "@xstate/react";

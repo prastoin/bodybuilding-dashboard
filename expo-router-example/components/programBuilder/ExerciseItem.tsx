@@ -18,7 +18,6 @@ export const TrainingSessionExerciseItem: React.FC<
 
   const { name, uuid, repCounter, setCounter, load, rest } =
     exerciseMachineState.context;
-
   function handleRemoveExerciseButtonOnPress() {
     sendToExerciseMachine({
       type: "REMOVE_EXERCISE",

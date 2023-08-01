@@ -3,7 +3,7 @@ import { SessionActorRef } from "@/machines/SessionMachine";
 import { useActor } from "@xstate/react";
 import * as React from "react";
 import { Button, FlatList, Text, View } from "react-native";
-import { TrainingSessionExerciseItem } from "./TrainingSessionExercise";
+import { TrainingSessionExerciseItem } from "./ExerciseItem";
 
 interface TrainingSessionProps {
   trainingSessionActorRef: SessionActorRef;
