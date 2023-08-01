@@ -168,19 +168,14 @@ export const createSessionMachine = ({
           );
 
           const exerciseActorRefCollection = initialExercisesToSpawn.map(
-            ({ name, uuid, repCounter, setCounter, load, rest }) => {
+            (exercise) => {
               const newTrainingSessionExerciseActorRef: SessionExerciseActorRef =
                 spawn(
                   createExerciseMachine({
-                    name,
-                    uuid,
+                    exercise,
                     parentTrainingSessionId: sessionId,
-                    repCounter,
-                    setCounter,
-                    load,
-                    rest,
                   }),
-                  { sync: true, name: uuid }
+                  { sync: true, name: exercise.uuid }
                 );
               return newTrainingSessionExerciseActorRef;
             }
@@ -222,27 +217,15 @@ export const createSessionMachine = ({
 
         "Assign created exercise to context": assign((context, event) => {
           const {
-            data: {
-              name,
-              uuid: newTrainingSessionId,
-              repCounter,
-              setCounter,
-              load,
-              rest,
-            },
+            data: exercise,
           } = event as ExerciseFormDoneInvokeEvent;
 
           const newExerciseActor: SessionExerciseActorRef = spawn(
             createExerciseMachine({
-              name,
               parentTrainingSessionId: sessionId,
-              uuid: newTrainingSessionId,
-              repCounter,
-              setCounter,
-              load,
-              rest,
+              exercise
             }),
-            { sync: true, name: newTrainingSessionId }
+            { sync: true, name: exercise.uuid }
           );
 
           return {

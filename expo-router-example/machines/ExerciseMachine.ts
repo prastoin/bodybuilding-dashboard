@@ -61,19 +61,21 @@ export type ExerciseActorRef = ActorRef<
   ExerciseMachineState
 >;
 
-type CreateExerciseMachineArgs =
-  ExerciseMachineContext & {
-    parentTrainingSessionId: string;
-  };
+type CreateExerciseMachineArgs = {
+  exercise: Exercise
+  parentTrainingSessionId: string;
+};
 
 export const createExerciseMachine = ({
-  name,
-  uuid,
-  repCounter,
-  setCounter,
+  exercise: {
+    name,
+    uuid,
+    repCounter,
+    setCounter,
+    load,
+    rest,
+  },
   parentTrainingSessionId,
-  load,
-  rest,
 }: CreateExerciseMachineArgs) =>
   createMachine(
     {
@@ -235,9 +237,10 @@ export const createExerciseMachine = ({
 
         "Assign new exercise name to context": assign(
           (context, { newExerciseName }) => {
+            // TODO get interested in why is this not strictly typed ?
             return {
               ...context,
-              exerciseName: newExerciseName,
+              name: newExerciseName,
             };
           }
         ),
