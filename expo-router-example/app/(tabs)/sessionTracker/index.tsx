@@ -6,7 +6,7 @@ export default function TabTwoScreen() {
   return (
     <View className='w-80 bg-white shadow rounded'>
       <Text className="text-red-600 font-bold">Session Tracker</Text>
-      <Link href="/(tabs)/programBuilder">
+      <Link href="/(tabs)/program">
         <Text>Go to home screen!</Text>
       </Link>
     </View>

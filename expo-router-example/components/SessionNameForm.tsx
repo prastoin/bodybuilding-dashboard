@@ -4,24 +4,24 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Button, Text, TextInput } from "react-native";
 import AppScreen from "./AppScreen";
 
-export interface TrainingSessionCreationFormNameFormFieldValues {
-  sessionTrainingName: string;
+export interface SessionFormNameFormFieldValues {
+  name: string;
 }
 
-interface TrainingSessionCreationFormNameContentProps {
-  handleOnSubmit: SubmitHandler<TrainingSessionCreationFormNameFormFieldValues>;
+interface SessionFormNameContentProps {
+  handleOnSubmit: SubmitHandler<SessionFormNameFormFieldValues>;
   handleOnGoBack: () => void;
   testId: string;
 }
 
 export const SessionNameForm: React.FC<
-  TrainingSessionCreationFormNameContentProps
+  SessionFormNameContentProps
 > = ({ handleOnSubmit, handleOnGoBack, testId }) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<TrainingSessionCreationFormNameFormFieldValues>();
+  } = useForm<SessionFormNameFormFieldValues>();
 
   const navigation = useNavigation();
 
@@ -33,7 +33,6 @@ export const SessionNameForm: React.FC<
     [navigation]
   );
 
-  const defaultTrainingSessionName = "";
   return (
     <AppScreen testID={testId}>
       <Controller
@@ -49,10 +48,10 @@ export const SessionNameForm: React.FC<
             placeholder="Name"
           />
         )}
-        name="sessionTrainingName"
-        defaultValue={defaultTrainingSessionName}
+        name="name"
+        defaultValue={""}
       />
-      {errors.sessionTrainingName && (
+      {errors.name && (
         <Text className="text-red-500" accessibilityRole="alert">
           A session training name must be set.
         </Text>

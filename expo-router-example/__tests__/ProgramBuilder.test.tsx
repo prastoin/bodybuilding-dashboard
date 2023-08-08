@@ -193,7 +193,7 @@ describe("Xstate tests generations", () => {
 
           await screen.findByTestId("home-screen-container");
           const goToProgramBuilderButton =
-            screen.getByText(/.*Program.*Builder.*/i);
+            await getProgramBuilderTabIcon(screen);
           fireEvent.press(goToProgramBuilderButton);
           await screen.findByTestId("program-builder-screen-container");
           // do any setup, then...

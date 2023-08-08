@@ -9,9 +9,7 @@ import {
   within
 } from "../tests/test.utils";
 import {
-  LoadUnit,
-  RetrieveUserBodyBuildingProgramResponseBody,
-  SERVER_ENDPOINT
+  LoadUnit, RetrieveUserProgramResponseBody, SERVER_ENDPOINT
 } from "../types";
 
 test("User can edit an exercise name", async () => {
@@ -20,7 +18,7 @@ test("User can edit an exercise name", async () => {
     rest.post<
       undefined,
       Record<string, never>,
-      RetrieveUserBodyBuildingProgramResponseBody
+      RetrieveUserProgramResponseBody
     >(`${SERVER_ENDPOINT}/retrieve-program`, (_req, res, ctx) => {
       return res(ctx.status(200), ctx.json(bodyBuildingProgram));
     })
@@ -38,7 +36,7 @@ test("User can edit an exercise name", async () => {
     "program-builder-screen-container"
   );
 
-  const exerciseId = bodyBuildingProgram.trainingSessions[0].exercises[0].uuid;
+  const exerciseId = bodyBuildingProgram.sessionList[0].exerciseList[0].uuid;
   const firstTrainingSessionFirstExerciseContainer = await within(
     programBuilderContainer
   ).findByTestId(`training-session-exercise-container-${exerciseId}`);
@@ -80,7 +78,7 @@ test("User can edit an exercise set and rep fields", async () => {
     rest.post<
       undefined,
       Record<string, never>,
-      RetrieveUserBodyBuildingProgramResponseBody
+      RetrieveUserProgramResponseBody
     >(`${SERVER_ENDPOINT}/retrieve-program`, (_req, res, ctx) => {
       return res(ctx.status(200), ctx.json(bodyBuildingProgram));
     })
@@ -98,7 +96,7 @@ test("User can edit an exercise set and rep fields", async () => {
     "program-builder-screen-container"
   );
 
-  const exercise = bodyBuildingProgram.trainingSessions[0].exercises[0];
+  const exercise = bodyBuildingProgram.sessionList[0].exerciseList[0];
   const exerciseId = exercise.uuid;
   let firstTrainingSessionFirstExerciseContainer = await within(
     programBuilderContainer
@@ -184,7 +182,7 @@ test("User can edit an exercise load field", async () => {
     rest.post<
       undefined,
       Record<string, never>,
-      RetrieveUserBodyBuildingProgramResponseBody
+      RetrieveUserProgramResponseBody
     >(`${SERVER_ENDPOINT}/retrieve-program`, (_req, res, ctx) => {
       return res(ctx.status(200), ctx.json(bodyBuildingProgram));
     })
@@ -202,7 +200,7 @@ test("User can edit an exercise load field", async () => {
     "program-builder-screen-container"
   );
 
-  const exercise = bodyBuildingProgram.trainingSessions[0].exercises[0];
+  const exercise = bodyBuildingProgram.sessionList[0].exerciseList[0];
   const exerciseId = exercise.uuid;
   let firstTrainingSessionFirstExerciseContainer = await within(
     programBuilderContainer
@@ -270,7 +268,7 @@ test("User can edit an exercise rest field", async () => {
     rest.post<
       undefined,
       Record<string, never>,
-      RetrieveUserBodyBuildingProgramResponseBody
+      RetrieveUserProgramResponseBody
     >(`${SERVER_ENDPOINT}/retrieve-program`, (_req, res, ctx) => {
       return res(ctx.status(200), ctx.json(bodyBuildingProgram));
     })
@@ -288,7 +286,7 @@ test("User can edit an exercise rest field", async () => {
     "program-builder-screen-container"
   );
 
-  const exercise = bodyBuildingProgram.trainingSessions[0].exercises[0];
+  const exercise = bodyBuildingProgram.sessionList[0].exerciseList[0];
   const exerciseId = exercise.uuid;
   let firstTrainingSessionFirstExerciseContainer = await within(
     programBuilderContainer

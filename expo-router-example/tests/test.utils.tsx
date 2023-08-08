@@ -1,3 +1,4 @@
+import { Program } from "@/types";
 import { faker } from "@faker-js/faker";
 import {
   fireEvent,
@@ -5,16 +6,15 @@ import {
   waitFor,
   within
 } from "@testing-library/react-native";
+// Please refer to alpha docs https://github.com/expo/router/pull/447
 import { renderRouter } from "expo-router/src/testing-library";
 import invariant from "invariant";
 import "react-native-get-random-values";
 import { ReactTestInstance } from "react-test-renderer";
 import { v4 as uuidv4 } from "uuid";
-import { BodybuildingProgram } from "../types";
 
 export * from "@testing-library/react-native";
 export const renderApp = () => {
-  // Please refer to alpha docs https://github.com/expo/router/pull/447
   return renderRouter();
 };
 
@@ -26,17 +26,17 @@ export const getRandomMinuteSecondDuration = () =>
 
 export type TestingScreen = ReturnType<typeof render>;
 
-export const getBodyBuildingProgram = (): BodybuildingProgram => {
+export const getBodyBuildingProgram = (): Program => {
   return {
-    programName: faker.name.jobDescriptor(),
-    trainingSessions: [
+    name: faker.name.jobDescriptor(),
+    sessionList: [
       {
         uuid: uuidv4(),
-        trainingSessionName: faker.name.jobArea(),
-        exercises: [
+        name: faker.name.jobArea(),
+        exerciseList: [
           {
             uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
+            name: faker.name.jobTitle(),
             repCounter: faker.datatype.number({
               max: 20,
               min: 1,
@@ -56,7 +56,7 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
           },
           {
             uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
+            name: faker.name.jobTitle(),
             repCounter: faker.datatype.number({
               max: 20,
               min: 1,
@@ -76,7 +76,7 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
           },
           {
             uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
+            name: faker.name.jobTitle(),
             repCounter: faker.datatype.number({
               max: 20,
               min: 1,
@@ -98,11 +98,11 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
       },
       {
         uuid: uuidv4(),
-        trainingSessionName: faker.name.jobArea(),
-        exercises: [
+        name: faker.name.jobArea(),
+        exerciseList: [
           {
             uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
+            name: faker.name.jobTitle(),
             repCounter: faker.datatype.number({
               max: 20,
               min: 1,
@@ -122,7 +122,7 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
           },
           {
             uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
+            name: faker.name.jobTitle(),
             repCounter: faker.datatype.number({
               max: 20,
               min: 1,
@@ -144,8 +144,8 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
       },
       {
         uuid: uuidv4(),
-        trainingSessionName: faker.name.jobArea(),
-        exercises: [],
+        name: faker.name.jobArea(),
+        exerciseList: [],
       },
     ],
     uuid: uuidv4(),

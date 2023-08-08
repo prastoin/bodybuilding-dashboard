@@ -19,7 +19,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      initialRouteName='programBuilder'
+      initialRouteName='program'
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
       }}>
@@ -34,9 +34,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="programBuilder"
+        name="program"
         options={{
-          tabBarLabel: "Program Builder",
+          tabBarLabel: "Program",
           tabBarTestID: "program-builder-bottom-tab",
           headerShown: false,
           title: 'Program',

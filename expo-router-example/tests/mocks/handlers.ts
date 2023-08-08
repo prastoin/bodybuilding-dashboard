@@ -2,7 +2,7 @@ import { rest } from "msw";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import {
-  RetrieveUserBodyBuildingProgramResponseBody,
+  RetrieveUserProgramResponseBody,
   SERVER_ENDPOINT
 } from "../../types";
 
@@ -15,13 +15,13 @@ export const handlers = [
   rest.post<
     undefined,
     Record<string, never>,
-    RetrieveUserBodyBuildingProgramResponseBody
+    RetrieveUserProgramResponseBody
   >(`${SERVER_ENDPOINT}/retrieve-program`, (req, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json({
-        programName: "Default msw bodybuilding program",
-        trainingSessions: [],
+        name: "Default msw bodybuilding program",
+        sessionList: [],
         uuid: uuidv4(),
       })
     );

@@ -1,11 +1,11 @@
-import { createProgramBuilderMachine, ProgramBuilderMachineInterpreter } from "@/machines/ProgramBuilderMachine";
+import { createProgramMachine, ProgramMachineInterpreter } from "@/machines/ProgramMachine";
 import { IS_TEST } from "@/types";
 import { useInterpret } from "@xstate/react";
 import React, { ReactNode, useContext, useMemo } from "react";
 
 
 interface AppContextValue {
-  programBuilderService: ProgramBuilderMachineInterpreter;
+  programService: ProgramMachineInterpreter;
 }
 
 type AppContextProviderProps = {
@@ -18,12 +18,12 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
   children,
 }) => {
 
-  const programBuilderMachine = useMemo(
-    () => createProgramBuilderMachine(),
+  const programMachine = useMemo(
+    () => createProgramMachine(),
     []
   );
 
-  const programBuilderService = useInterpret(programBuilderMachine, {
+  const programService = useInterpret(programMachine, {
     devTools: IS_TEST,
   });
 
@@ -31,7 +31,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
   return (
     <AppContext.Provider
       value={{
-        programBuilderService
+        programService
       }}
     >
       {children}
