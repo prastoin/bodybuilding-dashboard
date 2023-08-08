@@ -5,7 +5,7 @@ import { Button, Text, TextInput } from "react-native";
 import AppScreen from "./AppScreen";
 
 export interface ExerciseNameFormFieldValues {
-  exerciseName: string;
+  name: string;
 }
 
 interface ExerciseNameFormContentProps {
@@ -49,10 +49,10 @@ export const ExerciseNameFormContent: React.FC<
             placeholder="Name"
           />
         )}
-        name="exerciseName"
+        name="name"
         defaultValue={defaultTrainingSessionName}
       />
-      {errors.exerciseName && (
+      {errors.name && (
         <Text className="text-red-500" accessibilityRole="alert">
           An exercise name must be set.
         </Text>

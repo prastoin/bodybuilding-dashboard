@@ -4,49 +4,40 @@ import { useActor } from "@xstate/react";
 import * as React from "react";
 import { Text, View } from "react-native";
 
-interface TrainingSessionExerciseProps {
-  trainingSessionExerciseActorRef: ExerciseActorRef;
+interface ExerciseProps {
+  exerciseActorRef: ExerciseActorRef;
   index: number;
 }
 
-export const TrainingSessionExerciseItem: React.FC<
-  TrainingSessionExerciseProps
-> = ({ trainingSessionExerciseActorRef, index }) => {
+export const SessionExerciseItem: React.FC<
+  ExerciseProps
+> = ({ exerciseActorRef, index }) => {
   const [exerciseMachineState, sendToExerciseMachine] = useActor(
-    trainingSessionExerciseActorRef
+    exerciseActorRef
   );
 
   const { name, uuid, repCounter, setCounter, load, rest } =
     exerciseMachineState.context;
-  function handleRemoveExerciseButtonOnPress() {
-    sendToExerciseMachine({
-      type: "REMOVE_EXERCISE",
-    });
-  }
 
-  function handleEditExerciseNameOnPress() {
-    sendToExerciseMachine({
-      type: "USER_ENTERED_NAME_EDITION_OPERATION",
-    });
-  }
+  const removeExerciseOnPress = () => sendToExerciseMachine({
+    type: "REMOVE_EXERCISE",
+  });
 
-  function handleEditSetAndRepOnPress() {
-    sendToExerciseMachine({
-      type: "USER_ENTERED_SET_AND_REP_EDITOR",
-    });
-  }
+  const editExerciseNameOnPress = () => sendToExerciseMachine({
+    type: "USER_ENTERED_NAME_EDITION_OPERATION",
+  });
 
-  function handleEditLoadOnPress() {
-    sendToExerciseMachine({
-      type: "USER_ENTERED_LOAD_EDITOR",
-    });
-  }
+  const editSetAndRepOnPress = () => sendToExerciseMachine({
+    type: "USER_ENTERED_SET_AND_REP_EDITOR",
+  });
 
-  function handleEditRestOnPress() {
-    sendToExerciseMachine({
-      type: "USER_ENTERED_REST_EDITOR",
-    });
-  }
+  const editLoadOnPress = () => sendToExerciseMachine({
+    type: "USER_ENTERED_LOAD_EDITOR",
+  });
+
+  const editRestOnPress = () => sendToExerciseMachine({
+    type: "USER_ENTERED_REST_EDITOR",
+  })
 
   return (
     <View
@@ -59,7 +50,7 @@ export const TrainingSessionExerciseItem: React.FC<
           name="close"
           size={24}
           color="black"
-          onPress={handleRemoveExerciseButtonOnPress}
+          onPress={removeExerciseOnPress}
           testID={`remove-exercise-button-${uuid}`}
         />
 
@@ -70,7 +61,7 @@ export const TrainingSessionExerciseItem: React.FC<
             size={24}
             color="black"
             testID="edit-exercise-name"
-            onPress={handleEditExerciseNameOnPress}
+            onPress={editExerciseNameOnPress}
           />
         </View>
 
@@ -84,7 +75,7 @@ export const TrainingSessionExerciseItem: React.FC<
             size={24}
             color="black"
             testID="edit-exercise-set-and-rep"
-            onPress={handleEditSetAndRepOnPress}
+            onPress={editSetAndRepOnPress}
           />
         </View>
 
@@ -98,7 +89,7 @@ export const TrainingSessionExerciseItem: React.FC<
             size={24}
             color="black"
             testID="edit-exercise-load"
-            onPress={handleEditLoadOnPress}
+            onPress={editLoadOnPress}
           />
         </View>
 
@@ -111,7 +102,7 @@ export const TrainingSessionExerciseItem: React.FC<
             size={24}
             color="black"
             testID="edit-exercise-rest"
-            onPress={handleEditRestOnPress}
+            onPress={editRestOnPress}
           />
         </View>
       </View>
