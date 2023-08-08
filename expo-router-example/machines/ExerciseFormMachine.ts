@@ -138,44 +138,30 @@ export const createExerciseFormMachine = (
           data: (context) => context,
         },
       },
-      id: "ExerciseCreationForm",
+      id: "ExerciseForm",
     },
     {
       actions: {
-        "Assign exercise rest to context": assign((context, { rest }) => {
-          return {
-            ...context,
-            rest,
-          };
+        "Assign exercise rest to context": assign({
+          rest: (_context, { rest }) => rest
         }),
 
-        "Assign exercise name to context": assign((context, { name }) => {
-          return {
-            ...context,
-            exerciseName: name,
-          };
+        "Assign exercise name to context": assign({
+          name: (_context, { name }) => name
         }),
 
-        "Assign exercise set and rep to context": assign(
-          (context, { repCounter, setCounter }) => {
-            return {
-              ...context,
-              repCounter,
-              setCounter,
-            };
-          }
-        ),
+        "Assign exercise set and rep to context": assign({
+          repCounter: (_context, { repCounter }) => repCounter,
+          setCounter: (_context, { setCounter }) => setCounter
+        }),
 
-        "Assign exercise load to context": assign((context, { load }) => {
-          return {
-            ...context,
-            load,
-          };
+        "Assign exercise load to context": assign({
+          load: (_context, { load }) => load
         }),
 
         "Navigate to set and rep exercise creation form screen": () => {
           router.push({
-            pathname: "/(tabs)/programBuilder/exercise/[sessionId]/setRep",
+            pathname: "/(tabs)/program/exercise/[sessionId]/setRep",
             params: {
               sessionId: parentTrainingSessionId,
             }
@@ -184,7 +170,7 @@ export const createExerciseFormMachine = (
 
         "Navigate to load exercise creation form screen": () => {
           router.push({
-            pathname: "/(tabs)/programBuilder/exercise/[sessionId]/load",
+            pathname: "/(tabs)/program/exercise/[sessionId]/load",
             params: {
               sessionId: parentTrainingSessionId,
             }
@@ -193,7 +179,7 @@ export const createExerciseFormMachine = (
 
         "Navigate to rest exercise creation form screen": () => {
           router.push({
-            pathname: "/(tabs)/programBuilder/exercise/[sessionId]/rest",
+            pathname: "/(tabs)/program/exercise/[sessionId]/rest",
             params: {
               sessionId: parentTrainingSessionId,
             }

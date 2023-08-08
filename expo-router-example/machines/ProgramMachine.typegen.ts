@@ -5,7 +5,7 @@ export interface Typegen0 {
     '@@xstate/typegen': true;
     internalEvents: {
         "done.invoke.Fetch user bodybuilding program service": { type: "done.invoke.Fetch user bodybuilding program service"; data: unknown; __tip: "See the XState TS docs to learn how to strongly type this." };
-        "done.invoke.TrainingSessionCreationForm": { type: "done.invoke.TrainingSessionCreationForm"; data: unknown; __tip: "See the XState TS docs to learn how to strongly type this." };
+        "done.invoke.SessionForm": { type: "done.invoke.SessionForm"; data: unknown; __tip: "See the XState TS docs to learn how to strongly type this." };
         "error.platform.Fetch user bodybuilding program service": { type: "error.platform.Fetch user bodybuilding program service"; data: unknown };
         "xstate.init": { type: "xstate.init" };
     };
@@ -19,11 +19,11 @@ export interface Typegen0 {
         services: never;
     };
     eventsCausingActions: {
-        "addTrainingSessionToContext": "done.invoke.TrainingSessionCreationForm";
+        "addSessionToContext": "done.invoke.SessionForm";
         "assignMergeRetrievedUserProgram": "done.invoke.Fetch user bodybuilding program service";
-        "navigateToTrainingSessionCreationForm": "ENTER_TRAINING_SESSION_CREATION_FORM";
-        "removeTrainingSessionToContext": "_REMOVE_TRAINING_SESSION";
-        "resetProgramBuilderStackNavigator": "done.invoke.TrainingSessionCreationForm";
+        "navigateToSessionForm": "ENTER_SESSION_FORM";
+        "removeSessionFromContext": "_REMOVE_SESSION";
+        "resetProgramStackNavigator": "done.invoke.SessionForm";
     };
     eventsCausingDelays: {
 
@@ -33,8 +33,8 @@ export interface Typegen0 {
     };
     eventsCausingServices: {
         "Fetch user bodybuilding program": "xstate.init";
-        "TrainingSessionCreationForm": "ENTER_TRAINING_SESSION_CREATION_FORM";
+        "SessionForm": "ENTER_SESSION_FORM";
     };
-    matchesStates: "Creating a training session" | "Fetching user bodybuilding program" | "Idle";
+    matchesStates: "Creating a session" | "Fetching user bodybuilding program" | "Idle";
     tags: never;
 }

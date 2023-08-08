@@ -16,8 +16,8 @@ export interface Typegen0 {
         services: never;
     };
     eventsCausingActions: {
+        "Assign session name to context": "SET_SESSION_NAME_AND_GO_NEXT";
         "Notify parent that user exited the form": "USER_WENT_TO_PREVIOUS_SCREEN";
-        "assignTrainingSessionNameToContext": "SET_TRAINING_SESSION_NAME_AND_GO_NEXT";
     };
     eventsCausingDelays: {
 
@@ -28,6 +28,6 @@ export interface Typegen0 {
     eventsCausingServices: {
 
     };
-    matchesStates: "Form is completed" | "Training session name step";
+    matchesStates: "Form is completed" | "Session name step";
     tags: never;
 }

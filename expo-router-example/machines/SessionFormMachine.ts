@@ -10,13 +10,13 @@ import { sendParent } from "xstate/lib/actions";
 
 export type SessionFormMachineEvents =
   | {
-    type: "SET_TRAINING_SESSION_NAME_AND_GO_NEXT";
+    type: "SET_SESSION_NAME_AND_GO_NEXT";
     name: string;
   }
   | { type: "USER_WENT_TO_PREVIOUS_SCREEN" };
 
 export type SessionFormMachineContext = {
-  trainingSessionName: string;
+  name: string;
   uuid: string;
 };
 
@@ -44,16 +44,16 @@ export const createSessionFormMachine = () =>
       tsTypes:
         {} as import("./SessionFormMachine.typegen").Typegen0,
       context: {
-        trainingSessionName: "",
+        name: "",
         uuid: uuidv4(),
       },
-      initial: "Training session name step",
+      initial: "Session name step",
       states: {
-        "Training session name step": {
+        "Session name step": {
           on: {
-            SET_TRAINING_SESSION_NAME_AND_GO_NEXT: {
+            SET_SESSION_NAME_AND_GO_NEXT: {
               target: "Form is completed",
-              actions: "assignTrainingSessionNameToContext",
+              actions: "Assign session name to context",
             },
             USER_WENT_TO_PREVIOUS_SCREEN: {
               actions: "Notify parent that user exited the form",
@@ -64,24 +64,22 @@ export const createSessionFormMachine = () =>
         "Form is completed": {
           type: "final",
 
-          data: ({ trainingSessionName, uuid }) => ({
-            trainingSessionName,
+          data: ({ name, uuid }) => ({
+            name,
             uuid,
           }),
         },
       },
-      id: "TrainingSessionCreationFormMachine",
+      id: "SessionMachine",
     },
     {
       actions: {
-        assignTrainingSessionNameToContext: assign((context, { name }) => {
-          return {
-            ...context,
-            trainingSessionName: name,
-          };
+        "Assign session name to context": assign({
+          name: (_context, { name }) => name
         }),
+
         "Notify parent that user exited the form": sendParent({
-          type: "_CANCEL_TRAINING_SESSION_CREATION_FORM",
+          type: "_CANCEL_SESSION_FORM",
         }),
       },
     }

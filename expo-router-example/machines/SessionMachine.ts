@@ -8,21 +8,21 @@ import { createExerciseMachine, ExerciseActorRef as SessionExerciseActorRef } fr
 
 type SessionMachineEvents =
   | {
-    type: "REMOVE_TRAINING_SESSION";
+    type: "REMOVE_SESSION";
   }
   | {
-    type: "_REMOVE_TRAINING_SESSION_EXERCISE";
+    type: "_REMOVE_SESSION_EXERCISE";
     exerciseId: string;
   }
   | {
-    type: "USER_FINISHED_TRAINING_SESSION_NAME_EDITION";
-    newName: string;
+    type: "USER_FINISHED_SESSION_NAME_EDITION";
+    name: string;
   }
   | {
-    type: "USER_ENTERED_TRAINING_SESSION_NAME_EDITOR";
+    type: "USER_ENTERED_SESSION_NAME_EDITOR";
   }
   | {
-    type: "USER_CANCELED_TRAINING_SESSION_NAME_EDITION";
+    type: "USER_CANCELED_SESSION_NAME_EDITION";
   }
   | {
     type: "USER_ENTERED_EXERCISE_CREATION_FORM";
@@ -33,9 +33,9 @@ type SessionMachineEvents =
 
 export type SessionMachineContext = {
   initialExercisesToSpawn?: Exercise[];
-  trainingSessionName: string;
+  name: string;
   uuid: string;
-  trainingSessionExerciseActorRefCollection: SessionExerciseActorRef[];
+  exerciseActorRefList: SessionExerciseActorRef[];
 };
 
 type SessionMachineState = State<
@@ -66,9 +66,8 @@ export const createSessionMachine = ({
       },
       context: {
         initialExercisesToSpawn: exerciseList,
-        trainingSessionExerciseActorRefCollection: [],
-        trainingSessionName: name
-        ,
+        exerciseActorRefList: [],
+        name: name,
         uuid: sessionId,
       },
       initial: "Spawning initial exercises",
@@ -88,16 +87,16 @@ export const createSessionMachine = ({
 
         Idle: {
           on: {
-            REMOVE_TRAINING_SESSION: {
-              actions: "Forward training session deletion to program builder",
+            REMOVE_SESSION: {
+              actions: "Forward session deletion to program builder",
             },
 
-            _REMOVE_TRAINING_SESSION_EXERCISE: {
-              actions: "remove training session exercise from context",
+            _REMOVE_SESSION_EXERCISE: {
+              actions: "remove session exercise from context",
             },
 
-            USER_ENTERED_TRAINING_SESSION_NAME_EDITOR: {
-              target: "User is editing training session name",
+            USER_ENTERED_SESSION_NAME_EDITOR: {
+              target: "User is editing session name",
             },
 
             USER_ENTERED_EXERCISE_CREATION_FORM: {
@@ -110,7 +109,7 @@ export const createSessionMachine = ({
           entry: "Navigate to exercise creation form name step",
 
           invoke: {
-            id: "ExerciseCreationForm",
+            id: "ExerciseForm",
 
             src: () => {
               return createExerciseFormMachine(sessionId);
@@ -133,18 +132,18 @@ export const createSessionMachine = ({
           },
         },
 
-        "User is editing training session name": {
-          entry: "Navigate to training session name editor",
+        "User is editing session name": {
+          entry: "Navigate to session name editor",
 
           on: {
-            USER_FINISHED_TRAINING_SESSION_NAME_EDITION: {
-              actions: ["update training session name", "Navigate go back"],
+            USER_FINISHED_SESSION_NAME_EDITION: {
+              actions: ["update session name", "Navigate go back"],
               target: "Idle",
             },
 
             // User can cancel this operation only by going back by itself
             // Maybe we should sniff and block the operation to perform it there ?
-            USER_CANCELED_TRAINING_SESSION_NAME_EDITION: {
+            USER_CANCELED_SESSION_NAME_EDITION: {
               target: "Idle",
             },
           },
@@ -159,52 +158,48 @@ export const createSessionMachine = ({
       },
 
       actions: {
-        "Spawn and assign initial exercises": assign((context) => {
-          const initialExercisesToSpawn = context.initialExercisesToSpawn;
+        "Spawn and assign initial exercises": assign({
+          exerciseActorRefList: (context) => {
+            const initialExercisesToSpawn = context.initialExercisesToSpawn;
 
-          invariant(
-            initialExercisesToSpawn !== undefined,
-            "should never occurs initialExercisesToSpawn is undefined"
-          );
+            invariant(
+              initialExercisesToSpawn !== undefined,
+              "should never occurs initialExercisesToSpawn is undefined"
+            );
 
-          const exerciseActorRefCollection = initialExercisesToSpawn.map(
-            (exercise) => {
-              const newTrainingSessionExerciseActorRef: SessionExerciseActorRef =
-                spawn(
-                  createExerciseMachine({
-                    exercise,
-                    parentTrainingSessionId: sessionId,
-                  }),
-                  { sync: true, name: exercise.uuid }
-                );
-              return newTrainingSessionExerciseActorRef;
-            }
-          );
-
-          return {
-            ...context,
-            initialExercisesToSpawn: undefined,
-            trainingSessionExerciseActorRefCollection:
-              exerciseActorRefCollection,
-          };
+            return initialExercisesToSpawn.map(
+              (exercise) => {
+                const newSessionExerciseActorRef: SessionExerciseActorRef =
+                  spawn(
+                    createExerciseMachine({
+                      exercise,
+                      parentSessionId: sessionId,
+                    }),
+                    { sync: true, name: exercise.uuid }
+                  );
+                return newSessionExerciseActorRef;
+              }
+            )
+          },
+          initialExercisesToSpawn: (_context) => undefined
         }),
 
         "Reset program builder stack": () => {
-          router.push("/(tabs)/programBuilder")
+          router.push("/(tabs)/program")
         },
 
         "Navigate to exercise creation form name step": ({ uuid: sessionId }) => {
           router.push({
-            pathname: "/(tabs)/programBuilder/exercise/[sessionId]/name",
+            pathname: "/(tabs)/program/exercise/[sessionId]/name",
             params: {
               sessionId,
             }
           })
         },
 
-        "Navigate to training session name editor": ({ uuid: sessionId }) => {
+        "Navigate to session name editor": ({ uuid: sessionId }) => {
           router.push({
-            pathname: "/(tabs)/programBuilder/session/[sessionId]",
+            pathname: "/(tabs)/program/session/[sessionId]",
             params: {
               sessionId
             }
@@ -215,65 +210,52 @@ export const createSessionMachine = ({
           router.back()
         },
 
-        "Assign created exercise to context": assign((context, event) => {
-          const {
-            data: exercise,
-          } = event as ExerciseFormDoneInvokeEvent;
+        "Assign created exercise to context": assign({
+          exerciseActorRefList: (context, event) => {
+            const {
+              data: exercise,
+            } = event as ExerciseFormDoneInvokeEvent;
 
-          const newExerciseActor: SessionExerciseActorRef = spawn(
-            createExerciseMachine({
-              parentTrainingSessionId: sessionId,
-              exercise
-            }),
-            { sync: true, name: exercise.uuid }
-          );
+            const newExerciseActor: SessionExerciseActorRef = spawn(
+              createExerciseMachine({
+                parentSessionId: sessionId,
+                exercise
+              }),
+              { sync: true, name: exercise.uuid }
+            );
 
-          return {
-            ...context,
-            trainingSessionExerciseActorRefCollection: [
-              ...context.trainingSessionExerciseActorRefCollection,
+            return [
+              ...context.exerciseActorRefList,
               newExerciseActor,
-            ],
-          };
+            ]
+          }
         }),
 
-        "update training session name": assign((context, { newName }) => {
-          return {
-            ...context,
-            trainingSessionName: newName,
-          };
+        "update session name": assign({
+          name: (_context, { name }) => name
         }),
 
         // Could make typings works here
-        "Forward training session deletion to program builder": sendParent({
-          type: "_REMOVE_TRAINING_SESSION",
-          trainingSessionId: sessionId,
+        "Forward session deletion to program builder": sendParent({
+          type: "_REMOVE_SESSION",
+          sessionId,
         }),
 
-        "remove training session exercise from context": assign(
-          (context, { exerciseId }) => {
-            const updatedExerciseCollection =
-              context.trainingSessionExerciseActorRefCollection.filter(
-                (actor) => {
-                  const currentActorNeedToBeRemoved = actor.id === exerciseId;
-                  if (currentActorNeedToBeRemoved) {
-                    if (actor.stop) {
-                      actor.stop();
-                    }
-
-                    return false;
-                  }
-                  return true;
+        "remove session exercise from context": assign({
+          exerciseActorRefList: (context, { exerciseId }) => context.exerciseActorRefList.filter(
+            (actor) => {
+              const currentActorNeedToBeRemoved = actor.id === exerciseId;
+              if (currentActorNeedToBeRemoved) {
+                if (actor.stop) {
+                  actor.stop();
                 }
-              );
 
-            return {
-              ...context,
-              trainingSessionExerciseActorRefCollection:
-                updatedExerciseCollection,
-            };
-          }
-        ),
+                return false;
+              }
+              return true;
+            }
+          )
+        }),
       },
     }
   );

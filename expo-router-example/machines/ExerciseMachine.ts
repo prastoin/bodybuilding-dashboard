@@ -15,7 +15,7 @@ type ExerciseMachineEvent =
   }
   | {
     type: "USER_FINISHED_NAME_EDITION_OPERATION";
-    newExerciseName: string;
+    name: string;
   }
   | {
     type: "USER_ENTERED_SET_AND_REP_EDITOR";
@@ -63,7 +63,7 @@ export type ExerciseActorRef = ActorRef<
 
 type CreateExerciseMachineArgs = {
   exercise: Exercise
-  parentTrainingSessionId: string;
+  parentSessionId: string;
 };
 
 export const createExerciseMachine = ({
@@ -75,7 +75,7 @@ export const createExerciseMachine = ({
     load,
     rest,
   },
-  parentTrainingSessionId,
+  parentSessionId,
 }: CreateExerciseMachineArgs) =>
   createMachine(
     {
@@ -193,9 +193,9 @@ export const createExerciseMachine = ({
       actions: {
         "Navigate to name editor screen": ({ uuid: exerciseId }) => {
           router.push({
-            pathname: "/(tabs)/programBuilder/exercise/[sessionId]/[exerciseId]/name",
+            pathname: "/(tabs)/program/exercise/[sessionId]/[exerciseId]/name",
             params: {
-              sessionId: parentTrainingSessionId,
+              sessionId: parentSessionId,
               exerciseId
             }
           })
@@ -203,9 +203,9 @@ export const createExerciseMachine = ({
 
         "Navigate to set and rep editor screen": ({ uuid: exerciseId }) => {
           router.push({
-            pathname: "/(tabs)/programBuilder/exercise/[sessionId]/[exerciseId]/setRep",
+            pathname: "/(tabs)/program/exercise/[sessionId]/[exerciseId]/setRep",
             params: {
-              sessionId: parentTrainingSessionId,
+              sessionId: parentSessionId,
               exerciseId
             }
           })
@@ -213,9 +213,9 @@ export const createExerciseMachine = ({
 
         "Navigate to rest editor screen": ({ uuid: exerciseId }) => {
           router.push({
-            pathname: "/(tabs)/programBuilder/exercise/[sessionId]/[exerciseId]/rest",
+            pathname: "/(tabs)/program/exercise/[sessionId]/[exerciseId]/rest",
             params: {
-              sessionId: parentTrainingSessionId,
+              sessionId: parentSessionId,
               exerciseId
             }
           })
@@ -223,9 +223,9 @@ export const createExerciseMachine = ({
 
         "Navigate to load editor screen": ({ uuid: exerciseId }) => {
           router.push({
-            pathname: "/(tabs)/programBuilder/exercise/[sessionId]/[exerciseId]/load",
+            pathname: "/(tabs)/program/exercise/[sessionId]/[exerciseId]/load",
             params: {
-              sessionId: parentTrainingSessionId,
+              sessionId: parentSessionId,
               exerciseId
             }
           })
@@ -235,42 +235,25 @@ export const createExerciseMachine = ({
           router.back()
         },
 
-        "Assign new exercise name to context": assign(
-          (context, { newExerciseName }) => {
-            // TODO get interested in why is this not strictly typed ?
-            return {
-              ...context,
-              name: newExerciseName,
-            };
-          }
-        ),
-
-        "Assign new set and rep to context": assign(
-          (context, { setCounter, repCounter }) => {
-            return {
-              ...context,
-              setCounter,
-              repCounter,
-            };
-          }
-        ),
-
-        "Assign new load to context": assign((context, { load }) => {
-          return {
-            ...context,
-            load: load,
-          };
+        "Assign new exercise name to context": assign({
+          name: (_context, { name }) => name
         }),
 
-        "Assign new rest to context": assign((context, { rest }) => {
-          return {
-            ...context,
-            rest,
-          };
+        "Assign new set and rep to context": assign({
+          repCounter: (_context, { repCounter }) => repCounter,
+          setCounter: (_context, { setCounter }) => setCounter
+        }),
+
+        "Assign new load to context": assign({
+          load: (_context, { load }) => load
+        }),
+
+        "Assign new rest to context": assign({
+          rest: (_context, { rest }) => rest
         }),
 
         "Forward exercise deletion to program builder": sendParent({
-          type: "_REMOVE_TRAINING_SESSION_EXERCISE",
+          type: "_REMOVE_SESSION_EXERCISE",
           exerciseId: uuid,
         }),
       },

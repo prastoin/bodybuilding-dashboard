@@ -1,3 +1,4 @@
+import { sendRetrieveUserBodyBuildingProgram } from '@/services/ProgramBuilderService';
 import { Program, RetrieveUserProgramResponseBody } from '@/types';
 import { router } from 'expo-router';
 import "react-native-get-random-values";
@@ -10,10 +11,8 @@ import {
   InterpreterFrom,
   spawn
 } from "xstate";
-import { sendRetrieveUserBodyBuildingProgram } from "../services/ProgramBuilderService";
 import { createSessionFormMachine, SessionFormDoneInvokeEvent } from './SessionFormMachine';
 import { createSessionMachine, SessionActorRef } from './SessionMachine';
-
 
 export type ProgramMachineEvents = EventFrom<
   ReturnType<typeof createProgramMachine>
@@ -23,7 +22,7 @@ export type ProgramMachineContext = Omit<
   Program,
   "sessionList"
 > & {
-  trainingSessionActorRefCollection: SessionActorRef[];
+  sessionActorRefList: SessionActorRef[];
 };
 
 export type ProgramMachineInterpreter = InterpreterFrom<
@@ -39,16 +38,16 @@ export const createProgramMachine = () =>
         context: {} as ProgramMachineContext,
         events: {} as
           | {
-            type: "ENTER_TRAINING_SESSION_CREATION_FORM";
+            type: "ENTER_SESSION_FORM";
           }
-          | { type: "_REMOVE_TRAINING_SESSION"; trainingSessionId: string }
-          | { type: "_CANCEL_TRAINING_SESSION_CREATION_FORM" },
+          | { type: "_REMOVE_SESSION"; sessionId: string }
+          | { type: "_CANCEL_SESSION_FORM" },
       },
       tsTypes: {} as import("./ProgramMachine.typegen").Typegen0,
       context: {
-        programName: "Program name",
+        name: "Program name",
         uuid: uuidv4(),
-        trainingSessionActorRefCollection: [],
+        sessionActorRefList: [],
       },
       initial: "Fetching user bodybuilding program",
       states: {
@@ -73,20 +72,20 @@ export const createProgramMachine = () =>
 
         Idle: {
           on: {
-            ENTER_TRAINING_SESSION_CREATION_FORM: {
-              target: "Creating a training session",
+            ENTER_SESSION_FORM: {
+              target: "Creating a session",
             },
-            _REMOVE_TRAINING_SESSION: {
-              actions: "removeTrainingSessionToContext",
+            _REMOVE_SESSION: {
+              actions: "removeSessionFromContext",
             },
           },
         },
 
-        "Creating a training session": {
-          entry: "navigateToTrainingSessionCreationForm",
+        "Creating a session": {
+          entry: "navigateToSessionForm",
 
           invoke: {
-            id: "TrainingSessionCreationForm",
+            id: "SessionForm",
 
             src: () => {
               return createSessionFormMachine();
@@ -95,20 +94,20 @@ export const createProgramMachine = () =>
             onDone: {
               target: "Idle",
               actions: [
-                "addTrainingSessionToContext",
-                "resetProgramBuilderStackNavigator",
+                "addSessionToContext",
+                "resetProgramStackNavigator",
               ],
             },
           },
 
           on: {
-            _CANCEL_TRAINING_SESSION_CREATION_FORM: {
+            _CANCEL_SESSION_FORM: {
               target: "Idle",
             },
           },
         },
       },
-      id: "ProgramBuilderMachine",
+      id: "ProgramMachine",
     },
     {
       services: {
@@ -123,12 +122,12 @@ export const createProgramMachine = () =>
             e as DoneInvokeEvent<RetrieveUserProgramResponseBody>;
 
           const {
-            programName,
+            name,
             sessionList,
             uuid,
           } = event.data;
 
-          const trainingSessionActorRefCollection =
+          const sessionActorRefList =
             sessionList.map<SessionActorRef>(
               (session) =>
                 spawn(
@@ -139,68 +138,60 @@ export const createProgramMachine = () =>
             );
 
           return {
-            programName,
+            name,
             uuid,
-            trainingSessionActorRefCollection,
+            sessionActorRefList,
           };
         }),
 
-        navigateToTrainingSessionCreationForm: (_context, _event) => {
+        navigateToSessionForm: (_context, _event) => {
           // Note: imported imperative nagivation router is not typed ?
-          router.push("/(tabs)/programBuilder/session/createName")
+          router.push("/(tabs)/program/session/createName")
         },
 
-        resetProgramBuilderStackNavigator: (_context, _event) => {
+        resetProgramStackNavigator: (_context, _event) => {
           // Note: imported imperative nagivation router is not typed ?
-          router.push('/(tabs)/programBuilder')
+          router.push('/(tabs)/program')
         },
 
-        addTrainingSessionToContext: assign((context, event) => {
-          // TODO search for a better typing solution to avoid the `as TrainingSessionFormDoneInvokeEvent`
-          const {
-            data: { trainingSessionName, uuid: newTrainingSessionId },
-          } = event as SessionFormDoneInvokeEvent;
+        addSessionToContext: assign({
+          sessionActorRefList: (context, event) => {
+            const {
+              data: { name, uuid: sessionId },
+            } = event as SessionFormDoneInvokeEvent;
 
-          const newTrainingSessionActor: SessionActorRef = spawn(
-            createSessionMachine({
-              name: trainingSessionName,
-              uuid: newTrainingSessionId,
-            }),
-            { sync: true, name: newTrainingSessionId }
-          );
+            const newSessionActor: SessionActorRef = spawn(
+              createSessionMachine({
+                name,
+                uuid: sessionId,
+              }),
+              { sync: true, name: sessionId }
+            );
 
-          return {
-            ...context,
-            trainingSessionActorRefCollection: [
-              ...context.trainingSessionActorRefCollection,
-              newTrainingSessionActor,
-            ],
-          };
-        }),
-
-        removeTrainingSessionToContext: assign(
-          (context, { trainingSessionId }) => {
-            const updatedTrainingSessionActorRefCollection =
-              context.trainingSessionActorRefCollection.filter((actor) => {
-                const currentActorNeedToBeRemoved =
-                  actor.id === trainingSessionId;
-                if (currentActorNeedToBeRemoved) {
-                  if (actor.stop) {
-                    actor.stop();
-                  }
-
-                  return false;
-                }
-                return true;
-              });
-
-            return {
-              ...context,
-              trainingSessionActorRefCollection:
-                updatedTrainingSessionActorRefCollection,
-            };
+            return [
+              ...context.sessionActorRefList,
+              newSessionActor,
+            ]
           }
-        ),
+        }),
+
+        removeSessionFromContext: assign({
+          sessionActorRefList: (context, { sessionId }) =>
+            context.sessionActorRefList.filter((actor) => {
+              const currentActorNeedToBeRemoved =
+                actor.id === sessionId;
+
+              if (currentActorNeedToBeRemoved) {
+                if (actor.stop) {
+                  actor.stop();
+                }
+
+                return false;
+              }
+
+              return true;
+            })
+        }),
       },
     }
   );
