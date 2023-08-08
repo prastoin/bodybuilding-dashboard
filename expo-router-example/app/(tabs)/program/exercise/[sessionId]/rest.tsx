@@ -1,36 +1,36 @@
 import { ExerciseFormRestContent } from "@/components/ExerciseRestForm";
-import { useExerciseCreationFormActor } from "@/hooks/useExerciseCreationFormActor";
+import { useExerciseFormActor } from "@/hooks/useExerciseFormActor";
 import { ExerciseRest } from "@/types";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { View } from "react-native";
 
 export default function CreateExerciseRestScreen() {
-  const { sessionId } = useLocalSearchParams<"/(tabs)/programBuilder/exercise/[sessionId]/rest">()
-  const exerciseCreationFormActor = useExerciseCreationFormActor(
+  const { sessionId } = useLocalSearchParams<"/(tabs)/program/exercise/[sessionId]/rest">()
+  const exerciseFormActor = useExerciseFormActor(
     sessionId
   );
 
-  if (exerciseCreationFormActor === undefined) {
+  if (exerciseFormActor === undefined) {
     return <View testID="exercise-creation-form-rest-default" />;
   }
 
   const handleGoNext = (rest: ExerciseRest) => {
-    exerciseCreationFormActor.send({
+    exerciseFormActor.send({
       type: "SET_EXERCISE_REST_AND_GO_NEXT",
       rest,
     });
   };
 
   const handleGoBack = () => {
-    exerciseCreationFormActor.send({
+    exerciseFormActor.send({
       type: "USER_WENT_TO_PREVIOUS_SCREEN",
     });
   };
 
   return (
     <ExerciseFormRestContent
-      testId={`exercise-creation-form-rest-${exerciseCreationFormActor.id}`}
+      testId={`exercise-creation-form-rest-${exerciseFormActor.id}`}
       handleOnGoBack={handleGoBack}
       handleOnSubmit={handleGoNext}
     />

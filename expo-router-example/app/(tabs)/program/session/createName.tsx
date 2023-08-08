@@ -1,11 +1,11 @@
 import { SessionNameForm } from "@/components/SessionNameForm";
-import { useTrainingSessionCreationFormActor } from "@/hooks/useTrainingSessionCreationFormActor";
+import { useSessionFormActor } from "@/hooks/useSessionFormActor";
 import React from "react";
 import { View } from "react-native";
 
 export default function CreateName() {
   const trainingSessionCreationFormActor =
-    useTrainingSessionCreationFormActor();
+    useSessionFormActor();
 
   if (trainingSessionCreationFormActor === undefined) {
     return <View testID="training-session-creation-form-name-default" />;
@@ -13,7 +13,7 @@ export default function CreateName() {
 
   const handleGoNext = (sessionTrainingName: string) => {
     trainingSessionCreationFormActor.send({
-      type: "SET_TRAINING_SESSION_NAME_AND_GO_NEXT",
+      type: "SET_SESSION_NAME_AND_GO_NEXT",
       name: sessionTrainingName,
     });
   };
@@ -28,9 +28,8 @@ export default function CreateName() {
     <SessionNameForm
       testId="training-session-creation-form-name-step"
       handleOnGoBack={handleGoBack}
-      handleOnSubmit={({ sessionTrainingName }) => {
-        handleGoNext(sessionTrainingName);
-      }}
+      handleOnSubmit={({ name }) => handleGoNext(name)
+      }
     />
   );
 };

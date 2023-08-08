@@ -7,7 +7,7 @@ import React from "react";
 import { View } from "react-native";
 
 export default function EditExerciseLoadScreen() {
-  const { sessionId, exerciseId } = useLocalSearchParams<"/(tabs)/programBuilder/exercise/[sessionId]/[exerciseId]/load">();
+  const { sessionId, exerciseId } = useLocalSearchParams<"/(tabs)/program/exercise/[sessionId]/[exerciseId]/load">();
   const exerciseActorRef = useExerciseActorRef({
     exerciseId,
     sessionId,

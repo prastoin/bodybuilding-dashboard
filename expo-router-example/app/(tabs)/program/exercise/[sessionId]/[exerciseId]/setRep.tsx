@@ -6,7 +6,7 @@ import React from "react";
 import { View } from "react-native";
 
 export default function EditExerciseSetRepScreen() {
-  const { sessionId, exerciseId } = useLocalSearchParams<"/(tabs)/programBuilder/exercise/[sessionId]/[exerciseId]/setRep">();
+  const { sessionId, exerciseId } = useLocalSearchParams<"/(tabs)/program/exercise/[sessionId]/[exerciseId]/setRep">();
   const exerciseActorRef = useExerciseActorRef({
     exerciseId,
     sessionId,

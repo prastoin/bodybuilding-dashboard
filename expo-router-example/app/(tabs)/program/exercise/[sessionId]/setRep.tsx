@@ -1,16 +1,16 @@
 import { ExerciseFormSetAndRepContent } from "@/components/ExerciseSetRepForm";
-import { useExerciseCreationFormActor } from "@/hooks/useExerciseCreationFormActor";
+import { useExerciseFormActor } from "@/hooks/useExerciseFormActor";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { View } from "react-native";
 
 export default function CreateExerciseSetRepScreen() {
-  const { sessionId } = useLocalSearchParams<"/(tabs)/programBuilder/exercise/[sessionId]/setRep">()
-  const exerciseCreationFormActor = useExerciseCreationFormActor(
+  const { sessionId } = useLocalSearchParams<"/(tabs)/program/exercise/[sessionId]/setRep">()
+  const exerciseFormActor = useExerciseFormActor(
     sessionId
   );
 
-  if (exerciseCreationFormActor === undefined) {
+  if (exerciseFormActor === undefined) {
     return <View testID="exercise-creation-form-set-and-rep-default" />;
   }
 
@@ -21,7 +21,7 @@ export default function CreateExerciseSetRepScreen() {
     repCounter: number;
     setCounter: number;
   }) => {
-    exerciseCreationFormActor.send({
+    exerciseFormActor.send({
       type: "SET_EXERCISE_SET_AND_REP_AND_GO_NEXT",
       repCounter,
       setCounter,
@@ -29,14 +29,14 @@ export default function CreateExerciseSetRepScreen() {
   };
 
   const handleGoBack = () => {
-    exerciseCreationFormActor.send({
+    exerciseFormActor.send({
       type: "USER_WENT_TO_PREVIOUS_SCREEN",
     });
   };
 
   return (
     <ExerciseFormSetAndRepContent
-      testId={`exercise-creation-form-set-and-rep-${exerciseCreationFormActor.id}`}
+      testId={`exercise-creation-form-set-and-rep-${exerciseFormActor.id}`}
       handleOnGoBack={handleGoBack}
       handleOnSubmit={({ repCounter, setCounter }) => {
         handleGoNext({ repCounter, setCounter });

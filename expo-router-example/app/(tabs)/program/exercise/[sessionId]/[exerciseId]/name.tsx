@@ -5,7 +5,7 @@ import React from "react";
 import { View } from "react-native";
 
 export default function EditExerciseNameScreen() {
-  const { sessionId, exerciseId } = useLocalSearchParams<"/(tabs)/programBuilder/exercise/[sessionId]/[exerciseId]/name">();
+  const { sessionId, exerciseId } = useLocalSearchParams<"/(tabs)/program/exercise/[sessionId]/[exerciseId]/name">();
   const exerciseActorRef = useExerciseActorRef({
     exerciseId,
     sessionId,
@@ -15,10 +15,10 @@ export default function EditExerciseNameScreen() {
     return <View testID="exercise-editor-form-name-default" />;
   }
 
-  const handleGoNext = (newExerciseName: string) => {
+  const handleGoNext = (name: string) => {
     exerciseActorRef.send({
       type: "USER_FINISHED_NAME_EDITION_OPERATION",
-      newExerciseName,
+      name
     });
   };
 
@@ -32,8 +32,8 @@ export default function EditExerciseNameScreen() {
     <ExerciseNameFormContent
       testId={`exercise-editor-form-name-${exerciseActorRef.id}`}
       handleOnGoBack={handleGoBack}
-      handleOnSubmit={({ exerciseName }) => {
-        handleGoNext(exerciseName);
+      handleOnSubmit={({ name }) => {
+        handleGoNext(name);
       }}
     />
   );
