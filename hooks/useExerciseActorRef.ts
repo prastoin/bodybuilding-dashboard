@@ -1,29 +1,29 @@
+import { ExerciseActorRef } from "@/machines/ExerciseMachine";
 import { useSelector } from "@xstate/react";
 import invariant from "invariant";
-import { TrainingSessionExerciseActorRef } from "../machines/TrainingSessionExerciseMachine";
-import { useTrainingSessionActorRef } from "./useTrainingSessionActorRef";
+import { useSessionActorRef } from "./useSessionActorRef";
 
 /**
  * Throw an error if no related training session actor is found
  */
 export function useExerciseActorRef({
-  trainingSessionId,
+  sessionId,
   exerciseId,
 }: {
-  trainingSessionId: string;
+  sessionId: string;
   exerciseId: string;
-}): TrainingSessionExerciseActorRef | undefined {
-  const relatedTrainingSessionActorRef =
-    useTrainingSessionActorRef(trainingSessionId);
+}): ExerciseActorRef | undefined {
+  const relatedSessionActorRef =
+    useSessionActorRef(sessionId);
 
   invariant(
-    relatedTrainingSessionActorRef !== undefined,
+    relatedSessionActorRef !== undefined,
     "relatedTrainingSessionActorRef is undefined"
   );
 
   const allExercisesActorRef = useSelector(
-    relatedTrainingSessionActorRef,
-    (state) => state.context.trainingSessionExerciseActorRefCollection
+    relatedSessionActorRef,
+    (state) => state.context.exerciseActorRefList
   );
 
   return allExercisesActorRef.find(

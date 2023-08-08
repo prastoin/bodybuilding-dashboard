@@ -1,4 +1,4 @@
-import z from "zod";
+import * as z from "zod";
 
 export const SERVER_ENDPOINT = `http://${process.env.EXPO_PUBLIC_SERVER_HOST!}:${process.env
   .EXPO_PUBLIC_SERVER_PORT!}`;
@@ -23,36 +23,36 @@ export const ExerciseRest = z.object({
 });
 export type ExerciseRest = z.infer<typeof ExerciseRest>;
 
-export const TrainingSessionExercise = z.object({
+export const Exercise = z.object({
   uuid: z.string().uuid(),
-  exerciseName: NonEmptyString,
+  name: NonEmptyString,
   setCounter: z.number().min(1).max(10),
   repCounter: z.number().min(1).max(20),
   load: ExerciseLoad,
   rest: ExerciseRest,
 });
-export type TrainingSessionExercise = z.infer<typeof TrainingSessionExercise>;
+export type Exercise = z.infer<typeof Exercise>;
 
-export const TrainingSession = z.object({
+export const Session = z.object({
   uuid: z.string().uuid(),
-  trainingSessionName: NonEmptyString,
-  exercises: TrainingSessionExercise.array(),
+  name: NonEmptyString,
+  exerciseList: Exercise.array(),
 });
-export type TrainingSession = z.infer<typeof TrainingSession>;
-export type TrainingSessionCollection = TrainingSession[];
+export type Session = z.infer<typeof Session>;
+export type SessionList = Session[];
 
-export const BodybuildingProgram = z.object({
+export const Program = z.object({
   uuid: z.string().uuid(),
-  programName: NonEmptyString,
-  trainingSessions: TrainingSession.array(),
+  name: NonEmptyString,
+  sessionList: Session.array(),
 });
-export type BodybuildingProgram = z.infer<typeof BodybuildingProgram>;
+export type Program = z.infer<typeof Program>;
 
 // Http types
 
-export const RetrieveUserBodyBuildingProgramResponseBody = BodybuildingProgram;
-export type RetrieveUserBodyBuildingProgramResponseBody = z.infer<
-  typeof RetrieveUserBodyBuildingProgramResponseBody
+export const RetrieveUserProgramResponseBody = Program;
+export type RetrieveUserProgramResponseBody = z.infer<
+  typeof RetrieveUserProgramResponseBody
 >;
 
-export const IS_TEST = process.env.EXPO_PUBLIC_NODE_ENV == "test";
+export const IS_TEST = process.env.NODE_ENV == "test";

@@ -1,20 +1,21 @@
-import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid";
+import { Program } from "@/types";
+import { faker } from "@faker-js/faker";
 import {
   fireEvent,
   render,
   waitFor,
-  within,
+  within
 } from "@testing-library/react-native";
-import App from "../App";
-import { BodybuildingProgram } from "../types";
+// Please refer to alpha docs https://github.com/expo/router/pull/447
+import { renderRouter } from "expo-router/src/testing-library";
 import invariant from "invariant";
+import "react-native-get-random-values";
 import { ReactTestInstance } from "react-test-renderer";
-import { faker } from "@faker-js/faker";
+import { v4 as uuidv4 } from "uuid";
 
 export * from "@testing-library/react-native";
 export const renderApp = () => {
-  return render(<App />);
+  return renderRouter();
 };
 
 export const getRandomMinuteSecondDuration = () =>
@@ -25,17 +26,17 @@ export const getRandomMinuteSecondDuration = () =>
 
 export type TestingScreen = ReturnType<typeof render>;
 
-export const getBodyBuildingProgram = (): BodybuildingProgram => {
+export const getBodyBuildingProgram = (): Program => {
   return {
-    programName: faker.name.jobDescriptor(),
-    trainingSessions: [
+    name: faker.name.jobDescriptor(),
+    sessionList: [
       {
         uuid: uuidv4(),
-        trainingSessionName: faker.name.jobArea(),
-        exercises: [
+        name: faker.name.jobArea(),
+        exerciseList: [
           {
             uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
+            name: faker.name.jobTitle(),
             repCounter: faker.datatype.number({
               max: 20,
               min: 1,
@@ -55,7 +56,7 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
           },
           {
             uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
+            name: faker.name.jobTitle(),
             repCounter: faker.datatype.number({
               max: 20,
               min: 1,
@@ -75,7 +76,7 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
           },
           {
             uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
+            name: faker.name.jobTitle(),
             repCounter: faker.datatype.number({
               max: 20,
               min: 1,
@@ -97,11 +98,11 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
       },
       {
         uuid: uuidv4(),
-        trainingSessionName: faker.name.jobArea(),
-        exercises: [
+        name: faker.name.jobArea(),
+        exerciseList: [
           {
             uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
+            name: faker.name.jobTitle(),
             repCounter: faker.datatype.number({
               max: 20,
               min: 1,
@@ -121,7 +122,7 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
           },
           {
             uuid: uuidv4(),
-            exerciseName: faker.name.jobTitle(),
+            name: faker.name.jobTitle(),
             repCounter: faker.datatype.number({
               max: 20,
               min: 1,
@@ -143,8 +144,8 @@ export const getBodyBuildingProgram = (): BodybuildingProgram => {
       },
       {
         uuid: uuidv4(),
-        trainingSessionName: faker.name.jobArea(),
-        exercises: [],
+        name: faker.name.jobArea(),
+        exerciseList: [],
       },
     ],
     uuid: uuidv4(),
@@ -256,11 +257,9 @@ export function getTrainingSessionLastExercise({
 export async function getProgramBuilderTabIcon(
   screen: TestingScreen
 ): Promise<ReactTestInstance> {
-  const programBuilderBottomTab = await screen.findByTestId(
+  return await screen.findByTestId(
     `program-builder-bottom-tab`
   );
-
-  return programBuilderBottomTab;
 }
 
 export async function userNavigatesBackFromHeaderBackButton(
