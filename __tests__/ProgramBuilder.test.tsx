@@ -1,20 +1,21 @@
+import { createModel } from "@xstate/test";
+import invariant from "invariant";
 import { createMachine } from "xstate";
 import {
   fireEvent,
   getAllTrainingSessionContainer,
   getLastTrainingSessionContainer,
+  getProgramBuilderTabIcon,
   render,
   renderApp,
   waitFor,
-  within,
+  within
 } from "../tests/test.utils";
-import { createModel } from "@xstate/test";
-import invariant from "invariant";
 
 test("User goes to program builder screen from home", async () => {
   const screen = renderApp();
 
-  const goToProgramBuilderButton = screen.getByText(/.*Program.*Builder.*/i);
+  const goToProgramBuilderButton = await getProgramBuilderTabIcon(screen);
   fireEvent.press(goToProgramBuilderButton);
   screen.findByTestId(/program-builder-screen-container/i);
 });
@@ -190,11 +191,11 @@ describe("Xstate tests generations", () => {
         it(path.description, async () => {
           const screen = renderApp();
 
-          await screen.findByTestId("home-screen-container-visible");
+          await screen.findByTestId("home-screen-container");
           const goToProgramBuilderButton =
-            screen.getByText(/.*Program.*Builder.*/i);
+            await getProgramBuilderTabIcon(screen);
           fireEvent.press(goToProgramBuilderButton);
-          await screen.findByTestId("program-builder-screen-container-visible");
+          await screen.findByTestId("program-builder-screen-container");
           // do any setup, then...
 
           await path.test({
