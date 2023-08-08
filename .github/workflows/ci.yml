@@ -36,8 +36,8 @@ jobs:
       - name: Install dependencies 👨🏻‍💻
         run: yarn install
 
-      - name: Build packages 👷
-        run: yarn run build
+      - name: Build TypeScript 👷
+        run: yarn build:tsc
 
       - name: Run client tests 🧪
         run: yarn test
