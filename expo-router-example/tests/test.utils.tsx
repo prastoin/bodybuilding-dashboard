@@ -28,7 +28,7 @@ export type TestingScreen = ReturnType<typeof render>;
 
 export const getBodyBuildingProgram = (): Program => {
   return {
-    programName: faker.name.jobDescriptor(),
+    name: faker.name.jobDescriptor(),
     sessionList: [
       {
         uuid: uuidv4(),

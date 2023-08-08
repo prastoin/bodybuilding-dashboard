@@ -6,6 +6,7 @@ import { server } from "../tests/mocks/server";
 import {
   fireEvent,
   getBodyBuildingProgram,
+  getProgramBuilderTabIcon,
   getRandomMinuteSecondDuration,
   render,
   renderApp,
@@ -534,9 +535,7 @@ describe("Xstate tests generations", () => {
           const screen = renderApp();
 
           await screen.findByTestId("home-screen-container");
-          const goToProgramBuilderButton =
-            screen.getByText(/.*Program.*Builder.*/i);
-          fireEvent.press(goToProgramBuilderButton);
+          fireEvent.press(await getProgramBuilderTabIcon(screen))
           await screen.findByTestId("program-builder-screen-container");
 
           const firstTrainingSessionId =

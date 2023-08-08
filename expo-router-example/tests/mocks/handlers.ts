@@ -20,7 +20,7 @@ export const handlers = [
     return res(
       ctx.status(200),
       ctx.json({
-        programName: "Default msw bodybuilding program",
+        name: "Default msw bodybuilding program",
         sessionList: [],
         uuid: uuidv4(),
       })
