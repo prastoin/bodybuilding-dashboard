@@ -43,7 +43,7 @@ export type SessionList = Session[];
 
 export const Program = z.object({
   uuid: z.string().uuid(),
-  programName: NonEmptyString,
+  name: NonEmptyString,
   sessionList: Session.array(),
 });
 export type Program = z.infer<typeof Program>;

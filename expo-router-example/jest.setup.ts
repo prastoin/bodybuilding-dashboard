@@ -1,4 +1,5 @@
 // import 'react-native-gesture-handler/jestSetup';
+import 'dotenv/config';
 
 jest.mock('react-native-reanimated', () => {
   const Reanimated = require('react-native-reanimated/mock');
@@ -35,5 +36,5 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-// jest.spyOn(console, "warn").mockImplementation();
-// jest.spyOn(console, "error").mockImplementation();
+jest.spyOn(console, "warn").mockImplementation();
+jest.spyOn(console, "error").mockImplementation();
