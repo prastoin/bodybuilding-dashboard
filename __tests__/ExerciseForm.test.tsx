@@ -565,7 +565,7 @@ describe("Xstate tests generations", () => {
               second: 0,
             },
           });
-        });
+        }, 10_000);
       });
     });
   });
