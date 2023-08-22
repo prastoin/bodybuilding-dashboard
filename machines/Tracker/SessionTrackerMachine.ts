@@ -1,13 +1,14 @@
-import { Exercise, ExerciseTracker, Session, SessionTracker } from "@/types";
+import { Session, SessionTracker } from "@/types";
 import "react-native-get-random-values";
 import {
+    ActorRef,
     createMachine,
-    InterpreterFrom,
     spawn,
+    State,
 } from "xstate";
 import { createExerciseTrackerMachine, ExerciseTrackerActorRef } from "./ExerciseTrackerMachine";
 
-export type TrackerFormMachineEvents =
+export type SessionTrackerMachineEvents =
     | {
         type: "USER_FINISHED_TRACKING_SESSION"
     } | {
@@ -17,12 +18,18 @@ export type TrackerFormMachineEvents =
     }
 
 // To determine the next session to pick we should be looking for the latest SessionRecapId and take the following one
-export type TrackerFormMachineContext = Omit<SessionTracker, "exerciseTrackerList"> & {
+export type SessionTrackerMachineContext = Omit<SessionTracker, "exerciseTrackerList"> & {
     exerciseTrackerList: ExerciseTrackerActorRef[]
 }
 
-export type TrackermMachineInterpreter = InterpreterFrom<
-    ReturnType<typeof createTrackerFormMachine>
+type SessionTrackerMachineState = State<
+    SessionTrackerMachineContext,
+    SessionTrackerMachineEvents
+>;
+
+export type SessionTrackerActorRef = ActorRef<
+    SessionTrackerMachineEvents,
+    SessionTrackerMachineState
 >;
 
 interface CreateTrackerFormMachineArgs {
@@ -30,14 +37,14 @@ interface CreateTrackerFormMachineArgs {
     uuid: string
 }
 
-export const createTrackerFormMachine = ({ uuid, session: { name, exerciseList, uuid: sessionId } }: CreateTrackerFormMachineArgs) =>
+export const createSessionTrackerMachine = ({ uuid, session: { name, exerciseList, uuid: sessionId } }: CreateTrackerFormMachineArgs) =>
     /** @xstate-layout N4IgpgJg5mDOIC5QAUBOB7KqCGBbAQgK4CWANhGKgLLYDGAFsQHZgB0AkhKWAMQCCECAAIAKjmbMoQgMpxYxdE0SgADunkAXBUqQgAHogAsh1gDYArAA4AnAHYAjJYBMAZgAMpp7YA0IAJ6I9k7mrPa2hm5elpa2LjYuAL5JvkzoFPC6aJg4BCTklDQMzGyc3Mogapra5QYI1k6sroZOhqaWxkERTr4BCBGsbubW9m5u4aamYfbmySBZWHhEZBTUdIwsrCwA7kKwGtgaYEL25ZXEWoo1gW4m1obmLU71praTLj2ILi4NLhG2TjFHJZftYZglfPMckt8qsiixTupztVdLUnG4zFY7I5XB4vB8EABab6sYZOFqg1rmQykpJJIA */
     createMachine(
         {
             predictableActionArguments: true,
             schema: {
-                context: {} as TrackerFormMachineContext,
-                events: {} as TrackerFormMachineEvents,
+                context: {} as SessionTrackerMachineContext,
+                events: {} as SessionTrackerMachineEvents,
             },
             tsTypes: {} as import("./SessionTrackerMachine.typegen").Typegen0,
             context: {
@@ -48,7 +55,10 @@ export const createTrackerFormMachine = ({ uuid, session: { name, exerciseList, 
                 exerciseTrackerList: exerciseList.map((exercise) => {
                     const tmp: ExerciseTrackerActorRef = spawn(createExerciseTrackerMachine({
                         exercise
-                    }))
+                    }), {
+                        sync: true,
+                        //TODO name: "Not even sure about that"
+                    })
                     return tmp
                 })
             },
