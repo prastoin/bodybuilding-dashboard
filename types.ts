@@ -63,17 +63,22 @@ export const IS_TEST = process.env.NODE_ENV == "test";
 
 // Training
 
-export type ExerciseTracker = {
-  exerciseId: string,
-  name: string,
-  expectedMetrics: ExerciseMetrics
-  setList: ExerciseMetrics[]
-}
+export const ExerciseTracker = z.object({
+  exerciseId: z.string().uuid(),
+  name: z.string(),
+  expectedMetrics: ExerciseMetrics,
+  setList: ExerciseMetrics.array()
+})
+export type ExerciseTracker = z.infer<typeof ExerciseTracker>
 
-export interface SessionTracker {
-  uuid: string,
-  sessionId: string,
-  name: string,
-  exerciseTrackerList: ExerciseTracker[]
-  createdOn: number,
-}
+const SessionTracker = z.object({
+  uuid: z.string().uuid(),
+  sessionId: z.string().uuid(),
+  name: z.string(),
+  exerciseTrackerList: ExerciseTracker.array(),
+  createdOn: z.number() //TODO Refactor to be date
+})
+export type SessionTracker = z.infer<typeof SessionTracker>
+
+export const RetrieveUserSessionTrackerHistory = SessionTracker.array()
+export type RetrieveUserSessionTrackerHistory = z.infer<typeof RetrieveUserSessionTrackerHistory> 
