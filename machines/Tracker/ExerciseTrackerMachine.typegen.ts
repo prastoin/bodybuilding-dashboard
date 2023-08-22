@@ -10,13 +10,14 @@ export interface Typegen0 {
 
     };
     missingImplementations: {
-        actions: never;
+        actions: "Navigate to tracker home page";
         delays: never;
         guards: never;
         services: never;
     };
     eventsCausingActions: {
-
+        "Assign new set information": "done.state.(machine).User is adding new set";
+        "Navigate to tracker home page": "done.state.(machine).User is adding new set";
     };
     eventsCausingDelays: {
 
@@ -25,8 +26,8 @@ export interface Typegen0 {
 
     };
     eventsCausingServices: {
-
+        "TrackerExerciseForm": never;
     };
-    matchesStates: "Idle";
+    matchesStates: "Idle" | "User is adding new set";
     tags: never;
 }

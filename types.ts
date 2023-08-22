@@ -23,13 +23,13 @@ export const ExerciseRest = z.object({
 });
 export type ExerciseRest = z.infer<typeof ExerciseRest>;
 
-const ExerciseMetrics = z.object({
+export const ExerciseMetrics = z.object({
   setCounter: z.number().min(1).max(10),
   repCounter: z.number().min(1).max(20),
   load: ExerciseLoad,
   rest: ExerciseRest,
 })
-type ExerciseMetrics = z.infer<typeof ExerciseMetrics>
+export type ExerciseMetrics = z.infer<typeof ExerciseMetrics>
 
 export const Exercise = ExerciseMetrics.extend({
   uuid: z.string().uuid(),
@@ -66,14 +66,14 @@ export const IS_TEST = process.env.NODE_ENV == "test";
 export type ExerciseTracker = {
   exerciseId: string,
   name: string,
-  createdOn: string,
-} & ExerciseMetrics
+  expectedMetrics: ExerciseMetrics
+  setList: ExerciseMetrics[]
+}
 
 export interface SessionTracker {
   uuid: string,
   sessionId: string,
   name: string,
-  exerciseList: Exercise[]
-  exerciseRecapList: ExerciseTracker[]
+  exerciseTrackerList: ExerciseTracker[]
   createdOn: number,
 }

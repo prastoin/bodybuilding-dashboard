@@ -30,7 +30,9 @@ export type ExerciseFormMachineEvents =
     rest: ExerciseRest;
   };
 
-export type ExerciseFormMachineContext = Exercise;
+export type ExerciseFormMachineContext = Exercise & {
+  skipNameStep: boolean
+};
 
 // export type AppMachineInterpreter = InterpreterFrom<
 //   ReturnType<typeof createExerciseCreationFormMachine>
@@ -44,7 +46,9 @@ export type ExerciseFormDoneInvokeEvent =
   DoneInvokeEvent<ExerciseFormMachineContext>;
 
 export const createExerciseFormMachine = (
-  parentTrainingSessionId: string
+  parentTrainingSessionId: string,
+  skipNameStep?: boolean,
+  uuid?: string
 ) =>
   /** @xstate-layout N4IgpgJg5mDOIC5QAUBOB7KqCGBbAQgK4CWANhGKgLLYDGAFsQHZgB0AkhKWAMQCCECAAIAKjmbMoQgMpxYxdE0SgADunkAXBUqQgAHogAsh1gDYArAA4AnAHYAjJYBMAZgAMpp7YA0IAJ6I9k7mrPa2hm5elpa2LjYuAL5JvkzoFPC6aJg4BCTklDQMzGyc3Mogapra5QYI1k6sroZOhqaWxkERTr4BCBGsbubW9m5u4aamYfbmySBZWHhEZBTUdIwsrCwA7kKwGtgaYEL25ZXEWoo1gW4m1obmLU71praTLj2ILi4NLhG2TjFHJZftYZglfPMckt8qsiixTupztVdLUnG4zFY7I5XB4vB8EABab6sYZOFqg1rmQykpJJIA */
   createMachine(
@@ -59,7 +63,7 @@ export const createExerciseFormMachine = (
         name: "",
         repCounter: 0,
         setCounter: 0,
-        uuid: uuidv4(),
+        uuid: uuid || uuidv4(),
         load: {
           unit: "kg",
           value: 0,
@@ -68,9 +72,22 @@ export const createExerciseFormMachine = (
           minute: 0,
           second: 0,
         },
+        skipNameStep: !!skipNameStep
       },
-      initial: "Exercise name step",
+      initial: "Idle",
       states: {
+        "Idle": {
+          always: [
+            {
+              cond: "Should skip name step",
+              target: "Set and rep step",
+            },
+            {
+              target: "Exercise name step",
+            },
+          ],
+        },
+
         "Exercise name step": {
           on: {
             SET_EXERCISE_NAME_AND_GO_NEXT: {
@@ -141,6 +158,9 @@ export const createExerciseFormMachine = (
       id: "ExerciseForm",
     },
     {
+      guards: {
+        "Should skip name step": (context) => context.skipNameStep
+      },
       actions: {
         "Assign exercise rest to context": assign({
           rest: (_context, { rest }) => rest

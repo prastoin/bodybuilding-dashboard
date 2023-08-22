@@ -4,6 +4,7 @@
 export interface Typegen0 {
     '@@xstate/typegen': true;
     internalEvents: {
+        "": { type: "" };
         "xstate.init": { type: "xstate.init" };
     };
     invokeSrcNameMap: {
@@ -29,11 +30,11 @@ export interface Typegen0 {
 
     };
     eventsCausingGuards: {
-
+        "Should skip name step": "";
     };
     eventsCausingServices: {
 
     };
-    matchesStates: "Exercise load step" | "Exercise name step" | "Exercise rest step" | "Form is completed" | "Set and rep step";
+    matchesStates: "Exercise load step" | "Exercise name step" | "Exercise rest step" | "Form is completed" | "Idle" | "Set and rep step";
     tags: never;
 }
