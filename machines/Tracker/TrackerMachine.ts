@@ -6,11 +6,11 @@ import {
     createMachine,
     InterpreterFrom,
 } from "xstate";
-import { createTrackerFormMachine } from "./TrackerFormMachine";
+import { createTrackerFormMachine } from "./SessionTrackerMachine";
 
 export type TrackerMachineEvents =
     | {
-        type: "USER_STARTED_TRACKING_SESSION";
+        type: "USER_CREATED_TRACKING_SESSION";
     } | {
         type: "USER_PICKED_SESSION";
         session: Session
@@ -42,7 +42,7 @@ export const createTrackerMachine = () =>
             states: {
                 "Idle": {
                     on: {
-                        USER_STARTED_TRACKING_SESSION: {
+                        "USER_CREATED_TRACKING_SESSION": {
                             target: "Waiting for user to pick session"
                         }
                     }
@@ -61,7 +61,7 @@ export const createTrackerMachine = () =>
                 "Enter session tracker form": {
                     entry: "Navigate to session tracker recap screen",
                     invoke: {
-                        id: "ExerciseForm",
+                        id: "TrackerFormMachine",
 
                         src: (_context, event) => {
                             invariant(event.type === 'USER_PICKED_SESSION', "Should never occurs manual type checking");
@@ -75,8 +75,7 @@ export const createTrackerMachine = () =>
                         onDone: {
                             target: "Idle",
                             actions: [
-                                "Assign",
-                                "Reset program builder stack",
+                                "",
                             ],
                         },
                     }
