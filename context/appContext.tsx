@@ -1,4 +1,5 @@
 import { createProgramMachine, ProgramMachineInterpreter } from "@/machines/ProgramMachine";
+import { createTrackerMachine, TrackerMachineInterpreter } from "@/machines/Tracker/TrackerMachine";
 import { IS_TEST } from "@/types";
 import { useInterpret } from "@xstate/react";
 import React, { ReactNode, useContext, useMemo } from "react";
@@ -6,6 +7,7 @@ import React, { ReactNode, useContext, useMemo } from "react";
 
 interface AppContextValue {
   programService: ProgramMachineInterpreter;
+  trackerService: TrackerMachineInterpreter;
 }
 
 type AppContextProviderProps = {
@@ -22,16 +24,19 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
     () => createProgramMachine(),
     []
   );
-
   const programService = useInterpret(programMachine, {
     devTools: IS_TEST,
   });
+
+  const trackerMachine = useMemo(() => createTrackerMachine(), []);
+  const trackerService = useInterpret(trackerMachine, { devTools: IS_TEST, });
 
 
   return (
     <AppContext.Provider
       value={{
-        programService
+        programService,
+        trackerService
       }}
     >
       {children}
