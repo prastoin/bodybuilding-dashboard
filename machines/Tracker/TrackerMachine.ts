@@ -1,5 +1,6 @@
 import { retrieveUserSessionTrackerHistory } from "@/services/ProgramBuilderService";
 import { RetrieveUserSessionTrackerHistory, Session, SessionTracker } from "@/types";
+import invariant from "invariant";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid"
 import {
@@ -10,6 +11,7 @@ import {
     spawn,
 } from "xstate";
 import { createSessionTrackerMachine, SessionTrackerActorRef } from "./SessionTrackerMachine";
+import { fromExerciseListToExerciseTracker } from "./utils";
 
 export type TrackerMachineEvents =
     | {
@@ -19,7 +21,7 @@ export type TrackerMachineEvents =
         session: Session
     } | {
         type: "USER_PRESSED_EXISTING_TRACKING_SESSION",
-        session: Session // better sending sessionId need to synchro data or ask sever each time ?
+        sessionTrackerId: string
     }
 
 // To determine the next session to pick we should be looking for the latest SessionRecapId and take the following one
@@ -30,7 +32,7 @@ export type TrackerMachineContext = {
     sessionTrackerActorRef: SessionTrackerActorRef[]
 }
 
-export type TrackermMachineInterpreter = InterpreterFrom<
+export type TrackerMachineInterpreter = InterpreterFrom<
     ReturnType<typeof createTrackerMachine>
 >;
 
@@ -86,7 +88,7 @@ export const createTrackerMachine = () =>
                             },
                             {
                                 actions: [
-                                    "Spawn Spawn and assign related session tracker actor",
+                                    "Spawn and assign existing session tracker actor",
                                     "Navigate to session tracker screen"
                                 ],
                                 target: "Idle"
@@ -102,7 +104,7 @@ export const createTrackerMachine = () =>
                         "USER_PICKED_SESSION": {
                             target: "Idle",
                             actions: [
-                                "Spawn and assign related session tracker actor",
+                                "Spawn and assign new session tracker actor",
                                 "Navigate to session tracker screen"
                             ]
                         }
@@ -112,6 +114,10 @@ export const createTrackerMachine = () =>
             },
         },
         {
+            guards: {
+                "Session tracker actor already exists": (context, { sessionTrackerId }) => context.sessionTrackerActorRef.find(actor => actor.id === sessionTrackerId) !== undefined
+            },
+
             services: {
                 "Fetch user session tracker history": async () => {
                     return await retrieveUserSessionTrackerHistory();
@@ -131,19 +137,43 @@ export const createTrackerMachine = () =>
                     }
                 }),
 
-                "Spawn and assign related session tracker actor": assign({
+                "Spawn and assign new session tracker actor": assign({
                     sessionTrackerActorRef: ({ sessionTrackerActorRef }, event) => {
-                        const { session } = event
+                        const { session: { name, uuid: sessionId, exerciseList } } = event
                         const sessionTrackerId = uuidv4();
+                        const sessionTracker: SessionTracker = {
+                            createdOn: Date.now(),
+                            exerciseTrackerList: fromExerciseListToExerciseTracker(exerciseList),
+                            name,
+                            sessionId,
+                            uuid: sessionTrackerId
+                        };
+
                         const newSessionTrackerActor = spawn(createSessionTrackerMachine({
-                            uuid: sessionTrackerId,
-                            session
+                            sessionTracker
                         }), {
                             sync: true,
                             name: sessionTrackerId
                         })
 
                         return [...sessionTrackerActorRef, newSessionTrackerActor]
+                    }
+                }),
+
+                "Spawn and assign existing session tracker actor": assign({
+                    sessionTrackerActorRef: (context, event) => {
+                        const { sessionTrackerId } = event
+                        const sessionTracker = context.sessionTrackerList.find((sessionTracker) => sessionTracker.uuid === sessionTrackerId)
+
+                        invariant(sessionTracker !== undefined, "Could not retrieve existing session tracker from context should never occurs");
+
+                        const newActor: SessionTrackerActorRef = spawn(createSessionTrackerMachine({
+                            sessionTracker
+                        }))
+                        return [
+                            ...context.sessionTrackerActorRef,
+                            newActor
+                        ]
                     }
                 })
             },
