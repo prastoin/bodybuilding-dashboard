@@ -44,11 +44,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="sessionTracker"
+        name="tracker"
         options={{
-          tabBarLabel: "Session tracker",
-          tabBarTestID: "session-tracker-bottom-tab",
-          title: 'Session tracker',
+          tabBarLabel: "Tracker",
+          tabBarTestID: "tracker-bottom-tab",
+          title: 'Tracker',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
