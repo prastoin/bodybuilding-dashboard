@@ -51,7 +51,7 @@ export const createTrackerMachine = () =>
                 sessionTrackerList: [],
                 sessionTrackerActorRef: [],
             },
-            initial: "Idle",
+            initial: "Fetching user session tracker history",
             states: {
                 "Fetching user session tracker history": {
                     tags: "loading",
