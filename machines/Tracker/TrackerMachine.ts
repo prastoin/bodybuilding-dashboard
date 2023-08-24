@@ -1,5 +1,6 @@
 import { retrieveUserSessionTrackerHistory } from "@/services/ProgramBuilderService";
 import { RetrieveUserSessionTrackerHistory, Session, SessionTracker } from "@/types";
+import { router } from "expo-router";
 import invariant from "invariant";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid"
@@ -22,6 +23,8 @@ export type TrackerMachineEvents =
     } | {
         type: "USER_PRESSED_EXISTING_TRACKING_SESSION",
         sessionTrackerId: string
+    } | {
+        type: "USER_CANCELLED_TRACKING_SESSION_PICKER"
     }
 
 // To determine the next session to pick we should be looking for the latest SessionRecapId and take the following one
@@ -107,6 +110,10 @@ export const createTrackerMachine = () =>
                                 "Spawn and assign new session tracker actor",
                                 "Navigate to session tracker screen"
                             ]
+                        },
+
+                        "USER_CANCELLED_TRACKING_SESSION_PICKER": {
+                            target: "Idle"
                         }
                     }
                 },
@@ -125,7 +132,7 @@ export const createTrackerMachine = () =>
             },
 
             actions: {
-                "Navigate to session picker screen": (_context) => console.log("do stuff"),
+                "Navigate to session picker screen": (_context) => router.push("/pickerModal"),
 
                 "Navigate to session tracker screen": (_context) => console.log("do stuff 2"),
 
