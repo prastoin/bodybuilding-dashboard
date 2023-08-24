@@ -33,11 +33,10 @@ export type SessionTrackerActorRef = ActorRef<
 >;
 
 interface CreateTrackerFormMachineArgs {
-    session: Session
-    uuid: string
+    sessionTracker: SessionTracker
 }
 
-export const createSessionTrackerMachine = ({ uuid, session: { name, exerciseList, uuid: sessionId } }: CreateTrackerFormMachineArgs) =>
+export const createSessionTrackerMachine = ({ sessionTracker: { createdOn, exerciseTrackerList, name, sessionId, uuid } }: CreateTrackerFormMachineArgs) =>
     /** @xstate-layout N4IgpgJg5mDOIC5QAUBOB7KqCGBbAQgK4CWANhGKgLLYDGAFsQHZgB0AkhKWAMQCCECAAIAKjmbMoQgMpxYxdE0SgADunkAXBUqQgAHogAsh1gDYArAA4AnAHYAjJYBMAZgAMpp7YA0IAJ6I9k7mrPa2hm5elpa2LjYuAL5JvkzoFPC6aJg4BCTklDQMzGyc3Mogapra5QYI1k6sroZOhqaWxkERTr4BCBGsbubW9m5u4aamYfbmySBZWHhEZBTUdIwsrCwA7kKwGtgaYEL25ZXEWoo1gW4m1obmLU71praTLj2ILi4NLhG2TjFHJZftYZglfPMckt8qsiixTupztVdLUnG4zFY7I5XB4vB8EABab6sYZOFqg1rmQykpJJIA */
     createMachine(
         {
@@ -52,7 +51,7 @@ export const createSessionTrackerMachine = ({ uuid, session: { name, exerciseLis
                 createdOn: Date.now(),
                 name,
                 sessionId,
-                exerciseTrackerList: exerciseList.map((exercise) => {
+                exerciseTrackerList: exerciseTrackerList.map((exercise) => {
                     const tmp: ExerciseTrackerActorRef = spawn(createExerciseTrackerMachine({
                         exercise
                     }), {

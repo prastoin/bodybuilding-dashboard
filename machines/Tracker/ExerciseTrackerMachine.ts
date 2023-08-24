@@ -36,10 +36,10 @@ export type ExerciseTrackerActorRef = ActorRef<
 >;
 
 interface CreateExerciseTrackerFormMachineArgs {
-    exercise: Exercise
+    exercise: ExerciseTracker
 }
 // TODO from Exercise to ExerciseTracker
-export const createExerciseTrackerMachine = ({ exercise: { uuid: exerciseId, load, repCounter, rest, setCounter, name } }: CreateExerciseTrackerFormMachineArgs) =>
+export const createExerciseTrackerMachine = ({ exercise: { exerciseId, expectedMetrics, name, setList } }: CreateExerciseTrackerFormMachineArgs) =>
     /** @xstate-layout N4IgpgJg5mDOIC5QAUBOB7KqCGBbAQgK4CWANhGKgLLYDGAFsQHZgB0AkhKWAMQCCECAAIAKjmbMoQgMpxYxdE0SgADunkAXBUqQgAHogAsh1gDYArAA4AnAHYAjJYBMAZgAMpp7YA0IAJ6I9k7mrPa2hm5elpa2LjYuAL5JvkzoFPC6aJg4BCTklDQMzGyc3Mogapra5QYI1k6sroZOhqaWxkERTr4BCBGsbubW9m5u4aamYfbmySBZWHhEZBTUdIwsrCwA7kKwGtgaYEL25ZXEWoo1gW4m1obmLU71praTLj2ILi4NLhG2TjFHJZftYZglfPMckt8qsiixTupztVdLUnG4zFY7I5XB4vB8EABab6sYZOFqg1rmQykpJJIA */
     createMachine(
         {
@@ -51,14 +51,9 @@ export const createExerciseTrackerMachine = ({ exercise: { uuid: exerciseId, loa
             tsTypes: {} as import("./ExerciseTrackerMachine.typegen").Typegen0,
             context: {
                 exerciseId,
-                expectedMetrics: {
-                    load,
-                    repCounter,
-                    rest,
-                    setCounter
-                },
+                expectedMetrics,
                 name,
-                setList: []
+                setList
             },
             initial: "Idle",
             states: {
