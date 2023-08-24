@@ -12,6 +12,8 @@ export default function PickScreen() {
     const { context: { sessionTrackerList } } = trackerState
     const { context: { sessionActorRefList } } = programState
 
+    useBeforeRemove(() => sendToTrackerMachine("USER_CANCELLED_TRACKING_SESSION_PICKER"))
+
     return (<AppScreen testID="picker-modal-screen-container">
         <Text>
             This is the picker modal !
