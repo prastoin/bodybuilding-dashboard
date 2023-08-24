@@ -134,7 +134,8 @@ export const createTrackerMachine = () =>
             actions: {
                 "Navigate to session picker screen": (_context) => router.push("/pickerModal"),
 
-                "Navigate to session tracker screen": (_context) => console.log("do stuff 2"),
+                // This is the specific view for a tracking session, not the history one 
+                "Navigate to session tracker screen": (_context) => router.push("/(tabs)/tracker/"), //tmp /tracker
 
                 "Assign retrieved session tracker history": assign({
                     sessionTrackerList: (_context, e) => {
@@ -144,26 +145,27 @@ export const createTrackerMachine = () =>
                     }
                 }),
 
-                "Spawn and assign new session tracker actor": assign({
-                    sessionTrackerActorRef: ({ sessionTrackerActorRef }, event) => {
-                        const { session: { name, uuid: sessionId, exerciseList } } = event
-                        const sessionTrackerId = uuidv4();
-                        const sessionTracker: SessionTracker = {
-                            createdOn: Date.now(),
-                            exerciseTrackerList: fromExerciseListToExerciseTracker(exerciseList),
-                            name,
-                            sessionId,
-                            uuid: sessionTrackerId
-                        };
+                "Spawn and assign new session tracker actor": assign(({ sessionTrackerActorRef, sessionTrackerList }, event) => {
+                    const { session: { name, uuid: sessionId, exerciseList } } = event
+                    const sessionTrackerId = uuidv4();
+                    const newSessionTracker: SessionTracker = {
+                        createdOn: Date.now(),
+                        exerciseTrackerList: fromExerciseListToExerciseTracker(exerciseList),
+                        name,
+                        sessionId,
+                        uuid: sessionTrackerId
+                    };
 
-                        const newSessionTrackerActor = spawn(createSessionTrackerMachine({
-                            sessionTracker
-                        }), {
-                            sync: true,
-                            name: sessionTrackerId
-                        })
+                    const newSessionTrackerActor = spawn(createSessionTrackerMachine({
+                        sessionTracker: newSessionTracker
+                    }), {
+                        sync: true,
+                        name: sessionTrackerId
+                    })
 
-                        return [...sessionTrackerActorRef, newSessionTrackerActor]
+                    return {
+                        sessionTrackerActorRef: [...sessionTrackerActorRef, newSessionTrackerActor],
+                        sessionTrackerList: [...sessionTrackerList, newSessionTracker]
                     }
                 }),
 

@@ -51,7 +51,7 @@ type ExerciseMachineEvent =
 
 type ExerciseMachineContext = Exercise;
 
-type ExerciseMachineState = State<
+export type ExerciseMachineState = State<
   ExerciseMachineContext,
   ExerciseMachineEvent
 >;

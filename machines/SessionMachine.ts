@@ -38,7 +38,7 @@ export type SessionMachineContext = {
   exerciseActorRefList: SessionExerciseActorRef[];
 };
 
-type SessionMachineState = State<
+export type SessionMachineState = State<
   SessionMachineContext,
   SessionMachineEvents
 >;
