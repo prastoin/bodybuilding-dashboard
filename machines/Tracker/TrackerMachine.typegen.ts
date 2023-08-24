@@ -31,7 +31,7 @@ export interface Typegen0 {
         "Session tracker actor already exists": "USER_PRESSED_EXISTING_TRACKING_SESSION";
     };
     eventsCausingServices: {
-        "Fetch user session tracker history": never;
+        "Fetch user session tracker history": "xstate.init";
     };
     matchesStates: "Fetching user session tracker history" | "Idle" | "Waiting for user to pick session";
     tags: "loading";
