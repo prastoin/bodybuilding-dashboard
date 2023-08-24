@@ -1,5 +1,5 @@
+import { useBeforeRemove } from "@/hooks/useBeforeRemove";
 import { Picker } from "@react-native-picker/picker";
-import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Button, Text, View } from "react-native";
@@ -38,15 +38,7 @@ export const ExerciseFormSetAndRepContent: React.FC<
       },
     });
 
-    const navigation = useNavigation();
-
-    React.useEffect(
-      () =>
-        navigation.addListener("beforeRemove", (e) => {
-          handleOnGoBack();
-        }),
-      [navigation]
-    );
+    useBeforeRemove(() => handleOnGoBack())
 
     return (
       <AppScreen testID={testId}>

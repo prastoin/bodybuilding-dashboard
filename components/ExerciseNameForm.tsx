@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useBeforeRemove } from "@/hooks/useBeforeRemove";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Button, Text, TextInput } from "react-native";
@@ -23,15 +23,7 @@ export const ExerciseNameFormContent: React.FC<
     formState: { errors },
   } = useForm<ExerciseNameFormFieldValues>();
 
-  const navigation = useNavigation();
-
-  React.useEffect(
-    () =>
-      navigation.addListener("beforeRemove", (e) => {
-        handleOnGoBack();
-      }),
-    [navigation]
-  );
+  useBeforeRemove(() => handleOnGoBack())
 
   const defaultTrainingSessionName = "";
   return (
