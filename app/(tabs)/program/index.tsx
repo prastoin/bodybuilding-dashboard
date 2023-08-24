@@ -22,22 +22,20 @@ export default function ProgramScreen() {
 
   return (
     <AppScreen testID={"program-builder-screen-container"}>
-      <View>
-        <Text>{programContext.name}</Text>
-        <FlatList<SessionActorRef>
-          data={programContext.sessionActorRefList}
-          renderItem={({ index, item }) => (
-            <SessionItem sessionActorRef={item} index={index} />
-          )}
-          keyExtractor={({ id }) => id}
-        />
+      <Text>{programContext.name}</Text>
+      <FlatList<SessionActorRef>
+        data={programContext.sessionActorRefList}
+        renderItem={({ index, item }) => (
+          <SessionItem sessionActorRef={item} index={index} />
+        )}
+        keyExtractor={({ id }) => id}
+      />
 
-        <Button
-          title="Add static training session"
-          testID="add-training-session-button"
-          onPress={addSessionOnPress}
-        />
-      </View>
+      <Button
+        title="Add static training session"
+        testID="add-training-session-button"
+        onPress={addSessionOnPress}
+      />
     </AppScreen>
   );
 };
