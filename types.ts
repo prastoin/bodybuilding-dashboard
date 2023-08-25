@@ -81,4 +81,12 @@ const SessionTracker = z.object({
 export type SessionTracker = z.infer<typeof SessionTracker>
 
 export const RetrieveUserSessionTrackerHistory = SessionTracker.array()
-export type RetrieveUserSessionTrackerHistory = z.infer<typeof RetrieveUserSessionTrackerHistory> 
+export type RetrieveUserSessionTrackerHistory = z.infer<typeof RetrieveUserSessionTrackerHistory>
+
+export interface SetTracker {
+  rir: number
+  rep: number
+  index: number,
+  load: number,
+  rest: number,
+} 
