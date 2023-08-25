@@ -19,8 +19,9 @@ export interface Typegen0 {
     };
     eventsCausingActions: {
         "Assign retrieved session tracker history": "done.invoke.FetchUserSessionTracker";
+        "Navigate to latest session tracker screen": "USER_PICKED_SESSION";
         "Navigate to session picker screen": "USER_PRESSED_CREATE_TRACKING_SESSION";
-        "Navigate to session tracker screen": "USER_PICKED_SESSION" | "USER_PRESSED_EXISTING_TRACKING_SESSION";
+        "Navigate to session tracker screen": "USER_PRESSED_EXISTING_TRACKING_SESSION";
         "Spawn and assign existing session tracker actor": "USER_PRESSED_EXISTING_TRACKING_SESSION";
         "Spawn and assign new session tracker actor": "USER_PICKED_SESSION";
     };

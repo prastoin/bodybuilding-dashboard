@@ -1,4 +1,4 @@
-import { Session, SessionTracker } from "@/types";
+import { SessionTracker } from "@/types";
 import "react-native-get-random-values";
 import {
     ActorRef,

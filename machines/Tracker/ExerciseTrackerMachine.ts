@@ -25,7 +25,7 @@ export type ExerciseTrackermMachineInterpreter = InterpreterFrom<
     ReturnType<typeof createExerciseTrackerMachine>
 >;
 
-type ExerciseTrackerMachineState = State<
+export type ExerciseTrackerMachineState = State<
     ExerciseTrackerMachineContext,
     ExerciseTrackerMachineEvents
 >;
