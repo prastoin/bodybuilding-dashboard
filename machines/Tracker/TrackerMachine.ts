@@ -108,7 +108,7 @@ export const createTrackerMachine = () =>
                             target: "Idle",
                             actions: [
                                 "Spawn and assign new session tracker actor",
-                                "Navigate to session tracker screen"
+                                "Navigate to latest session tracker screen"
                             ]
                         },
 
@@ -134,8 +134,28 @@ export const createTrackerMachine = () =>
             actions: {
                 "Navigate to session picker screen": (_context) => router.push("/pickerModal"),
 
-                // This is the specific view for a tracking session, not the history one 
-                "Navigate to session tracker screen": (_context) => router.push("/(tabs)/tracker/"), //tmp /tracker
+                "Navigate to session tracker screen": (_context, event) => {
+                    const { sessionTrackerId } = event;
+
+                    console.log("navigating")
+                    router.push({
+                        pathname: "/(tabs)/tracker/[sessionTrackerId]/",
+                        params: {
+                            sessionTrackerId
+                        }
+                    })
+                },
+
+                "Navigate to latest session tracker screen": ({ sessionTrackerList }) => {
+                    const sessionTrackerId = sessionTrackerList.slice(-1)[0].uuid // We consider that it's correclty ordered within the machine itself
+
+                    router.push({
+                        pathname: "/(tabs)/tracker/[sessionTrackerId]/",
+                        params: {
+                            sessionTrackerId
+                        }
+                    })
+                },
 
                 "Assign retrieved session tracker history": assign({
                     sessionTrackerList: (_context, e) => {
@@ -178,7 +198,12 @@ export const createTrackerMachine = () =>
 
                         const newActor: SessionTrackerActorRef = spawn(createSessionTrackerMachine({
                             sessionTracker
-                        }))
+                        }), {
+                            sync: true,
+                            name: sessionTracker.uuid
+                        })
+
+                        console.log("created")
                         return [
                             ...context.sessionTrackerActorRef,
                             newActor
