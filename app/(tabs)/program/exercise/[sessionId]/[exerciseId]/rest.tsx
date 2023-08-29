@@ -19,14 +19,16 @@ export default function EditExerciseRestScreen() {
 
   const handleGoNext = (rest: ExerciseRest) => {
     exerciseActorRef.send({
-      type: "USER_FINISHED_REST_EDITION",
-      rest,
+      type: "USER_FINISHED_UPDATING_FIELD",
+      update: {
+        rest
+      }
     });
   };
 
   const handleGoBack = () => {
     exerciseActorRef.send({
-      type: "USER_CANCELLED_REST_EDITION",
+      type: "USER_CANCELLED_CURRENT_EDIT",
     });
   };
 

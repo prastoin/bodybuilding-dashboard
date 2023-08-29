@@ -1,7 +1,13 @@
 import { router } from "expo-router";
 import { ActorRef, assign, createMachine, State } from "xstate";
 import { sendParent } from "xstate/lib/actions";
-import { Exercise, ExerciseLoad, ExerciseRest } from "../types";
+import { Exercise } from "../types";
+
+type EditableContextKey = keyof Omit<ExerciseMachineContext, "uuid">
+type UserFinishedEditingField = {
+  type: "USER_FINISHED_UPDATING_FIELD",
+  update: Partial<Pick<ExerciseMachineContext, EditableContextKey>>
+}
 
 type ExerciseMachineEvent =
   | {
@@ -11,43 +17,16 @@ type ExerciseMachineEvent =
     type: "USER_ENTERED_NAME_EDITION_OPERATION";
   }
   | {
-    type: "USER_CANCELLED_NAME_EDITION_OPERATION";
-  }
-  | {
-    type: "USER_FINISHED_NAME_EDITION_OPERATION";
-    name: string;
-  }
-  | {
     type: "USER_ENTERED_SET_AND_REP_EDITOR";
-  }
-  | {
-    type: "USER_CANCELLED_SET_AND_REP_EDITION";
-  }
-  | {
-    type: "USER_FINISHED_SET_AND_REP_EDITION";
-    setCounter: number;
-    repCounter: number;
   }
   | {
     type: "USER_ENTERED_LOAD_EDITOR";
   }
   | {
-    type: "USER_CANCELLED_LOAD_EDITION";
-  }
-  | {
-    type: "USER_FINISHED_LOAD_EDITION";
-    load: ExerciseLoad;
-  }
-  | {
     type: "USER_ENTERED_REST_EDITOR";
   }
-  | {
-    type: "USER_CANCELLED_REST_EDITION";
-  }
-  | {
-    type: "USER_FINISHED_REST_EDITION";
-    rest: ExerciseRest;
-  };
+  | UserFinishedEditingField
+  | { type: "USER_CANCELLED_CURRENT_EDIT" }
 
 type ExerciseMachineContext = Exercise;
 
@@ -125,15 +104,15 @@ export const createExerciseMachine = ({
           entry: "Navigate to name editor screen",
 
           on: {
-            USER_FINISHED_NAME_EDITION_OPERATION: {
+            "USER_FINISHED_UPDATING_FIELD": {
               actions: [
-                "Assign new exercise name to context",
+                "Assign updated field to context",
                 "Navigate go back",
               ],
               target: "Idle",
             },
 
-            USER_CANCELLED_NAME_EDITION_OPERATION: {
+            "USER_CANCELLED_CURRENT_EDIT": {
               target: "Idle",
             },
           },
@@ -143,15 +122,15 @@ export const createExerciseMachine = ({
           entry: "Navigate to set and rep editor screen",
 
           on: {
-            USER_FINISHED_SET_AND_REP_EDITION: {
+            "USER_FINISHED_UPDATING_FIELD": {
               target: "Idle",
               actions: [
-                "Assign new set and rep to context",
+                "Assign updated field to context",
                 "Navigate go back",
               ],
             },
 
-            USER_CANCELLED_SET_AND_REP_EDITION: {
+            USER_CANCELLED_CURRENT_EDIT: {
               target: "Idle",
             },
           },
@@ -161,12 +140,15 @@ export const createExerciseMachine = ({
           entry: "Navigate to load editor screen",
 
           on: {
-            USER_FINISHED_LOAD_EDITION: {
+            "USER_FINISHED_UPDATING_FIELD": {
               target: "Idle",
-              actions: ["Assign new load to context", "Navigate go back"],
+              actions: [
+                "Assign updated field to context",
+                "Navigate go back",
+              ],
             },
 
-            USER_CANCELLED_LOAD_EDITION: {
+            USER_CANCELLED_CURRENT_EDIT: {
               target: "Idle",
             },
           },
@@ -176,12 +158,15 @@ export const createExerciseMachine = ({
           entry: "Navigate to rest editor screen",
 
           on: {
-            USER_FINISHED_REST_EDITION: {
+            "USER_FINISHED_UPDATING_FIELD": {
               target: "Idle",
-              actions: ["Assign new rest to context", "Navigate go back"],
+              actions: [
+                "Assign updated field to context",
+                "Navigate go back",
+              ],
             },
 
-            USER_CANCELLED_REST_EDITION: {
+            USER_CANCELLED_CURRENT_EDIT: {
               target: "Idle",
             },
           },
@@ -235,21 +220,12 @@ export const createExerciseMachine = ({
           router.back()
         },
 
-        "Assign new exercise name to context": assign({
-          name: (_context, { name }) => name
-        }),
-
-        "Assign new set and rep to context": assign({
-          repCounter: (_context, { repCounter }) => repCounter,
-          setCounter: (_context, { setCounter }) => setCounter
-        }),
-
-        "Assign new load to context": assign({
-          load: (_context, { load }) => load
-        }),
-
-        "Assign new rest to context": assign({
-          rest: (_context, { rest }) => rest
+        "Assign updated field to context": assign((context, { update }) => {
+          const result: any = {
+            ...context,
+            ...update
+          }
+          return result
         }),
 
         "Forward exercise deletion to program builder": sendParent({

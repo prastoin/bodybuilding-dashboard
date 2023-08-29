@@ -24,15 +24,17 @@ export default function EditExerciseSetRepScreen() {
     repCounter: number;
   }) => {
     exerciseActorRef.send({
-      type: "USER_FINISHED_SET_AND_REP_EDITION",
-      repCounter,
-      setCounter,
+      type: "USER_FINISHED_UPDATING_FIELD",
+      update: {
+        repCounter,
+        setCounter
+      }
     });
   };
 
   const handleGoBack = () => {
     exerciseActorRef.send({
-      type: "USER_CANCELLED_SET_AND_REP_EDITION",
+      type: "USER_CANCELLED_CURRENT_EDIT",
     });
   };
 

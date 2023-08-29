@@ -17,14 +17,16 @@ export default function EditExerciseNameScreen() {
 
   const handleGoNext = (name: string) => {
     exerciseActorRef.send({
-      type: "USER_FINISHED_NAME_EDITION_OPERATION",
-      name
+      type: "USER_FINISHED_UPDATING_FIELD",
+      update: {
+        name
+      }
     });
   };
 
   const handleGoBack = () => {
     exerciseActorRef.send({
-      type: "USER_CANCELLED_NAME_EDITION_OPERATION",
+      type: "USER_CANCELLED_CURRENT_EDIT",
     });
   };
 

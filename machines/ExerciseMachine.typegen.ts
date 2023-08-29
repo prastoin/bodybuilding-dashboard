@@ -16,12 +16,9 @@ export interface Typegen0 {
         services: never;
     };
     eventsCausingActions: {
-        "Assign new exercise name to context": "USER_FINISHED_NAME_EDITION_OPERATION";
-        "Assign new load to context": "USER_FINISHED_LOAD_EDITION";
-        "Assign new rest to context": "USER_FINISHED_REST_EDITION";
-        "Assign new set and rep to context": "USER_FINISHED_SET_AND_REP_EDITION";
+        "Assign updated field to context": "USER_FINISHED_UPDATING_FIELD";
         "Forward exercise deletion to program builder": "REMOVE_EXERCISE";
-        "Navigate go back": "USER_FINISHED_LOAD_EDITION" | "USER_FINISHED_NAME_EDITION_OPERATION" | "USER_FINISHED_REST_EDITION" | "USER_FINISHED_SET_AND_REP_EDITION";
+        "Navigate go back": "USER_FINISHED_UPDATING_FIELD";
         "Navigate to load editor screen": "USER_ENTERED_LOAD_EDITOR";
         "Navigate to name editor screen": "USER_ENTERED_NAME_EDITION_OPERATION";
         "Navigate to rest editor screen": "USER_ENTERED_REST_EDITOR";
