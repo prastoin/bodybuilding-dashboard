@@ -17,8 +17,10 @@ export interface Typegen0 {
         services: never;
     };
     eventsCausingActions: {
-        "Assign updated key to context": "USER_UPDATED_FIELD";
-        "Navigate to rep and rir form screen": "";
+        "Assign update to context": "USER_UPDATED_FIELD";
+        "Navigate to load form screen": "";
+        "Navigate to rep and rir form screen": "USER_UPDATED_FIELD";
+        "Navigate to rest form screen": "USER_UPDATED_FIELD";
         "Notify parent that user exited the form": "USER_WENT_TO_PREVIOUS_SCREEN";
     };
     eventsCausingDelays: {

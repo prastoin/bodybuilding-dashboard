@@ -1,4 +1,4 @@
-import { Exercise, ExerciseMetrics, ExerciseTracker, SessionTracker } from "@/types";
+import { ExerciseTracker } from "@/types";
 import invariant from "invariant";
 import "react-native-get-random-values";
 import {
@@ -8,7 +8,8 @@ import {
     InterpreterFrom,
     State,
 } from "xstate";
-import { createExerciseFormMachine, ExerciseFormDoneInvokeEvent } from "../ExerciseFormMachine";
+import { ExerciseFormDoneInvokeEvent } from "../ExerciseFormMachine";
+import { createSetFormMachine } from "./SetFormMachine";
 
 export type ExerciseTrackerMachineEvents =
     | {
@@ -16,6 +17,8 @@ export type ExerciseTrackerMachineEvents =
     } | {
         type: "ADD_NEW_SET"
         exerciseId: string
+    } | {
+        type: "_USER_CANCELLED_SET_CREATION_FORM"
     }
 
 // To determine the next session to pick we should be looking for the latest SessionRecapId and take the following one
@@ -58,22 +61,31 @@ export const createExerciseTrackerMachine = ({ exercise: { exerciseId, expectedM
             initial: "Idle",
             states: {
                 "Idle": {
-
+                    on: {
+                        "ADD_NEW_SET": {
+                            target: "User is adding new set"
+                        }
+                    }
                 },
+
                 "User is adding new set": {
                     entry: "Navigate to tracker exercise creation form name step",
 
                     invoke: {
-                        id: "TrackerExerciseForm",
+                        id: "SetFormMachine",
 
                         src: (_context, event) => {
                             invariant(event.type === 'ADD_NEW_SET', "Should never occurs manual type checking");
 
-                            // TODO NOT WORKING AS FOLLOWING SCREEN WILL TARGET THE EXERCISE FORM FROM PROGRAM MACHINE
-                            const skipNameStep = true;
-                            return createExerciseFormMachine(sessionId, skipNameStep, event.exerciseId);
+                            return createSetFormMachine();
                         },
 
+                    },
+
+                    on: {
+                        _USER_CANCELLED_SET_CREATION_FORM: {
+                            target: "Idle",
+                        },
                     },
 
                     onDone: {
@@ -91,6 +103,11 @@ export const createExerciseTrackerMachine = ({ exercise: { exerciseId, expectedM
             },
 
             actions: {
+                "Navigate to tracker home page": (_context) => {
+                    //Maybe should reset the stack instead of pushing in it
+                    console.log("do stuff")
+                },
+
                 "Assign new set information": assign({
                     setList: (context, event) => {
                         const {

@@ -8,16 +8,14 @@ import {
     sendParent
 } from "xstate";
 
-type UserUpdatedFieldEvent<T extends keyof SetFormMachineContext> = {
+type UserUpdatedFieldEvent = {
     type: "USER_UPDATED_FIELD",
-    key: T,
-    value: SetFormMachineContext[T]
-
+    update: Partial<SetFormMachineContext>
 }
 
 export type SetFormMachineEvents =
     | { type: "USER_WENT_TO_PREVIOUS_SCREEN" }
-    | UserUpdatedFieldEvent<keyof SetFormMachineContext>
+    | UserUpdatedFieldEvent
 
 
 export type SetFormMachineContext = Omit<SetTracker, "index">
@@ -29,10 +27,7 @@ export type SetFormActorRef = ActorRefFrom<
 export type SetFormDoneInvokeEvent =
     DoneInvokeEvent<SetFormMachineContext>;
 
-export const createSetFormMachine = (
-    parentTrainingSessionId: string,
-    uuid?: string
-) =>
+export const createSetFormMachine = () =>
     createMachine(
         {
             predictableActionArguments: true,
@@ -52,7 +47,7 @@ export const createSetFormMachine = (
             states: {
                 "Assign handler": {
                     on: {
-                        USER_UPDATED_FIELD: { actions: "Assign updated key to context" }
+                        USER_UPDATED_FIELD: { actions: "Assign update to context" }
                     }
                 },
 
@@ -61,7 +56,7 @@ export const createSetFormMachine = (
                     states: {
                         "Idle": {
                             always: {
-                                actions: "Navigate to rep and rir form screen",
+                                actions: "Navigate to load form screen",
                                 target: "Load step"
                             },
                         },
@@ -69,6 +64,7 @@ export const createSetFormMachine = (
                         "Load step": {
                             on: {
                                 "USER_UPDATED_FIELD": {
+                                    actions: "Navigate to rep and rir form screen",
                                     target: "Rep and rir step"
                                 },
 
@@ -81,7 +77,8 @@ export const createSetFormMachine = (
                         "Rep and rir step": {
                             on: {
                                 "USER_UPDATED_FIELD": {
-                                    target: ""
+                                    target: "Rest step",
+                                    actions: "Navigate to rest form screen",
                                 },
 
                                 "USER_WENT_TO_PREVIOUS_SCREEN": {
@@ -93,7 +90,7 @@ export const createSetFormMachine = (
                         "Rest step": {
                             on: {
                                 "USER_UPDATED_FIELD": {
-                                    target: "Final state"
+                                    target: "Final state",
                                 },
 
                                 "USER_WENT_TO_PREVIOUS_SCREEN": {
@@ -118,14 +115,22 @@ export const createSetFormMachine = (
                     console.log("do stuff")
                 },
 
+                "Navigate to load form screen": (_context) => {
+                    console.log("do stuff")
+                },
+
+                "Navigate to rest form screen": (_context) => {
+                    console.log("do stuff")
+                },
+
                 "Notify parent that user exited the form": sendParent({
-                    type: "_USER_CANCELLED_EXERCISE_CREATION_FORM",
+                    type: "_USER_CANCELLED_SET_CREATION_FORM",
                 }),
 
-                "Assign updated key to context": assign((context, { key, value }) => {
+                "Assign update to context": assign((context, { update }) => {
                     return {
                         ...context,
-                        [key]: value
+                        ...update
                     }
                 })
             },
