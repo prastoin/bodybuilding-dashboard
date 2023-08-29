@@ -19,14 +19,16 @@ export default function EditExerciseLoadScreen() {
 
   const handleGoNext = (load: ExerciseLoad) => {
     exerciseActorRef.send({
-      type: "USER_FINISHED_LOAD_EDITION",
-      load,
+      type: "USER_FINISHED_UPDATING_FIELD",
+      update: {
+        load
+      }
     });
   };
 
   const handleGoBack = () => {
     exerciseActorRef.send({
-      type: "USER_CANCELLED_LOAD_EDITION",
+      type: "USER_CANCELLED_CURRENT_EDIT",
     });
   };
 
