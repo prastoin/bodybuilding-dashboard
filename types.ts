@@ -62,12 +62,20 @@ export type RetrieveUserProgramResponseBody = z.infer<
 export const IS_TEST = process.env.NODE_ENV == "test";
 
 // Training
+export const SetTracker = z.object({
+  rir: z.number(),
+  rep: z.number(),
+  index: z.number(),
+  load: z.number(),
+  rest: z.number(),
+})
+export type SetTracker = z.infer<typeof SetTracker>
 
 export const ExerciseTracker = z.object({
   exerciseId: z.string().uuid(),
   name: z.string(),
   expectedMetrics: ExerciseMetrics,
-  setList: ExerciseMetrics.array()
+  setList: SetTracker.array()
 })
 export type ExerciseTracker = z.infer<typeof ExerciseTracker>
 
@@ -82,11 +90,3 @@ export type SessionTracker = z.infer<typeof SessionTracker>
 
 export const RetrieveUserSessionTrackerHistory = SessionTracker.array()
 export type RetrieveUserSessionTrackerHistory = z.infer<typeof RetrieveUserSessionTrackerHistory>
-
-export interface SetTracker {
-  rir: number
-  rep: number
-  index: number,
-  load: number,
-  rest: number,
-} 
