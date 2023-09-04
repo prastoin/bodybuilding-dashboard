@@ -1,4 +1,5 @@
 import { SetTracker } from "@/types";
+import { router } from "expo-router";
 import "react-native-get-random-values";
 import {
     ActorRefFrom,
@@ -8,9 +9,10 @@ import {
     sendParent
 } from "xstate";
 
+// TODO WAS WORKING ON Last redirection not WORKING
 type UserUpdatedFieldEvent = {
     type: "USER_UPDATED_FIELD",
-    update: Partial<SetFormMachineContext>
+    update: Partial<SetFormMachineContext["set"]>
 }
 
 export type SetFormMachineEvents =
@@ -18,16 +20,21 @@ export type SetFormMachineEvents =
     | UserUpdatedFieldEvent
 
 
-export type SetFormMachineContext = Omit<SetTracker, "index">
+export type SetFormMachineContext = {
+    set: Omit<SetTracker, "index">
+    sessionTrackerId: string,
+    exerciseId: string
+}
 
 export type SetFormActorRef = ActorRefFrom<
     typeof createSetFormMachine
 >;
 
 export type SetFormDoneInvokeEvent =
-    DoneInvokeEvent<SetFormMachineContext>;
+    DoneInvokeEvent<SetFormMachineContext["set"]>;
 
-export const createSetFormMachine = () =>
+type CreateSetFormMachineArgs = Pick<SetFormMachineContext, "exerciseId" | "sessionTrackerId">
+export const createSetFormMachine = ({ exerciseId, sessionTrackerId }: CreateSetFormMachineArgs) =>
     createMachine(
         {
             predictableActionArguments: true,
@@ -37,100 +44,133 @@ export const createSetFormMachine = () =>
             },
             tsTypes: {} as import("./SetFormMachine.typegen").Typegen0,
             context: {
-                rep: 0,
-                load: 0,
-                rest: 0,
-                rir: 0,
+                exerciseId,
+                sessionTrackerId,
+                set: {
+                    rep: 0,
+                    load: 0,
+                    rest: 0,
+                    rir: 0,
+                }
             },
-            id: "SetForm",
-            type: "parallel",
+            id: "SetFormMachine",
+            initial: "Idle",
             states: {
-                "Assign handler": {
-                    on: {
-                        USER_UPDATED_FIELD: { actions: "Assign update to context" }
+                Idle: {
+                    type: 'parallel',
+                    states: {
+                        "Assign handler": {
+                            on: {
+                                USER_UPDATED_FIELD: { actions: "Assign set update to context" }
+                            }
+                        },
+
+                        "Navigation handler": {
+                            initial: "Idle",
+                            states: {
+                                "Idle": {
+                                    always: {
+                                        actions: "Navigate to load form screen",
+                                        target: "Load step"
+                                    },
+                                },
+
+                                "Load step": {
+                                    on: {
+                                        "USER_UPDATED_FIELD": {
+                                            actions: "Navigate to rep and rir form screen",
+                                            target: "Rep and rir step"
+                                        },
+
+                                        "USER_WENT_TO_PREVIOUS_SCREEN": {
+                                            actions: "Notify parent that user exited the form"
+                                        }
+                                    }
+                                },
+
+                                "Rep and rir step": {
+                                    on: {
+                                        "USER_UPDATED_FIELD": {
+                                            target: "Rest step",
+                                            actions: "Navigate to rest form screen",
+                                        },
+
+                                        "USER_WENT_TO_PREVIOUS_SCREEN": {
+                                            target: "Load step"
+                                        }
+                                    }
+                                },
+
+                                "Rest step": {
+                                    on: {
+                                        "USER_UPDATED_FIELD": {
+                                            target: "#SetFormMachine.Final",
+                                        },
+
+                                        "USER_WENT_TO_PREVIOUS_SCREEN": {
+                                            target: "Load step"
+                                        }
+                                    }
+                                },
+
+                            }
+                        }
                     }
                 },
 
-                "Navigation handler": {
-                    initial: "Idle",
-                    states: {
-                        "Idle": {
-                            always: {
-                                actions: "Navigate to load form screen",
-                                target: "Load step"
-                            },
-                        },
+                Final: {
+                    type: "final",
 
-                        "Load step": {
-                            on: {
-                                "USER_UPDATED_FIELD": {
-                                    actions: "Navigate to rep and rir form screen",
-                                    target: "Rep and rir step"
-                                },
-
-                                "USER_WENT_TO_PREVIOUS_SCREEN": {
-                                    actions: "Notify parent that user exited the form"
-                                }
-                            }
-                        },
-
-                        "Rep and rir step": {
-                            on: {
-                                "USER_UPDATED_FIELD": {
-                                    target: "Rest step",
-                                    actions: "Navigate to rest form screen",
-                                },
-
-                                "USER_WENT_TO_PREVIOUS_SCREEN": {
-                                    target: "Load step"
-                                }
-                            }
-                        },
-
-                        "Rest step": {
-                            on: {
-                                "USER_UPDATED_FIELD": {
-                                    target: "Final state",
-                                },
-
-                                "USER_WENT_TO_PREVIOUS_SCREEN": {
-                                    target: "Load step"
-                                }
-                            }
-                        },
-
-                        "Final state": {
-                            type: "final",
-
-                            data: (context) => context,
-                        }
-
-                    }
+                    data: (context) => context.set,
                 }
             },
         },
         {
             actions: {
-                "Navigate to rep and rir form screen": (_context) => {
-                    console.log("do stuff")
+                "Navigate to rep and rir form screen": ({ exerciseId, sessionTrackerId }) => {
+                    router.push({
+                        pathname: "/(tabs)/tracker/[sessionTrackerId]/[exerciseId]/repRir",
+                        params: {
+                            exerciseId,
+                            sessionTrackerId
+                        }
+
+                    })
                 },
 
-                "Navigate to load form screen": (_context) => {
-                    console.log("do stuff")
+                "Navigate to load form screen": ({ exerciseId, sessionTrackerId }) => {
+                    router.push({
+                        pathname: "/(tabs)/tracker/[sessionTrackerId]/[exerciseId]/load",
+                        params: {
+                            exerciseId,
+                            sessionTrackerId
+                        }
+
+                    })
                 },
 
-                "Navigate to rest form screen": (_context) => {
-                    console.log("do stuff")
+                "Navigate to rest form screen": ({ exerciseId, sessionTrackerId }) => {
+                    router.push({
+                        pathname: "/(tabs)/tracker/[sessionTrackerId]/[exerciseId]/rest",
+                        params: {
+                            exerciseId,
+                            sessionTrackerId
+                        }
+
+                    })
                 },
 
                 "Notify parent that user exited the form": sendParent({
                     type: "_USER_CANCELLED_SET_CREATION_FORM",
                 }),
 
-                "Assign update to context": assign((context, { update }) => {
-                    return {
-                        ...context,
-                        ...update
+                "Assign set update to context": assign({
+                    set: ({ set }, { update }) => {
+                        console.log({ update })
+                        return {
+                            ...set,
+                            ...update
+                        }
                     }
                 })
             },
