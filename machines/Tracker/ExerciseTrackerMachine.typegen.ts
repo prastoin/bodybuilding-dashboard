@@ -17,8 +17,8 @@ export interface Typegen0 {
     };
     eventsCausingActions: {
         "Assign new set information": "done.state.(machine).User is adding new set";
+        "Navigate to exercise tracker review": "done.state.(machine).User is adding new set";
         "Navigate to tracker exercise creation form name step": "ADD_NEW_SET";
-        "Navigate to tracker home page": "done.state.(machine).User is adding new set";
     };
     eventsCausingDelays: {
 

@@ -19,7 +19,7 @@ export type SessionTrackerMachineEvents =
 
 // To determine the next session to pick we should be looking for the latest SessionRecapId and take the following one
 export type SessionTrackerMachineContext = Omit<SessionTracker, "exerciseTrackerList"> & {
-    exerciseTrackerList: ExerciseTrackerActorRef[]
+    exerciseTrackerActorList: ExerciseTrackerActorRef[]
 }
 
 type SessionTrackerMachineState = State<
@@ -51,11 +51,13 @@ export const createSessionTrackerMachine = ({ sessionTracker: { createdOn, exerc
                 createdOn: Date.now(),
                 name,
                 sessionId,
-                exerciseTrackerList: exerciseTrackerList.map((exercise) => {
+                exerciseTrackerActorList: exerciseTrackerList.map((exerciseTracker) => {
                     const tmp: ExerciseTrackerActorRef = spawn(createExerciseTrackerMachine({
-                        exercise
+                        exerciseTracker,
+                        sessionTrackerId: uuid
                     }), {
                         sync: true,
+                        name: exerciseTracker.exerciseId
                         //TODO name: "Not even sure about that"
                     })
                     return tmp

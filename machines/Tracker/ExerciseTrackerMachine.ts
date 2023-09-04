@@ -1,4 +1,5 @@
 import { ExerciseTracker } from "@/types";
+import { router } from "expo-router";
 import invariant from "invariant";
 import "react-native-get-random-values";
 import {
@@ -8,8 +9,7 @@ import {
     InterpreterFrom,
     State,
 } from "xstate";
-import { ExerciseFormDoneInvokeEvent } from "../ExerciseFormMachine";
-import { createSetFormMachine } from "./SetFormMachine";
+import { createSetFormMachine, SetFormDoneInvokeEvent } from "./SetFormMachine";
 
 export type ExerciseTrackerMachineEvents =
     | {
@@ -39,10 +39,11 @@ export type ExerciseTrackerActorRef = ActorRef<
 >;
 
 interface CreateExerciseTrackerFormMachineArgs {
-    exercise: ExerciseTracker
+    exerciseTracker: ExerciseTracker
+    sessionTrackerId: string
 }
 // TODO from Exercise to ExerciseTracker
-export const createExerciseTrackerMachine = ({ exercise: { exerciseId, expectedMetrics, name, setList } }: CreateExerciseTrackerFormMachineArgs) =>
+export const createExerciseTrackerMachine = ({ sessionTrackerId, exerciseTracker: { exerciseId, expectedMetrics, name, setList } }: CreateExerciseTrackerFormMachineArgs) =>
     /** @xstate-layout N4IgpgJg5mDOIC5QAUBOB7KqCGBbAQgK4CWANhGKgLLYDGAFsQHZgB0AkhKWAMQCCECAAIAKjmbMoQgMpxYxdE0SgADunkAXBUqQgAHogAsh1gDYArAA4AnAHYAjJYBMAZgAMpp7YA0IAJ6I9k7mrPa2hm5elpa2LjYuAL5JvkzoFPC6aJg4BCTklDQMzGyc3Mogapra5QYI1k6sroZOhqaWxkERTr4BCBGsbubW9m5u4aamYfbmySBZWHhEZBTUdIwsrCwA7kKwGtgaYEL25ZXEWoo1gW4m1obmLU71praTLj2ILi4NLhG2TjFHJZftYZglfPMckt8qsiixTupztVdLUnG4zFY7I5XB4vB8EABab6sYZOFqg1rmQykpJJIA */
     createMachine(
         {
@@ -74,10 +75,13 @@ export const createExerciseTrackerMachine = ({ exercise: { exerciseId, expectedM
                     invoke: {
                         id: "SetFormMachine",
 
-                        src: (_context, event) => {
+                        src: ({ exerciseId }, event) => {
                             invariant(event.type === 'ADD_NEW_SET', "Should never occurs manual type checking");
 
-                            return createSetFormMachine();
+                            return createSetFormMachine({
+                                exerciseId,
+                                sessionTrackerId
+                            });
                         },
 
                     },
@@ -92,7 +96,7 @@ export const createExerciseTrackerMachine = ({ exercise: { exerciseId, expectedM
                         target: "Idle",
                         actions: [
                             "Assign new set information",
-                            "Navigate to tracker home page",
+                            "Navigate to exercise tracker review",
                         ],
                     },
                 }
@@ -103,29 +107,38 @@ export const createExerciseTrackerMachine = ({ exercise: { exerciseId, expectedM
             },
 
             actions: {
-                "Navigate to tracker home page": (_context) => {
+                "Navigate to exercise tracker review": () => {
+                    console.log("Tries to navigate")
                     //Maybe should reset the stack instead of pushing in it
-                    console.log("do stuff")
-                },
+                    // router.push({
+                    //     pathname: "/(tabs)/tracker/[sessionTrackerId]/",
+                    //     params: {
+                    //         sessionTrackerId
+                    //     }
+                    // })
+                    // router.push("/(tabs)/home/")
+                }
+                ,
 
                 "Assign new set information": assign({
                     setList: (context, event) => {
                         const {
                             data: {
+                                rep,
+                                rir,
                                 load,
                                 rest,
-                                repCounter,
-                                setCounter
                             },
-                        } = event as ExerciseFormDoneInvokeEvent;
-
+                        } = event as SetFormDoneInvokeEvent;
+                        console.log("received new set data", event)
                         return [
                             ...context.setList,
                             {
                                 load,
                                 rest,
-                                repCounter,
-                                setCounter
+                                rep,
+                                rir,
+                                index: context.setList.length
                             }]
                     },
                 })

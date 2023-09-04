@@ -17,7 +17,7 @@ export interface Typegen0 {
         services: never;
     };
     eventsCausingActions: {
-        "Assign update to context": "USER_UPDATED_FIELD";
+        "Assign set update to context": "USER_UPDATED_FIELD";
         "Navigate to load form screen": "";
         "Navigate to rep and rir form screen": "USER_UPDATED_FIELD";
         "Navigate to rest form screen": "USER_UPDATED_FIELD";
@@ -32,6 +32,6 @@ export interface Typegen0 {
     eventsCausingServices: {
 
     };
-    matchesStates: "Assign handler" | "Navigation handler" | "Navigation handler.Final state" | "Navigation handler.Idle" | "Navigation handler.Load step" | "Navigation handler.Rep and rir step" | "Navigation handler.Rest step" | { "Navigation handler"?: "Final state" | "Idle" | "Load step" | "Rep and rir step" | "Rest step"; };
+    matchesStates: "Final" | "Idle" | "Idle.Assign handler" | "Idle.Navigation handler" | "Idle.Navigation handler.Idle" | "Idle.Navigation handler.Load step" | "Idle.Navigation handler.Rep and rir step" | "Idle.Navigation handler.Rest step" | { "Idle"?: "Assign handler" | "Navigation handler" | { "Navigation handler"?: "Idle" | "Load step" | "Rep and rir step" | "Rest step"; }; };
     tags: never;
 }
