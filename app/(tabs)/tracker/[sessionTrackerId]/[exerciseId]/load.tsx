@@ -1,20 +1,15 @@
 import { NumberInputFormContent, NumberInputFormValues } from "@/components/set/NumberInputContent";
 import { useSetFormMachine } from "@/hooks/useTrackerHooks";
+import { SetFormActorRef } from "@/machines/Tracker/SetFormMachine";
 import { useSelector } from "@xstate/react";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 
-export default function CreateSetLoadFormScreen() {
-  const { sessionTrackerId, exerciseId } = useLocalSearchParams<"/(tabs)/tracker/[sessionTrackerId]/[exerciseId]/load">();
-  const setFormMachineRef = useSetFormMachine({
-    exerciseId, sessionTrackerId
-  })
-
-  if (setFormMachineRef === undefined) {
-    return (<View>Aie aie aie go back</View>)
-  }
-
+interface ContentProps {
+  setFormMachineRef: SetFormActorRef
+}
+const Content: React.FC<ContentProps> = ({ setFormMachineRef }) => {
   const handleGoNext = ({ value: load }: NumberInputFormValues) => {
     setFormMachineRef.send({
       type: "USER_UPDATED_FIELD",
@@ -43,4 +38,20 @@ export default function CreateSetLoadFormScreen() {
       handleOnSubmit={handleGoNext}
     />
   );
+}
+
+export default function CreateSetLoadFormScreen() {
+  const { sessionTrackerId, exerciseId } = useLocalSearchParams<"/(tabs)/tracker/[sessionTrackerId]/[exerciseId]/load">();
+  const setFormMachineRef = useSetFormMachine({
+    exerciseId, sessionTrackerId
+  })
+
+  if (setFormMachineRef === undefined) {
+    return (<View>
+      <Text>Set form machine ref not found</Text>
+    </View>)
+  }
+
+
+  return <Content setFormMachineRef={setFormMachineRef} />
 };
