@@ -19,7 +19,7 @@ export type SessionTrackerMachineEvents =
 
 // To determine the next session to pick we should be looking for the latest SessionRecapId and take the following one
 export type SessionTrackerMachineContext = Omit<SessionTracker, "exerciseTrackerList"> & {
-    exerciseTrackerActorList: ExerciseTrackerActorRef[]
+    exerciseTrackerActorList: ExerciseTrackerActorRef[] //Could be map ?
 }
 
 type SessionTrackerMachineState = State<
