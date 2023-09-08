@@ -84,20 +84,19 @@ export const createExerciseTrackerMachine = ({ sessionTrackerId, exerciseTracker
                             });
                         },
 
+                        onDone: {
+                            target: "Idle",
+                            actions: [
+                                "Navigate to exercise tracker review",
+                                "Assign new set information",
+                            ],
+                        },
                     },
 
                     on: {
                         _USER_CANCELLED_SET_CREATION_FORM: {
                             target: "Idle",
                         },
-                    },
-
-                    onDone: {
-                        target: "Idle",
-                        actions: [
-                            "Assign new set information",
-                            "Navigate to exercise tracker review",
-                        ],
                     },
                 }
             },
@@ -110,13 +109,12 @@ export const createExerciseTrackerMachine = ({ sessionTrackerId, exerciseTracker
                 "Navigate to exercise tracker review": () => {
                     console.log("Tries to navigate")
                     //Maybe should reset the stack instead of pushing in it
-                    // router.push({
-                    //     pathname: "/(tabs)/tracker/[sessionTrackerId]/",
-                    //     params: {
-                    //         sessionTrackerId
-                    //     }
-                    // })
-                    // router.push("/(tabs)/home/")
+                    router.push({
+                        pathname: "/(tabs)/tracker/[sessionTrackerId]/",
+                        params: {
+                            sessionTrackerId
+                        }
+                    })
                 }
                 ,
 

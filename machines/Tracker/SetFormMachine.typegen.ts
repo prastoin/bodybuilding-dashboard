@@ -32,6 +32,6 @@ export interface Typegen0 {
     eventsCausingServices: {
 
     };
-    matchesStates: "Final" | "Idle" | "Idle.Assign handler" | "Idle.Navigation handler" | "Idle.Navigation handler.Idle" | "Idle.Navigation handler.Load step" | "Idle.Navigation handler.Rep and rir step" | "Idle.Navigation handler.Rest step" | { "Idle"?: "Assign handler" | "Navigation handler" | { "Navigation handler"?: "Idle" | "Load step" | "Rep and rir step" | "Rest step"; }; };
+    matchesStates: "Final" | "Idle" | "Load step" | "Rep and rir step" | "Rest step";
     tags: never;
 }

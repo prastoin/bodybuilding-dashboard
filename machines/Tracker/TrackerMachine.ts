@@ -137,7 +137,6 @@ export const createTrackerMachine = () =>
                 "Navigate to session tracker screen": (_context, event) => {
                     const { sessionTrackerId } = event;
 
-                    console.log("navigating")
                     router.push({
                         pathname: "/(tabs)/tracker/[sessionTrackerId]/",
                         params: {
@@ -203,7 +202,6 @@ export const createTrackerMachine = () =>
                             name: sessionTracker.uuid
                         })
 
-                        console.log("created")
                         return [
                             ...context.sessionTrackerActorRef,
                             newActor

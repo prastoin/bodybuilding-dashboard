@@ -4,6 +4,7 @@
 export interface Typegen0 {
     '@@xstate/typegen': true;
     internalEvents: {
+        "done.invoke.SetFormMachine": { type: "done.invoke.SetFormMachine"; data: unknown; __tip: "See the XState TS docs to learn how to strongly type this." };
         "xstate.init": { type: "xstate.init" };
     };
     invokeSrcNameMap: {
@@ -16,8 +17,8 @@ export interface Typegen0 {
         services: never;
     };
     eventsCausingActions: {
-        "Assign new set information": "done.state.(machine).User is adding new set";
-        "Navigate to exercise tracker review": "done.state.(machine).User is adding new set";
+        "Assign new set information": "done.invoke.SetFormMachine";
+        "Navigate to exercise tracker review": "done.invoke.SetFormMachine";
         "Navigate to tracker exercise creation form name step": "ADD_NEW_SET";
     };
     eventsCausingDelays: {
