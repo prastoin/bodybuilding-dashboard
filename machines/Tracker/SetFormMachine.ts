@@ -53,67 +53,57 @@ export const createSetFormMachine = ({ exerciseId, sessionTrackerId }: CreateSet
                     rir: 0,
                 }
             },
-            id: "SetFormMachine",
+            id: "machine",
             initial: "Idle",
             states: {
-                Idle: {
-                    type: 'parallel',
-                    states: {
-                        "Assign handler": {
-                            on: {
-                                USER_UPDATED_FIELD: { actions: "Assign set update to context" }
-                            }
+                "Idle": {
+                    always: {
+                        actions: "Navigate to load form screen",
+                        target: "Load step"
+                    },
+                },
+
+                "Load step": {
+                    on: {
+                        "USER_UPDATED_FIELD": {
+                            actions: [
+                                "Assign set update to context",
+                                "Navigate to rep and rir form screen"
+                            ],
+                            target: "Rep and rir step"
                         },
 
-                        "Navigation handler": {
-                            initial: "Idle",
-                            states: {
-                                "Idle": {
-                                    always: {
-                                        actions: "Navigate to load form screen",
-                                        target: "Load step"
-                                    },
-                                },
+                        "USER_WENT_TO_PREVIOUS_SCREEN": {
+                            actions: "Notify parent that user exited the form"
+                        }
+                    }
+                },
 
-                                "Load step": {
-                                    on: {
-                                        "USER_UPDATED_FIELD": {
-                                            actions: "Navigate to rep and rir form screen",
-                                            target: "Rep and rir step"
-                                        },
+                "Rep and rir step": {
+                    on: {
+                        "USER_UPDATED_FIELD": {
+                            actions: [
+                                "Assign set update to context",
+                                "Navigate to rest form screen"
+                            ],
+                            target: "Rest step",
+                        },
 
-                                        "USER_WENT_TO_PREVIOUS_SCREEN": {
-                                            actions: "Notify parent that user exited the form"
-                                        }
-                                    }
-                                },
+                        "USER_WENT_TO_PREVIOUS_SCREEN": {
+                            target: "Load step"
+                        }
+                    }
+                },
 
-                                "Rep and rir step": {
-                                    on: {
-                                        "USER_UPDATED_FIELD": {
-                                            target: "Rest step",
-                                            actions: "Navigate to rest form screen",
-                                        },
+                "Rest step": {
+                    on: {
+                        "USER_UPDATED_FIELD": {
+                            actions: "Assign set update to context",
+                            target: "Final",
+                        },
 
-                                        "USER_WENT_TO_PREVIOUS_SCREEN": {
-                                            target: "Load step"
-                                        }
-                                    }
-                                },
-
-                                "Rest step": {
-                                    on: {
-                                        "USER_UPDATED_FIELD": {
-                                            target: "#SetFormMachine.Final",
-                                        },
-
-                                        "USER_WENT_TO_PREVIOUS_SCREEN": {
-                                            target: "Load step"
-                                        }
-                                    }
-                                },
-
-                            }
+                        "USER_WENT_TO_PREVIOUS_SCREEN": {
+                            target: "Rep and rir step"
                         }
                     }
                 },
@@ -121,7 +111,10 @@ export const createSetFormMachine = ({ exerciseId, sessionTrackerId }: CreateSet
                 Final: {
                     type: "final",
 
-                    data: (context) => context.set,
+                    data: (context) => {
+                        console.log("onDone data");
+                        return context.set
+                    },
                 }
             },
         },
@@ -166,7 +159,7 @@ export const createSetFormMachine = ({ exerciseId, sessionTrackerId }: CreateSet
 
                 "Assign set update to context": assign({
                     set: ({ set }, { update }) => {
-                        console.log({ update })
+                        console.log("Received assign", { update })
                         return {
                             ...set,
                             ...update
