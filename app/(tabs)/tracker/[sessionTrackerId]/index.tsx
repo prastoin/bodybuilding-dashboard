@@ -34,7 +34,11 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exerciseTracker: { expected
 export default function ProgramScreen() {
     const { sessionTrackerId } = useLocalSearchParams<"/(tabs)/tracker/[sessionTrackerId]/">();
     const sessionTrackerRef = useSessionTrackerActorRef(sessionTrackerId)
-    const [{ context: { name, createdOn, exerciseTrackerActorList } }] = useActor(sessionTrackerRef)
+
+    const [state, _send] = useActor(sessionTrackerRef);
+    const { createdOn, name, exerciseTrackerActorList } = state.context
+    // Could avoid useActor and use useSelector on specific content field
+    const exerciseActorCollection = exerciseTrackerActorList.map((actorRef) => useActor(actorRef))
 
     return (
         <AppScreen testID={"program-builder-screen-container"}>
@@ -49,17 +53,12 @@ export default function ProgramScreen() {
             <Text>{name}</Text>
             <Text>Created on: {createdOn}</Text>
             <FlatList
-                data={exerciseTrackerActorList}
-                renderItem={({ item: actor }) => {
-                    const snapshot = actor.getSnapshot()
-                    if (snapshot === undefined) {
-                        return <Text>Could not find exercise data</Text>
-                    }
-
-                    const { context: exerciseTracker } = snapshot
-                    return <ExerciseCard exerciseTracker={exerciseTracker} addNewSetOnPress={() => actor.send("ADD_NEW_SET")} />
-                }}
-                keyExtractor={(actor) => actor.id} />
+                data={exerciseActorCollection}
+                extraData={exerciseTrackerActorList}
+                renderItem={({ item: [state, send] }) =>
+                    (<ExerciseCard exerciseTracker={state.context} addNewSetOnPress={() => send("ADD_NEW_SET")} />)
+                }
+                keyExtractor={([state, _send]) => state.context.exerciseId} />
         </AppScreen>
     );
 };
