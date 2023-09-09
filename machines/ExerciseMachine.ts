@@ -49,8 +49,8 @@ export const createExerciseMachine = ({
   exercise: {
     name,
     uuid,
-    repCounter,
-    setCounter,
+    rep,
+    set,
     load,
     rest,
   },
@@ -69,8 +69,8 @@ export const createExerciseMachine = ({
       context: {
         name,
         uuid,
-        setCounter,
-        repCounter,
+        set,
+        rep,
         load,
         rest,
       },

@@ -15,16 +15,16 @@ export default function CreateExerciseSetRepScreen() {
   }
 
   const handleGoNext = ({
-    repCounter,
-    setCounter,
+    rep,
+    set,
   }: {
-    repCounter: number;
-    setCounter: number;
+    rep: number;
+    set: number;
   }) => {
     exerciseFormActor.send({
       type: "SET_EXERCISE_SET_AND_REP_AND_GO_NEXT",
-      repCounter,
-      setCounter,
+      rep,
+      set,
     });
   };
 
@@ -38,9 +38,7 @@ export default function CreateExerciseSetRepScreen() {
     <ExerciseFormSetAndRepContent
       testId={`exercise-creation-form-set-and-rep-${exerciseFormActor.id}`}
       handleOnGoBack={handleGoBack}
-      handleOnSubmit={({ repCounter, setCounter }) => {
-        handleGoNext({ repCounter, setCounter });
-      }}
+      handleOnSubmit={handleGoNext}
     />
   );
 };

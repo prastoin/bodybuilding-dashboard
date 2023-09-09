@@ -32,7 +32,7 @@ const Content: React.FC<ContentProps> = ({ setFormMachineRef }) => {
 
   return (
     <NumberInputFormContent
-      testId={`exercise-editor-form-load-${setFormMachineRef.id}`}
+      testId={`tracker-set-form-rest-${setFormMachineRef.id}`}
       handleOnGoBack={handleGoBack}
       defaultValue={defaultRest}
       handleOnSubmit={handleGoNext}

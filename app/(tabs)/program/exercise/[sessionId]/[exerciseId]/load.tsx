@@ -1,6 +1,6 @@
 import { ExerciseFormLoadContent } from "@/components/ExerciseLoadForm";
 import { useExerciseActorRef } from "@/hooks/useExerciseActorRef";
-import { ExerciseLoad } from "@/types";
+import { Kilograms } from "@/types";
 import { useSelector } from "@xstate/react";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
@@ -17,7 +17,7 @@ export default function EditExerciseLoadScreen() {
     return <View testID="exercise-editor-form-load-default" />;
   }
 
-  const handleGoNext = (load: ExerciseLoad) => {
+  const handleGoNext = (load: Kilograms) => {
     exerciseActorRef.send({
       type: "USER_FINISHED_UPDATING_FIELD",
       update: {
@@ -42,7 +42,7 @@ export default function EditExerciseLoadScreen() {
       testId={`exercise-editor-form-load-${exerciseActorRef.id}`}
       handleOnGoBack={handleGoBack}
       defaultLoad={defaultLoad}
-      handleOnSubmit={handleGoNext}
+      handleOnSubmit={({ value }) => handleGoNext(value)}
     />
   );
 };

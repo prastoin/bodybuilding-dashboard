@@ -16,7 +16,7 @@ export const SessionExerciseItem: React.FC<
     exerciseActorRef
   );
 
-  const { name, uuid, repCounter, setCounter, load, rest } =
+  const { name, uuid, rep, set, load, rest } =
     exerciseMachineState.context;
 
   const removeExerciseOnPress = () => sendToExerciseMachine({
@@ -44,7 +44,60 @@ export const SessionExerciseItem: React.FC<
       className="flex-row"
       testID={`training-session-exercise-container-${uuid}`}
     >
-      <View className="flex-col flex-1">
+      <View className="flex-row">
+        <View className="flex-col flex-1">
+          <View testID="exercise-name" className="flex-row">
+            <Text className="underline font-bold">{name}</Text>
+            <AntDesign
+              name="edit"
+              size={24}
+              color="black"
+              testID="edit-exercise-name"
+              onPress={editExerciseNameOnPress}
+            />
+          </View>
+
+          <View testID="exercise-set-and-rep" className="flex-row">
+            <Text>
+              {set}X{rep}
+            </Text>
+
+            <AntDesign
+              name="edit"
+              size={24}
+              color="black"
+              testID="edit-exercise-set-and-rep"
+              onPress={editSetAndRepOnPress}
+            />
+          </View>
+
+          <View testID="exercise-load" className="flex-row">
+            <Text>
+              {load}_KG
+            </Text>
+
+            <AntDesign
+              name="edit"
+              size={24}
+              color="black"
+              testID="edit-exercise-load"
+              onPress={editLoadOnPress}
+            />
+          </View>
+
+          <View testID="exercise-rest" className="flex-row">
+            <Text>{rest} seconds</Text>
+
+            <AntDesign
+              name="edit"
+              size={24}
+              color="black"
+              testID="edit-exercise-rest"
+              onPress={editRestOnPress}
+            />
+          </View>
+        </View>
+
         <AntDesign
           className="absolute top-0 right-0"
           name="close"
@@ -53,59 +106,8 @@ export const SessionExerciseItem: React.FC<
           onPress={removeExerciseOnPress}
           testID={`remove-exercise-button-${uuid}`}
         />
-
-        <View testID="exercise-name" className="flex-row">
-          <Text>{name}</Text>
-          <AntDesign
-            name="edit"
-            size={24}
-            color="black"
-            testID="edit-exercise-name"
-            onPress={editExerciseNameOnPress}
-          />
-        </View>
-
-        <View testID="exercise-set-and-rep" className="flex-row">
-          <Text>
-            {setCounter}X{repCounter}
-          </Text>
-
-          <AntDesign
-            name="edit"
-            size={24}
-            color="black"
-            testID="edit-exercise-set-and-rep"
-            onPress={editSetAndRepOnPress}
-          />
-        </View>
-
-        <View testID="exercise-load" className="flex-row">
-          <Text>
-            {load.value}_{load.unit}
-          </Text>
-
-          <AntDesign
-            name="edit"
-            size={24}
-            color="black"
-            testID="edit-exercise-load"
-            onPress={editLoadOnPress}
-          />
-        </View>
-
-        <View testID="exercise-rest" className="flex-row">
-          <Text>{rest.minute} min</Text>
-          <Text>{rest.second} sec</Text>
-
-          <AntDesign
-            name="edit"
-            size={24}
-            color="black"
-            testID="edit-exercise-rest"
-            onPress={editRestOnPress}
-          />
-        </View>
       </View>
+
     </View>
   );
 };

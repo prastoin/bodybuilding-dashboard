@@ -5,29 +5,22 @@ export const SERVER_ENDPOINT = `http://${process.env.EXPO_PUBLIC_SERVER_HOST!}:$
 
 export const NonEmptyString = z.string().min(1);
 
-export const MinuteSecondDuration = z.number().min(0).max(59);
-export type MinuteSecondDuration = z.infer<typeof MinuteSecondDuration>;
-
 export const LoadUnit = z.enum(["lbs", "kg"]);
 export type LoadUnit = z.infer<typeof LoadUnit>;
 
-export const ExerciseLoad = z.object({
-  unit: LoadUnit,
-  value: z.number().positive(),
-});
-export type ExerciseLoad = z.infer<typeof ExerciseLoad>;
+export const Seconds = z.number();
+export type Seconds = z.infer<typeof Seconds>
 
-export const ExerciseRest = z.object({
-  minute: MinuteSecondDuration,
-  second: MinuteSecondDuration,
-});
-export type ExerciseRest = z.infer<typeof ExerciseRest>;
+export const Kilograms = z.number()
+export type Kilograms = z.infer<typeof Kilograms>
 
 export const ExerciseMetrics = z.object({
-  setCounter: z.number().min(1).max(10),
-  repCounter: z.number().min(1).max(20),
-  load: ExerciseLoad,
-  rest: ExerciseRest,
+  set: z.number().min(1).max(10),
+  rep: z.number().min(1).max(20),
+  // Load by default is in kg, should add a setting to show load in Lbs
+  load: Kilograms,
+  // Rest is in seconds
+  rest: Seconds,
 })
 export type ExerciseMetrics = z.infer<typeof ExerciseMetrics>
 

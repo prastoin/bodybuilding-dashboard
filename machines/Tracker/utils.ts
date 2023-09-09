@@ -3,14 +3,14 @@ import { ExerciseMachineState } from "../ExerciseMachine";
 import { SessionMachineContext } from "../SessionMachine";
 
 export function fromExerciseListToExerciseTracker(exerciseList: Exercise[]): ExerciseTracker[] {
-    const transpiler = ({ load, name, repCounter, rest, setCounter, uuid: exerciseId }: Exercise) => {
+    const transpiler = ({ load, name, rep, rest, set, uuid: exerciseId }: Exercise) => {
         return {
             exerciseId,
             expectedMetrics: {
                 load,
-                repCounter,
+                rep,
                 rest,
-                setCounter
+                set
             },
             name,
             setList: []
