@@ -46,7 +46,7 @@ export const SessionItem: React.FC<SessionProps> = ({
       testID={`training-session-container-${uuid}`}
     >
       <Text
-        className="font-bold pb-2"
+        className="font-bold pb-2 pl-3"
         onPress={editSessionNameOnPress}
       >
         {name}

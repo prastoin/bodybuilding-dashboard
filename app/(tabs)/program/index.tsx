@@ -4,7 +4,7 @@ import { useAppContext } from "@/context/appContext";
 import { SessionActorRef } from "@/machines/SessionMachine";
 import { useActor } from "@xstate/react";
 import * as React from "react";
-import { Button, FlatList, Text, View } from "react-native";
+import { Button, FlatList, Text } from "react-native";
 
 export default function ProgramScreen() {
   const { programService } = useAppContext();
@@ -24,6 +24,7 @@ export default function ProgramScreen() {
     <AppScreen testID={"program-builder-screen-container"}>
       <Text>{programContext.name}</Text>
       <FlatList<SessionActorRef>
+        className="w-full"
         data={programContext.sessionActorRefList}
         renderItem={({ index, item }) => (
           <SessionItem sessionActorRef={item} index={index} />
