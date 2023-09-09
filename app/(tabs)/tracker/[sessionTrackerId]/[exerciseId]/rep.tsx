@@ -13,12 +13,10 @@ interface ContentProps {
 const Content: React.FC<ContentProps> = ({ setFormMachineRef }) => {
 
   const handleGoNext = ({ value }: NumberInputFormValues) => {
-    // TODO TMP same value will have to handle several input form
     setFormMachineRef.send({
       type: "USER_UPDATED_FIELD",
       update: {
         rep: value,
-        rir: value
       }
     });
   };
@@ -36,7 +34,7 @@ const Content: React.FC<ContentProps> = ({ setFormMachineRef }) => {
 
   return (
     <NumberInputFormContent
-      testId={`exercise-editor-form-load-${setFormMachineRef.id}`}
+      testId={`tracker-set-form-rep-${setFormMachineRef.id}`}
       handleOnGoBack={handleGoBack}
       defaultValue={defaultRep}
       handleOnSubmit={handleGoNext}
@@ -45,7 +43,7 @@ const Content: React.FC<ContentProps> = ({ setFormMachineRef }) => {
 }
 
 export default function CreateSetRepRirFormScreen() {
-  const { sessionTrackerId, exerciseId } = useLocalSearchParams<"/(tabs)/tracker/[sessionTrackerId]/[exerciseId]/repRir">();
+  const { sessionTrackerId, exerciseId } = useLocalSearchParams<"/(tabs)/tracker/[sessionTrackerId]/[exerciseId]/rep">();
   const setFormMachineRef = useSetFormMachine({
     exerciseId, sessionTrackerId
   })

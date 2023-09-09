@@ -6,15 +6,17 @@ import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { Text, View } from "react-native";
 
+
 interface ContentProps {
   setFormMachineRef: SetFormActorRef
 }
 const Content: React.FC<ContentProps> = ({ setFormMachineRef }) => {
-  const handleGoNext = ({ value: load }: NumberInputFormValues) => {
+
+  const handleGoNext = ({ value }: NumberInputFormValues) => {
     setFormMachineRef.send({
       type: "USER_UPDATED_FIELD",
       update: {
-        load
+        rir: value
       }
     });
   };
@@ -25,33 +27,30 @@ const Content: React.FC<ContentProps> = ({ setFormMachineRef }) => {
     });
   };
 
-  const defaultLoad = useSelector(
+  const defaultRir = useSelector(
     setFormMachineRef,
-    (state) => state.context.set.load
+    (state) => state.context.set.rir
   );
 
   return (
     <NumberInputFormContent
-      testId={`tracker-set-form-load-${setFormMachineRef.id}`}
+      testId={`tracker-set-form-rir-${setFormMachineRef.id}`}
       handleOnGoBack={handleGoBack}
-      defaultValue={defaultLoad}
+      defaultValue={defaultRir}
       handleOnSubmit={handleGoNext}
     />
   );
 }
 
-export default function CreateSetLoadFormScreen() {
-  const { sessionTrackerId, exerciseId } = useLocalSearchParams<"/(tabs)/tracker/[sessionTrackerId]/[exerciseId]/load">();
+export default function CreateSetRepRirFormScreen() {
+  const { sessionTrackerId, exerciseId } = useLocalSearchParams<"/(tabs)/tracker/[sessionTrackerId]/[exerciseId]/rir">();
   const setFormMachineRef = useSetFormMachine({
     exerciseId, sessionTrackerId
   })
 
   if (setFormMachineRef === undefined) {
-    return (<View>
-      <Text>Set form machine ref not found</Text>
-    </View>)
+    return (<View><Text>Could not found setFormMachineRef</Text></View>)
   }
-
 
   return <Content setFormMachineRef={setFormMachineRef} />
 };

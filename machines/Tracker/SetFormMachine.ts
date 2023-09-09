@@ -68,9 +68,9 @@ export const createSetFormMachine = ({ exerciseId, sessionTrackerId }: CreateSet
                         "USER_UPDATED_FIELD": {
                             actions: [
                                 "Assign set update to context",
-                                "Navigate to rep and rir form screen"
+                                "Navigate to rep form screen"
                             ],
-                            target: "Rep and rir step"
+                            target: "Rep step"
                         },
 
                         "USER_WENT_TO_PREVIOUS_SCREEN": {
@@ -79,18 +79,34 @@ export const createSetFormMachine = ({ exerciseId, sessionTrackerId }: CreateSet
                     }
                 },
 
-                "Rep and rir step": {
+                "Rep step": {
+                    on: {
+                        "USER_UPDATED_FIELD": {
+                            actions: [
+                                "Assign set update to context",
+                                "Navigate to rir form screen"
+                            ],
+                            target: "Rir step",
+                        },
+
+                        "USER_WENT_TO_PREVIOUS_SCREEN": {
+                            target: "Load step"
+                        }
+                    }
+                },
+
+                "Rir step": {
                     on: {
                         "USER_UPDATED_FIELD": {
                             actions: [
                                 "Assign set update to context",
                                 "Navigate to rest form screen"
                             ],
-                            target: "Rest step",
+                            target: "Rest step"
                         },
 
                         "USER_WENT_TO_PREVIOUS_SCREEN": {
-                            target: "Load step"
+                            target: "Rep step"
                         }
                     }
                 },
@@ -103,7 +119,7 @@ export const createSetFormMachine = ({ exerciseId, sessionTrackerId }: CreateSet
                         },
 
                         "USER_WENT_TO_PREVIOUS_SCREEN": {
-                            target: "Rep and rir step"
+                            target: "Rir step"
                         }
                     }
                 },
@@ -120,9 +136,20 @@ export const createSetFormMachine = ({ exerciseId, sessionTrackerId }: CreateSet
         },
         {
             actions: {
-                "Navigate to rep and rir form screen": ({ exerciseId, sessionTrackerId }) => {
+                "Navigate to rir form screen": ({ exerciseId, sessionTrackerId }) => {
                     router.push({
-                        pathname: "/(tabs)/tracker/[sessionTrackerId]/[exerciseId]/repRir",
+                        pathname: "/(tabs)/tracker/[sessionTrackerId]/[exerciseId]/rir",
+                        params: {
+                            exerciseId,
+                            sessionTrackerId
+                        }
+
+                    })
+                },
+
+                "Navigate to rep form screen": ({ exerciseId, sessionTrackerId }) => {
+                    router.push({
+                        pathname: "/(tabs)/tracker/[sessionTrackerId]/[exerciseId]/rep",
                         params: {
                             exerciseId,
                             sessionTrackerId
