@@ -1,6 +1,6 @@
 import { ExerciseFormRestContent } from "@/components/ExerciseRestForm";
 import { useExerciseFormActor } from "@/hooks/useExerciseFormActor";
-import { ExerciseRest } from "@/types";
+import { Seconds } from "@/types";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { View } from "react-native";
@@ -15,7 +15,7 @@ export default function CreateExerciseRestScreen() {
     return <View testID="exercise-creation-form-rest-default" />;
   }
 
-  const handleGoNext = (rest: ExerciseRest) => {
+  const handleGoNext = (rest: Seconds) => {
     exerciseFormActor.send({
       type: "SET_EXERCISE_REST_AND_GO_NEXT",
       rest,
@@ -32,7 +32,7 @@ export default function CreateExerciseRestScreen() {
     <ExerciseFormRestContent
       testId={`exercise-creation-form-rest-${exerciseFormActor.id}`}
       handleOnGoBack={handleGoBack}
-      handleOnSubmit={handleGoNext}
+      handleOnSubmit={({ value }) => handleGoNext(value)}
     />
   );
 };

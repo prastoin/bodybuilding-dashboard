@@ -1,4 +1,4 @@
-import { Program } from "@/types";
+import { Program, SessionTracker } from "@/types";
 import { faker } from "@faker-js/faker";
 import {
   fireEvent,
@@ -19,7 +19,7 @@ export const renderApp = () => {
 };
 
 export const getRandomMinuteSecondDuration = () =>
-  faker.datatype.number({
+  faker.number.int({
     min: 0,
     max: 59,
   });
@@ -36,63 +36,45 @@ export const getBodyBuildingProgram = (): Program => {
         exerciseList: [
           {
             uuid: uuidv4(),
-            name: faker.name.jobTitle(),
-            repCounter: faker.datatype.number({
+            name: faker.person.jobTitle(),
+            rep: faker.number.int({
               max: 20,
               min: 1,
             }),
-            setCounter: faker.datatype.number({
+            set: faker.number.int({
               max: 10,
               min: 1,
             }),
-            load: {
-              unit: "kg",
-              value: 42,
-            },
-            rest: {
-              minute: getRandomMinuteSecondDuration(),
-              second: getRandomMinuteSecondDuration(),
-            },
+            load: 42,
+            rest: getRandomMinuteSecondDuration(),
           },
           {
             uuid: uuidv4(),
-            name: faker.name.jobTitle(),
-            repCounter: faker.datatype.number({
+            name: faker.person.jobTitle(),
+            rep: faker.number.int({
               max: 20,
               min: 1,
             }),
-            setCounter: faker.datatype.number({
+            set: faker.number.int({
               max: 10,
               min: 1,
             }),
-            load: {
-              unit: "kg",
-              value: 42,
-            },
-            rest: {
-              minute: getRandomMinuteSecondDuration(),
-              second: getRandomMinuteSecondDuration(),
-            },
+            load: 42,
+            rest: getRandomMinuteSecondDuration(),
           },
           {
             uuid: uuidv4(),
-            name: faker.name.jobTitle(),
-            repCounter: faker.datatype.number({
+            name: faker.person.jobTitle(),
+            rep: faker.number.int({
               max: 20,
               min: 1,
             }),
-            setCounter: faker.datatype.number({
+            set: faker.number.int({
               max: 10,
               min: 1,
             }),
-            load: {
-              unit: "kg",
-              value: 42,
-            },
-            rest: {
-              minute: getRandomMinuteSecondDuration(),
-              second: getRandomMinuteSecondDuration(),
-            },
+            load: 42,
+            rest: getRandomMinuteSecondDuration(),
           },
         ],
       },
@@ -102,43 +84,31 @@ export const getBodyBuildingProgram = (): Program => {
         exerciseList: [
           {
             uuid: uuidv4(),
-            name: faker.name.jobTitle(),
-            repCounter: faker.datatype.number({
+            name: faker.person.jobTitle(),
+            rep: faker.number.int({
               max: 20,
               min: 1,
             }),
-            setCounter: faker.datatype.number({
+            set: faker.number.int({
               max: 10,
               min: 1,
             }),
-            load: {
-              unit: "kg",
-              value: 42,
-            },
-            rest: {
-              minute: getRandomMinuteSecondDuration(),
-              second: getRandomMinuteSecondDuration(),
-            },
+            load: 42,
+            rest: getRandomMinuteSecondDuration(),
           },
           {
             uuid: uuidv4(),
-            name: faker.name.jobTitle(),
-            repCounter: faker.datatype.number({
+            name: faker.person.jobTitle(),
+            rep: faker.number.int({
               max: 20,
               min: 1,
             }),
-            setCounter: faker.datatype.number({
+            set: faker.number.int({
               max: 10,
               min: 1,
             }),
-            load: {
-              unit: "kg",
-              value: 42,
-            },
-            rest: {
-              minute: getRandomMinuteSecondDuration(),
-              second: getRandomMinuteSecondDuration(),
-            },
+            load: 42,
+            rest: getRandomMinuteSecondDuration(),
           },
         ],
       },
@@ -272,6 +242,16 @@ export async function userNavigatesBackFromHeaderBackButton(
     invariant(goBackButton !== undefined, "gobackButton is undefined");
     fireEvent.press(goBackButton);
   });
+}
+
+export function getSessionTracker(): SessionTracker {
+  return {
+    createdOn: faker.number.int(),
+    exerciseTrackerList: [],
+    name: faker.word.words(2),
+    sessionId: faker.string.uuid(),
+    uuid: faker.string.uuid()
+  }
 }
 
 ///

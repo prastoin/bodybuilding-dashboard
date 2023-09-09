@@ -20,7 +20,7 @@ interface ExerciseCardProps {
 const ExerciseCard: React.FC<ExerciseCardProps> = ({ exerciseTracker: { expectedMetrics, name, setList }, addNewSetOnPress }) => {
     return <View>
         <Text>{name}</Text>
-        <Text>{expectedMetrics.repCounter}x{expectedMetrics.setCounter}</Text>
+        <Text>{expectedMetrics.set}x{expectedMetrics.rep}</Text>
         <FlatList<SetTracker>
             renderItem={({ item }) => <SetInformation setTracker={item} />}
             data={setList}

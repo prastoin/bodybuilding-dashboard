@@ -8,7 +8,7 @@ import {
   DoneInvokeEvent
 } from "xstate";
 import { sendParent } from "xstate/lib/actions";
-import { Exercise, ExerciseLoad, ExerciseRest } from "../types";
+import { Exercise, Kilograms, Seconds } from "../types";
 
 export type ExerciseFormMachineEvents =
   | {
@@ -18,16 +18,16 @@ export type ExerciseFormMachineEvents =
   | { type: "USER_WENT_TO_PREVIOUS_SCREEN" }
   | {
     type: "SET_EXERCISE_SET_AND_REP_AND_GO_NEXT";
-    setCounter: number;
-    repCounter: number;
+    set: number;
+    rep: number;
   }
   | {
     type: "SET_EXERCISE_LOAD_AND_GO_NEXT";
-    load: ExerciseLoad;
+    load: Kilograms;
   }
   | {
     type: "SET_EXERCISE_REST_AND_GO_NEXT";
-    rest: ExerciseRest;
+    rest: Seconds;
   };
 
 export type ExerciseFormMachineContext = Exercise & {
@@ -61,17 +61,11 @@ export const createExerciseFormMachine = (
       tsTypes: {} as import("./ExerciseFormMachine.typegen").Typegen0,
       context: {
         name: "",
-        repCounter: 0,
-        setCounter: 0,
+        rep: 0,
+        set: 0,
         uuid: uuid || uuidv4(),
-        load: {
-          unit: "kg",
-          value: 0,
-        },
-        rest: {
-          minute: 0,
-          second: 0,
-        },
+        load: 0,
+        rest: 0,
         skipNameStep: !!skipNameStep
       },
       initial: "Idle",
@@ -171,8 +165,8 @@ export const createExerciseFormMachine = (
         }),
 
         "Assign exercise set and rep to context": assign({
-          repCounter: (_context, { repCounter }) => repCounter,
-          setCounter: (_context, { setCounter }) => setCounter
+          rep: (_context, { rep }) => rep,
+          set: (_context, { set }) => set
         }),
 
         "Assign exercise load to context": assign({

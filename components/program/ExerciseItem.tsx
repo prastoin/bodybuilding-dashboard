@@ -16,7 +16,7 @@ export const SessionExerciseItem: React.FC<
     exerciseActorRef
   );
 
-  const { name, uuid, repCounter, setCounter, load, rest } =
+  const { name, uuid, rep, set, load, rest } =
     exerciseMachineState.context;
 
   const removeExerciseOnPress = () => sendToExerciseMachine({
@@ -67,7 +67,7 @@ export const SessionExerciseItem: React.FC<
 
         <View testID="exercise-set-and-rep" className="flex-row">
           <Text>
-            {setCounter}X{repCounter}
+            {set}X{rep}
           </Text>
 
           <AntDesign
@@ -81,7 +81,7 @@ export const SessionExerciseItem: React.FC<
 
         <View testID="exercise-load" className="flex-row">
           <Text>
-            {load.value}_{load.unit}
+            {load}_KG
           </Text>
 
           <AntDesign
@@ -94,8 +94,7 @@ export const SessionExerciseItem: React.FC<
         </View>
 
         <View testID="exercise-rest" className="flex-row">
-          <Text>{rest.minute} min</Text>
-          <Text>{rest.second} sec</Text>
+          <Text>{rest} seconds</Text>
 
           <AntDesign
             name="edit"

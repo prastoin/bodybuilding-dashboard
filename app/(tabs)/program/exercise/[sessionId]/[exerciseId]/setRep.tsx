@@ -17,17 +17,17 @@ export default function EditExerciseSetRepScreen() {
   }
 
   const handleGoNext = ({
-    repCounter,
-    setCounter,
+    rep,
+    set,
   }: {
-    setCounter: number;
-    repCounter: number;
+    set: number;
+    rep: number;
   }) => {
     exerciseActorRef.send({
       type: "USER_FINISHED_UPDATING_FIELD",
       update: {
-        repCounter,
-        setCounter
+        rep,
+        set
       }
     });
   };
@@ -38,21 +38,21 @@ export default function EditExerciseSetRepScreen() {
     });
   };
 
-  const defaultRepCounter = useSelector(
+  const defaultRep = useSelector(
     exerciseActorRef,
-    (state) => state.context.repCounter
+    (state) => state.context.rep
   );
-  const defaultSetCounter = useSelector(
+  const defaultSet = useSelector(
     exerciseActorRef,
-    (state) => state.context.setCounter
+    (state) => state.context.set
   );
 
   return (
     <ExerciseFormSetAndRepContent
       testId={`exercise-editor-form-set-and-rep-${exerciseActorRef.id}`}
       handleOnGoBack={handleGoBack}
-      defaultRepCounter={defaultRepCounter}
-      defaultSetCounter={defaultSetCounter}
+      defaultRep={defaultRep}
+      defaultSet={defaultSet}
       handleOnSubmit={handleGoNext}
     />
   );

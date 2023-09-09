@@ -6,16 +6,16 @@ import { Button, Text, View } from "react-native";
 import AppScreen from "./AppScreen";
 
 export interface ExerciseSetAndRepFormFieldValues {
-  setCounter: number;
-  repCounter: number;
+  set: number;
+  rep: number;
 }
 
 interface ExerciseSetAndRepFormContentProps {
   handleOnSubmit: SubmitHandler<ExerciseSetAndRepFormFieldValues>;
   handleOnGoBack: () => void;
   testId: string;
-  defaultSetCounter?: number;
-  defaultRepCounter?: number;
+  defaultSet?: number;
+  defaultRep?: number;
 }
 
 export const ExerciseFormSetAndRepContent: React.FC<
@@ -24,8 +24,8 @@ export const ExerciseFormSetAndRepContent: React.FC<
   handleOnSubmit,
   handleOnGoBack,
   testId,
-  defaultRepCounter,
-  defaultSetCounter,
+  defaultRep,
+  defaultSet,
 }) => {
     const {
       control,
@@ -33,8 +33,8 @@ export const ExerciseFormSetAndRepContent: React.FC<
       formState: { errors },
     } = useForm<ExerciseSetAndRepFormFieldValues>({
       defaultValues: {
-        repCounter: defaultRepCounter === undefined ? 0 : defaultRepCounter,
-        setCounter: defaultSetCounter === undefined ? 0 : defaultSetCounter,
+        rep: defaultRep === undefined ? 0 : defaultRep,
+        set: defaultSet === undefined ? 0 : defaultSet,
       },
     });
 
@@ -73,9 +73,9 @@ export const ExerciseFormSetAndRepContent: React.FC<
                   <Picker.Item label="10" value={10} />
                 </Picker>
               )}
-              name="setCounter"
+              name="set"
             />
-            {errors.setCounter && (
+            {errors.set && (
               <Text className="text-red-500" accessibilityRole="alert">
                 A set number must be set.
               </Text>
@@ -123,10 +123,10 @@ export const ExerciseFormSetAndRepContent: React.FC<
                   <Picker.Item label="20" value={20} />
                 </Picker>
               )}
-              name="repCounter"
+              name="rep"
             />
           </>
-          {errors.repCounter && (
+          {errors.rep && (
             <Text className="text-red-500" accessibilityRole="alert">
               A repetition number must be set.
             </Text>

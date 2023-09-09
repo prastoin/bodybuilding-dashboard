@@ -1,18 +1,19 @@
 import { useBeforeRemove } from "@/hooks/useBeforeRemove";
-import { ExerciseRest } from "@/types";
-import { Picker } from "@react-native-picker/picker";
+import { Seconds } from "@/types";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Button, Text, View } from "react-native";
+import { Button, Text, TextInput, View } from "react-native";
 import AppScreen from "./AppScreen";
 
-export interface ExerciseRestFormFieldValues extends ExerciseRest { }
+export interface ExerciseRestFormFieldValues {
+  value: Seconds
+}
 
 interface ExerciseRestFormContentProps {
   handleOnSubmit: SubmitHandler<ExerciseRestFormFieldValues>;
   handleOnGoBack: () => void;
   testId: string;
-  defaultRest?: ExerciseRest;
+  defaultRest?: Seconds;
 }
 
 export const ExerciseFormRestContent: React.FC<
@@ -23,22 +24,15 @@ export const ExerciseFormRestContent: React.FC<
     handleSubmit,
     formState: { errors },
   } = useForm<ExerciseRestFormFieldValues>({
-    defaultValues:
-      defaultRest !== undefined
-        ? defaultRest
-        : {
-          minute: 0,
-          second: 0,
-        },
+    defaultValues: {
+      value:
+        defaultRest !== undefined
+          ? defaultRest
+          : 0,
+    }
   });
 
   useBeforeRemove(() => handleOnGoBack())
-
-  const getDurationPickerItems = () => {
-    return Array.from({ length: 60 }).map((_v, index) => (
-      <Picker.Item label={`${index}`} value={index} />
-    ));
-  };
 
   return (
     <AppScreen testID={testId}>
@@ -48,49 +42,22 @@ export const ExerciseFormRestContent: React.FC<
           rules={{
             required: true,
             min: 0,
-            max: 59,
           }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <Picker
+            <TextInput
               testID={`rest-minute-${value}`}
-              selectedValue={value}
-              onValueChange={onChange}
+              value={`${value}`}
               onBlur={onBlur}
-            >
-              {getDurationPickerItems()}
-            </Picker>
+              onChangeText={onChange}
+              placeholder="Rest"
+              keyboardType="numeric"
+            />
           )}
-          name="minute"
+          name="value"
         />
-        {errors.minute && (
+        {errors.value && (
           <Text className="text-red-500" accessibilityRole="alert">
-            An unknown error occured with your minute duration.
-          </Text>
-        )}
-      </View>
-      <View>
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-            min: 0,
-            max: 60,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Picker
-              testID={`rest-second-${value}`}
-              selectedValue={value}
-              onValueChange={onChange}
-              onBlur={onBlur}
-            >
-              {getDurationPickerItems()}
-            </Picker>
-          )}
-          name="second"
-        />
-        {errors.second && (
-          <Text className="text-red-500" accessibilityRole="alert">
-            An unknown error occured with your second duration.
+            Please enter a valid input
           </Text>
         )}
       </View>

@@ -1,6 +1,6 @@
 import { ExerciseFormRestContent } from "@/components/ExerciseRestForm";
 import { useExerciseActorRef } from "@/hooks/useExerciseActorRef";
-import { ExerciseRest } from "@/types";
+import { Seconds } from "@/types";
 import { useSelector } from "@xstate/react";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
@@ -17,7 +17,7 @@ export default function EditExerciseRestScreen() {
     return <View testID="exercise-editor-form-rest-default" />;
   }
 
-  const handleGoNext = (rest: ExerciseRest) => {
+  const handleGoNext = (rest: Seconds) => {
     exerciseActorRef.send({
       type: "USER_FINISHED_UPDATING_FIELD",
       update: {
@@ -42,7 +42,7 @@ export default function EditExerciseRestScreen() {
       testId={`exercise-editor-form-rest-${exerciseActorRef.id}`}
       handleOnGoBack={handleGoBack}
       defaultRest={defaultRest}
-      handleOnSubmit={handleGoNext}
+      handleOnSubmit={({ value }) => handleGoNext(value)}
     />
   );
 };
