@@ -106,7 +106,7 @@ test("User can edit an exercise set and rep fields", async () => {
     firstTrainingSessionFirstExerciseContainer
   ).findByTestId("exercise-set-and-rep");
   await within(setAndRepContainer).findByText(
-    new RegExp(`${exercise.setCounter}.*${exercise.repCounter}`)
+    new RegExp(`${exercise.set}.*${exercise.rep}`)
   );
 
   const editExerciseSetAndRepButton = await within(
@@ -119,42 +119,42 @@ test("User can edit an exercise set and rep fields", async () => {
     `exercise-editor-form-set-and-rep-${exerciseId}`
   );
 
-  const newSetCounterValue = faker.datatype.number({
+  const newsetValue = faker.datatype.number({
     min: 1,
     max: 10,
   });
-  const setCounterPicker = await within(
+  const setPicker = await within(
     exerciseSetAndRepEditorScreen
-  ).findByTestId(`set-counter-${exercise.setCounter}`);
+  ).findByTestId(`set-counter-${exercise.set}`);
 
-  fireEvent(setCounterPicker, "focus");
-  fireEvent(setCounterPicker, "onValueChange", {
+  fireEvent(setPicker, "focus");
+  fireEvent(setPicker, "onValueChange", {
     target: {
-      value: newSetCounterValue,
+      value: newsetValue,
     },
   });
 
   await within(exerciseSetAndRepEditorScreen).findByTestId(
-    `set-counter-${newSetCounterValue}`
+    `set-counter-${newsetValue}`
   );
 
-  const newRepCounterValue = faker.datatype.number({
+  const newrepValue = faker.datatype.number({
     min: 1,
     max: 20,
   });
-  const repCounterPicker = await within(
+  const repPicker = await within(
     exerciseSetAndRepEditorScreen
-  ).findByTestId(`rep-counter-${exercise.repCounter}`);
+  ).findByTestId(`rep-counter-${exercise.rep}`);
 
-  fireEvent(repCounterPicker, "focus");
-  fireEvent(repCounterPicker, "onValueChange", {
+  fireEvent(repPicker, "focus");
+  fireEvent(repPicker, "onValueChange", {
     target: {
-      value: newRepCounterValue,
+      value: newrepValue,
     },
   });
 
   await within(exerciseSetAndRepEditorScreen).findByTestId(
-    `rep-counter-${newRepCounterValue}`
+    `rep-counter-${newrepValue}`
   );
 
   const submitButton = await within(exerciseSetAndRepEditorScreen).findByText(
@@ -172,7 +172,7 @@ test("User can edit an exercise set and rep fields", async () => {
     firstTrainingSessionFirstExerciseContainer
   ).findByTestId("exercise-set-and-rep");
   await within(setAndRepContainer).findByText(
-    new RegExp(`${newSetCounterValue}.*${newRepCounterValue}`)
+    new RegExp(`${newsetValue}.*${newrepValue}`)
   );
 });
 
@@ -209,7 +209,7 @@ test("User can edit an exercise load field", async () => {
     firstTrainingSessionFirstExerciseContainer
   ).findByTestId(`exercise-load`);
   await within(loadContainer).findByText(
-    new RegExp(`${exercise.load.value}.*${exercise.load.unit}`)
+    new RegExp(`${exercise.load}.*KG`)
   );
 
   const editLoadButton = await within(
@@ -222,29 +222,17 @@ test("User can edit an exercise load field", async () => {
     `exercise-editor-form-load-${exerciseId}`
   );
 
-  const laodValueTextInput = await within(
+  const loadValueTextInput = await within(
     loadEditorScreenContainer
   ).findByPlaceholderText("Load");
   const newLoad = faker.datatype.number({
     min: 1,
     max: 1000,
   });
-  expect(laodValueTextInput.props.value).toBe(`${exercise.load.value}`);
+  expect(loadValueTextInput.props.value).toBe(`${exercise.load}`);
 
-  fireEvent(laodValueTextInput, "focus");
-  fireEvent.changeText(laodValueTextInput, newLoad);
-
-  const unitPicker = await within(loadEditorScreenContainer).findByTestId(
-    `load-unit-${exercise.load.unit}`
-  );
-  const newUnit = LoadUnit.Values.lbs;
-  fireEvent(unitPicker, "focus");
-  fireEvent(unitPicker, "onValueChange", {
-    target: {
-      value: newUnit,
-    },
-  });
-  await within(loadEditorScreenContainer).findByTestId(`load-unit-${newUnit}`);
+  fireEvent(loadValueTextInput, "focus");
+  fireEvent.changeText(loadValueTextInput, newLoad);
 
   const submitButton = await within(loadEditorScreenContainer).findByText(
     /submit/i
@@ -259,7 +247,7 @@ test("User can edit an exercise load field", async () => {
   loadContainer = await within(
     firstTrainingSessionFirstExerciseContainer
   ).findByTestId(`exercise-load`);
-  await within(loadContainer).findByText(new RegExp(`${newLoad}.*${newUnit}`));
+  await within(loadContainer).findByText(new RegExp(`${newLoad}.*KG`));
 });
 
 test("User can edit an exercise rest field", async () => {
@@ -295,10 +283,7 @@ test("User can edit an exercise rest field", async () => {
     firstTrainingSessionFirstExerciseContainer
   ).findByTestId(`exercise-rest`);
   await within(restContainer).findByText(
-    new RegExp(`${exercise.rest.minute}.*min`)
-  );
-  await within(restContainer).findByText(
-    new RegExp(`${exercise.rest.second}.*sec`)
+    new RegExp(`${exercise.rest}.*seconds`)
   );
 
   const editRestButton = await within(
@@ -311,33 +296,15 @@ test("User can edit an exercise rest field", async () => {
     `exercise-editor-form-rest-${exerciseId}`
   );
 
-  const minuteRestPicker = await within(restEditorScreenContainer).findByTestId(
-    `rest-minute-${exercise.rest.minute}`
+  const minuteRestInput = await within(restEditorScreenContainer).findByTestId(
+    `rest-minute-${exercise.rest}`
   );
   const newMinuteValue = faker.datatype.number({
     min: 0,
     max: 60,
   });
-  fireEvent(minuteRestPicker, "focus");
-  fireEvent(minuteRestPicker, "onValueChange", {
-    target: {
-      value: newMinuteValue,
-    },
-  });
-
-  const secondRestPicker = await within(restEditorScreenContainer).findByTestId(
-    `rest-second-${exercise.rest.second}`
-  );
-  const newSecondValue = faker.datatype.number({
-    min: 0,
-    max: 60,
-  });
-  fireEvent(secondRestPicker, "focus");
-  fireEvent(secondRestPicker, "onValueChange", {
-    target: {
-      value: newSecondValue,
-    },
-  });
+  fireEvent(minuteRestInput, "focus");
+  fireEvent.changeText(minuteRestInput, newMinuteValue);
 
   const submitButton = await within(restEditorScreenContainer).findByText(
     /Submit/i
@@ -346,6 +313,5 @@ test("User can edit an exercise rest field", async () => {
 
   await screen.findByTestId("program-builder-screen-container");
 
-  await within(restContainer).findByText(new RegExp(`${newMinuteValue}.*min`));
-  await within(restContainer).findByText(new RegExp(`${newSecondValue}.*sec`));
+  await within(restContainer).findByText(new RegExp(`${newMinuteValue}.*seconds`));
 });

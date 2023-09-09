@@ -13,9 +13,8 @@ import {
   userNavigatesBackFromHeaderBackButton, within
 } from "../tests/test.utils";
 import {
-  ExerciseLoad,
-  ExerciseRest,
-  LoadUnit, Program, RetrieveUserProgramResponseBody, SERVER_ENDPOINT
+  Kilograms,
+  LoadUnit, Program, RetrieveUserProgramResponseBody, Seconds, SERVER_ENDPOINT
 } from "../types";
 
 const programBuilderTestMachine = createMachine({
@@ -153,9 +152,7 @@ const programBuilderTestMachine = createMachine({
           const loadInputValue = await within(
             visibleContainer
           ).findByPlaceholderText(/Load/i);
-          expect(loadInputValue.props.value).toBe(`${load.value}`);
-
-          await within(visibleContainer).findByTestId(`load-unit-${load.unit}`);
+          expect(loadInputValue.props.value).toBe(`${load}`);
         },
       },
 
@@ -210,10 +207,7 @@ const programBuilderTestMachine = createMachine({
           );
 
           await within(visibleContainer).findByTestId(
-            `rest-second-${rest.second}`
-          );
-          await within(visibleContainer).findByTestId(
-            `rest-minute-${rest.minute}`
+            `rest-minute-${rest}`
           );
         },
       },
@@ -258,8 +252,8 @@ interface TestingContext {
   createdExerciseName: string;
   createdExerciseSetCounter: number;
   createdExerciseRepCounter: number;
-  load: ExerciseLoad;
-  rest: ExerciseRest;
+  load: Kilograms;
+  rest: Seconds;
 }
 
 const programBuilderTestModel = createModel<TestingContext>(
@@ -410,7 +404,7 @@ const programBuilderTestModel = createModel<TestingContext>(
       );
 
       const newLoadValue = 0;
-      context.load.value = newLoadValue;
+      context.load = newLoadValue;
 
       const loadValueInput = await within(
         visibleScreenContainer
@@ -433,31 +427,17 @@ const programBuilderTestModel = createModel<TestingContext>(
         /exercise-creation-form-load-.*/i
       );
 
-      const newLoadUnit = LoadUnit.Values.lbs;
       const newLoadValue = faker.datatype.number({
         min: 1,
         max: 1000,
       });
-      context.load = {
-        unit: newLoadUnit,
-        value: newLoadValue,
-      };
+      context.load = newLoadValue;
 
       const loadValueInput = await within(
         visibleScreenContainer
       ).findByPlaceholderText(/Load/);
       fireEvent(loadValueInput, "focus");
       fireEvent.changeText(loadValueInput, newLoadValue);
-
-      const loadUnitPicker = await within(visibleScreenContainer).findByTestId(
-        /load-unit-.*/
-      );
-      fireEvent(loadUnitPicker, "focus");
-      fireEvent(loadUnitPicker, "onValueChange", {
-        target: {
-          value: newLoadUnit,
-        },
-      });
 
       const submitButton = await within(visibleScreenContainer).findByText(
         /submit/i
@@ -475,36 +455,18 @@ const programBuilderTestModel = createModel<TestingContext>(
       );
 
       const newMinuteValue = getRandomMinuteSecondDuration();
-      const restMinuePicker = await within(visibleScreenContainer).findByTestId(
+      const restInputText = await within(visibleScreenContainer).findByTestId(
         /rest-minute-.*/
       );
-      fireEvent(restMinuePicker, "focus");
-      fireEvent(restMinuePicker, "onValueChange", {
-        target: {
-          value: newMinuteValue,
-        },
-      });
-
-      const newSecondValue = getRandomMinuteSecondDuration();
-      const restSecondPicker = await within(
-        visibleScreenContainer
-      ).findByTestId(/rest-second-.*/);
-      fireEvent(restSecondPicker, "focus");
-      fireEvent(restSecondPicker, "onValueChange", {
-        target: {
-          value: newSecondValue,
-        },
-      });
+      fireEvent(restInputText, "focus");
+      fireEvent.changeText(restInputText, newMinuteValue);
 
       const submitButton = await within(visibleScreenContainer).findByText(
         /submit/i
       );
       fireEvent.press(submitButton);
 
-      context.rest = {
-        minute: newMinuteValue,
-        second: newSecondValue,
-      };
+      context.rest = newMinuteValue;
     },
   },
 
@@ -556,14 +518,8 @@ describe("Xstate tests generations", () => {
             createdExerciseName: "",
             createdExerciseRepCounter: 0,
             createdExerciseSetCounter: 0,
-            load: {
-              unit: "kg",
-              value: 0,
-            },
-            rest: {
-              minute: 0,
-              second: 0,
-            },
+            load: 0,
+            rest: 0,
           });
         }, 10_000);
       });
