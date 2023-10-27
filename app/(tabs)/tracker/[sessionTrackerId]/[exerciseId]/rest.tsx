@@ -1,8 +1,9 @@
 import { NumberInputFormContent, NumberInputFormValues } from "@/components/set/NumberInputContent";
+import { StackHeaderTitle } from "@/components/set/StackHeaderTitle";
 import { useSetFormMachine } from "@/hooks/useTrackerHooks";
 import { SetFormActorRef } from "@/machines/Tracker/SetFormMachine";
 import { useSelector } from "@xstate/react";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import React from "react";
 import { Text, View } from "react-native";
 
@@ -31,12 +32,15 @@ const Content: React.FC<ContentProps> = ({ setFormMachineRef }) => {
   };
 
   return (
-    <NumberInputFormContent
-      testId={`tracker-set-form-rest-${setFormMachineRef.id}`}
-      handleOnGoBack={handleGoBack}
-      defaultValue={defaultRest}
-      handleOnSubmit={handleGoNext}
-    />)
+    <StackHeaderTitle field="rest" setFormMachineRef={setFormMachineRef}>
+      <NumberInputFormContent
+        placeholder="rest"
+        testId={`tracker-set-form-rest-${setFormMachineRef.id}`}
+        handleOnGoBack={handleGoBack}
+        defaultValue={defaultRest}
+        handleOnSubmit={handleGoNext}
+      />
+    </StackHeaderTitle >)
 }
 
 export default function CreateSetRestFormScreen() {
