@@ -20,10 +20,12 @@ export type SetFormMachineEvents =
     | UserUpdatedFieldEvent
 
 
+export type SetFormFields = keyof Omit<SetTracker, "index">
 export type SetFormMachineContext = {
     set: Omit<SetTracker, "index">
     sessionTrackerId: string,
-    exerciseId: string
+    exerciseId: string,
+    name: string,
 }
 
 export type SetFormActorRef = ActorRefFrom<
@@ -33,8 +35,8 @@ export type SetFormActorRef = ActorRefFrom<
 export type SetFormDoneInvokeEvent =
     DoneInvokeEvent<SetFormMachineContext["set"]>;
 
-type CreateSetFormMachineArgs = Pick<SetFormMachineContext, "exerciseId" | "sessionTrackerId">
-export const createSetFormMachine = ({ exerciseId, sessionTrackerId }: CreateSetFormMachineArgs) =>
+type CreateSetFormMachineArgs = Pick<SetFormMachineContext, "exerciseId" | "sessionTrackerId" | "name">
+export const createSetFormMachine = ({ exerciseId, sessionTrackerId, name }: CreateSetFormMachineArgs) =>
     createMachine(
         {
             predictableActionArguments: true,
@@ -51,7 +53,8 @@ export const createSetFormMachine = ({ exerciseId, sessionTrackerId }: CreateSet
                     load: 0,
                     rest: 0,
                     rir: 0,
-                }
+                },
+                name
             },
             id: "machine",
             initial: "Idle",

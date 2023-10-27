@@ -75,12 +75,13 @@ export const createExerciseTrackerMachine = ({ sessionTrackerId, exerciseTracker
                     invoke: {
                         id: "SetFormMachine",
 
-                        src: ({ exerciseId }, event) => {
+                        src: ({ exerciseId, name }, event) => {
                             invariant(event.type === 'ADD_NEW_SET', "Should never occurs manual type checking");
 
                             return createSetFormMachine({
                                 exerciseId,
-                                sessionTrackerId
+                                sessionTrackerId,
+                                name
                             });
                         },
 
