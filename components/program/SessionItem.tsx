@@ -46,7 +46,7 @@ export const SessionItem: React.FC<SessionProps> = ({
 
   // Should not have onPress on text elements not accessible
   return (
-    <Card testID={`training-session-container-${uuid}`}>
+    <View className="max-w-sm  my-6 rounded" testID={`training-session-container-${uuid}`}>
       <View className="flex-row justify-between items-center">
         <Text
           className="font-bold text-xl mb-2"
@@ -79,6 +79,6 @@ export const SessionItem: React.FC<SessionProps> = ({
           testID={`add-exercise-button-${uuid}`}
           onPress={addExerciseOnPress} />
       </View>
-    </Card>
+    </View>
   );
 };
