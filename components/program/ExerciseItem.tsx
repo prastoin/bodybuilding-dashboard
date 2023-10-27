@@ -3,6 +3,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useActor } from "@xstate/react";
 import * as React from "react";
 import { Text, View } from "react-native";
+import { Card } from "../common/Card";
 
 interface ExerciseProps {
   exerciseActorRef: ExerciseActorRef;
@@ -40,8 +41,7 @@ export const SessionExerciseItem: React.FC<
   })
 
   return (
-    <View
-      className="flex-row"
+    <Card
       testID={`training-session-exercise-container-${uuid}`}
     >
       <View className="flex-row">
@@ -107,7 +107,6 @@ export const SessionExerciseItem: React.FC<
           testID={`remove-exercise-button-${uuid}`}
         />
       </View>
-
-    </View>
+    </Card>
   );
 };
