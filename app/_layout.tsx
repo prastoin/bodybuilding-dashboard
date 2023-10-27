@@ -55,7 +55,7 @@ function RootLayoutNav() {
       <AppContextProvider>
         <Stack initialRouteName='(tabs)'>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="pickerModal" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="pickerModal" options={{ presentation: 'modal', title: "Pick a session" }} />
         </Stack>
       </AppContextProvider>
     </ThemeProvider>

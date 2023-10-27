@@ -3,7 +3,7 @@ import { useAppContext } from "@/context/appContext";
 import { useBeforeRemove } from "@/hooks/useBeforeRemove";
 import { SessionMachineState, SessionMachineContext } from "@/machines/SessionMachine";
 import { fromSessionMachineContextToSession } from "@/machines/Tracker/utils";
-import { Session } from "@/types";
+import { AntDesign } from "@expo/vector-icons";
 import { useActor } from "@xstate/react";
 import { StatusBar } from "expo-status-bar";
 import { FlatList, Platform, Text, View } from "react-native";
@@ -13,12 +13,15 @@ interface SessionCardCtaProps {
     session: SessionMachineContext,
     onSessionCardPress: (session: SessionMachineContext) => void
 }
-const SessionCardCta: React.FC<SessionCardCtaProps> = ({ session, onSessionCardPress }) => <TouchableOpacity onPress={() => onSessionCardPress(session)}><Text>{session.name}</Text></TouchableOpacity>
+const YellowSessionCardCta: React.FC<SessionCardCtaProps> = ({ session, onSessionCardPress }) =>
+    <TouchableOpacity className="my-3 flex-row items-center justify-between bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300 border border-yellow-400" onPress={() => onSessionCardPress(session)}><Text className="font-bold">{session.name}</Text><AntDesign name="caretright" size={12} color="black" /></TouchableOpacity>
+const SessionCardCta: React.FC<SessionCardCtaProps> = ({ session, onSessionCardPress }) =>
+    <TouchableOpacity className="my-3 flex-row items-center justify-between bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 border border-blue-400" onPress={() => onSessionCardPress(session)}><Text className="font-bold">{session.name}</Text><AntDesign name="caretright" size={12} color="black" /></TouchableOpacity>
 
 export default function PickScreen() {
     const { trackerService, programService } = useAppContext();
     const [trackerState, sendToTrackerMachine] = useActor(trackerService)
-    const [programState, sendToProgramMachine] = useActor(programService)
+    const [programState] = useActor(programService)
     const { context: { sessionTrackerList } } = trackerState
     const { context: { sessionActorRefList } } = programState
 
@@ -41,19 +44,16 @@ export default function PickScreen() {
     const nextTrackedSession = sessionSnapshotList.length >= nextTrackedIndex ? sessionSnapshotList[nextTrackedIndex] : undefined;
 
     return (<AppScreen testID="picker-modal-screen-container">
-        <Text className="font-bold">
-            This is the picker modal !
-        </Text>
         {nextTrackedSession !== undefined && <View>
-            <Text>
-                Upcoming session ?:
+            <Text className="font-bold">
+                Detected upcoming session:
             </Text>
-            <SessionCardCta session={nextTrackedSession} onSessionCardPress={onSessionCardPress} />
+            <YellowSessionCardCta session={nextTrackedSession} onSessionCardPress={onSessionCardPress} />
         </View>}
         {/* Use a light status bar on iOS to account for the black space above the modal */}
-        <Text className="font-bold">All available sessions:</Text>
+        <Text className="font-bold">Others:</Text>
         <FlatList<SessionMachineContext>
-            data={sessionSnapshotList}
+            data={nextTrackedSession ? sessionSnapshotList.filter(session => session.uuid !== nextTrackedSession.uuid) : sessionSnapshotList}
             renderItem={({ item: session }) => <SessionCardCta session={session} onSessionCardPress={onSessionCardPress} />}
             keyExtractor={({ uuid }) => uuid} />
         <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />

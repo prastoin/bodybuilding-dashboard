@@ -1,4 +1,6 @@
 import AppScreen from "@/components/AppScreen";
+import { AddButton } from "@/components/common/AddButton";
+import { Card } from "@/components/common/Card";
 import { useSessionTrackerActorRef } from "@/hooks/useTrackerHooks";
 import { ExerciseTracker, SetTracker } from "@/types";
 import { useActor } from "@xstate/react";
@@ -7,9 +9,14 @@ import * as React from "react";
 import { FlatList, Text, View } from "react-native";
 import { BaseButton } from "react-native-gesture-handler";
 
-const SetInformation: React.FC<{ setTracker: SetTracker }> = ({ setTracker: { index, load, rep, rest, rir } }) => {
-    return (<View>
-        <Text>{index} - {load} | {rep} | {rir} | {rest}</Text>
+const SetInformation: React.FC<{ setTracker: SetTracker, index: number }> = ({ index, setTracker: { load, rep, rest, rir } }) => {
+    const even = index % 2 === 0
+    const backgroundColor = even ? 'bg-neutral-400' : ''
+    return (<View className={`flex-row ${backgroundColor} justify-evenly `}>
+        <Text>{load}</Text>
+        <Text>{rep}</Text>
+        <Text>{rir}</Text>
+        <Text>{rest}</Text>
     </View>)
 }
 
@@ -18,25 +25,31 @@ interface ExerciseCardProps {
     addNewSetOnPress: () => void
 }
 const ExerciseCard: React.FC<ExerciseCardProps> = ({ exerciseTracker: { expectedMetrics, name, setList }, addNewSetOnPress }) => {
-    return <View>
-        <Text>{name}</Text>
-        <Text>{expectedMetrics.set}x{expectedMetrics.rep}</Text>
-        <FlatList<SetTracker>
-            renderItem={({ item }) => <SetInformation setTracker={item} />}
-            data={setList}
-            keyExtractor={({ index }) => `exerciseId-${index}`} />
-        <BaseButton onPress={addNewSetOnPress}>
-            <Text>Create new set</Text>
-        </BaseButton>
-    </View>
+    return <Card>
+        <View className="flex-row">
+            <Text>{name}</Text>
+            <Text>{expectedMetrics.set}x{expectedMetrics.rep}</Text>
+        </View>
+
+        <View className="max-w-600 min-w-200">
+            <FlatList<SetTracker>
+                renderItem={({ item, index }) => <SetInformation setTracker={item} index={index} />}
+                data={setList}
+                keyExtractor={({ index }) => `exerciseId - ${index} `} />
+            <AddButton title="Add set" onPress={addNewSetOnPress} />
+        </View>
+    </Card >
 }
 
+// Might wanna use sectionList instead of flatList
 export default function ProgramScreen() {
     const { sessionTrackerId } = useLocalSearchParams<"/(tabs)/tracker/[sessionTrackerId]/">();
     const sessionTrackerRef = useSessionTrackerActorRef(sessionTrackerId)
 
     const [state, _send] = useActor(sessionTrackerRef);
     const { createdOn, name, exerciseTrackerActorList } = state.context
+
+    const formattedCreatedOn = new Date(createdOn).toLocaleDateString()
     // Could avoid useActor and use useSelector on specific content field
     const exerciseActorCollection = exerciseTrackerActorList.map((actorRef) => useActor(actorRef))
 
@@ -50,8 +63,8 @@ export default function ProgramScreen() {
                     headerTitle: name,
                 }}
             />
-            <Text>{name}</Text>
-            <Text>Created on: {createdOn}</Text>
+            <Text className="font-bold">{name}</Text>
+            <Text>Created on: {formattedCreatedOn}</Text>
             <FlatList
                 data={exerciseActorCollection}
                 extraData={exerciseTrackerActorList}
