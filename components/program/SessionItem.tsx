@@ -1,8 +1,12 @@
 import { ExerciseActorRef } from "@/machines/ExerciseMachine";
 import { SessionActorRef } from "@/machines/SessionMachine";
+import { FontAwesome } from "@expo/vector-icons";
 import { useActor } from "@xstate/react";
 import * as React from "react";
 import { Button, FlatList, Text, View } from "react-native";
+import { AddButton } from "../common/AddButton";
+import { Card } from "../common/Card";
+import { RemoveButton } from "../common/RemoveButton";
 import { SessionExerciseItem } from "./ExerciseItem";
 
 interface SessionProps {
@@ -40,17 +44,23 @@ export const SessionItem: React.FC<SessionProps> = ({
     });
   }
 
+  // Should not have onPress on text elements not accessible
   return (
-    <View
-      className="mb-1 p-1 flex-1 justify-center border-2 border-black"
-      testID={`training-session-container-${uuid}`}
-    >
-      <Text
-        className="font-bold pb-2 pl-3"
-        onPress={editSessionNameOnPress}
-      >
-        {name}
-      </Text>
+    <View className="max-w-sm  my-6 rounded" testID={`training-session-container-${uuid}`}>
+      <View className="flex-row justify-between items-center">
+        <Text
+          className="font-bold text-xl mb-2"
+          onPress={editSessionNameOnPress}
+        >
+          {name}
+        </Text>
+        <RemoveButton
+          title="Remove"
+          testID={`remove-training-session-button-${uuid}`}
+          onPress={removeSessionOnPress}
+        />
+      </View>
+
 
       <View>
         <FlatList<ExerciseActorRef>
@@ -64,16 +74,10 @@ export const SessionItem: React.FC<SessionProps> = ({
           keyExtractor={({ id }) => id}
         ></FlatList>
 
-        <Button
+        <AddButton
           title="Add exercise"
           testID={`add-exercise-button-${uuid}`}
-          onPress={addExerciseOnPress}
-        />
-        <Button
-          title="Remove training session"
-          testID={`remove-training-session-button-${uuid}`}
-          onPress={removeSessionOnPress}
-        />
+          onPress={addExerciseOnPress} />
       </View>
     </View>
   );

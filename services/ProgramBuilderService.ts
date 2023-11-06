@@ -1,3 +1,4 @@
+import { myStaticProgram } from "@/data";
 import { faker } from "@faker-js/faker";
 import redaxios from "redaxios";
 import {
@@ -159,13 +160,14 @@ function getSessionTracker(): SessionTracker {
 }
 
 export async function sendRetrieveUserBodyBuildingProgram(): Promise<RetrieveUserProgramResponseBody> {
-  const response = await redaxios.post(`${SERVER_ENDPOINT}/retrieve-program`);
-  return RetrieveUserProgramResponseBody.parse(response.data);
+  // const response = await redaxios.post(`${SERVER_ENDPOINT}/retrieve-program`);
+  // return RetrieveUserProgramResponseBody.parse(response.data);
   // return getBodyBuildingProgram()
+  return myStaticProgram
 }
 
 export async function retrieveUserSessionTrackerHistory(): Promise<RetrieveUserSessionTrackerHistory> {
-  // return [getSessionTracker()];
-  const response = await redaxios.get(`${SERVER_ENDPOINT}/retrieve-program`);
-  return RetrieveUserSessionTrackerHistory.parse(response.data);
+  return [getSessionTracker()];
+  // const response = await redaxios.get(`${SERVER_ENDPOINT}/retrieve-program`);
+  // return RetrieveUserSessionTrackerHistory.parse(response.data);
 }

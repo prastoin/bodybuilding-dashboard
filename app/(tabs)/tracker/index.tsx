@@ -1,4 +1,6 @@
 import AppScreen from "@/components/AppScreen";
+import { AddButton } from "@/components/common/AddButton";
+import { Card } from "@/components/common/Card";
 import { useAppContext } from "@/context/appContext";
 import { SessionTracker } from "@/types";
 import { useActor } from "@xstate/react";
@@ -11,11 +13,14 @@ interface SessionTrackerCardProps {
 }
 
 const SessionTrackerCard: React.FC<SessionTrackerCardProps> = ({ sessionTracker: { createdOn, name, uuid }, onCardPress }) => {
+  const date = new Date(createdOn).toDateString();
 
-  return <TouchableOpacity className="p-3" onPress={() => onCardPress(uuid)}>
-    <Text className="font-bold">{name}</Text>
-    <Text>Created on: {createdOn}</Text>
-  </TouchableOpacity>
+  return <Card>
+    <TouchableOpacity className="p-3" onPress={() => onCardPress(uuid)}>
+      <Text className="font-bold">{name}</Text>
+      <Text>Created on: {date}</Text>
+    </TouchableOpacity>
+  </Card>
 }
 
 interface SessionTrackerHistoryProps {
@@ -32,7 +37,7 @@ const SessionTrackerHistory: React.FC<SessionTrackerHistoryProps> = ({ sessionTr
   }
 
   return <FlatList<SessionTracker>
-    data={sessionTrackerList}
+    data={sessionTrackerList.sort((a, b) => a.createdOn - b.createdOn)}
     keyExtractor={({ uuid }) => uuid}
     renderItem={({ item: sessionTracker }) => <SessionTrackerCard sessionTracker={sessionTracker} onCardPress={onCardPress} />}
   />
@@ -46,12 +51,10 @@ export default function TrackerIndexScreen() {
 
   return (<AppScreen testID="tracker-screen-container">
     <Text>Recent sessions:</Text>
-    <RectButton onPress={() => sendToTrackerMachine("USER_PRESSED_CREATE_TRACKING_SESSION")}>
-      <Text>Start tracking session</Text>
-    </RectButton>
     <SessionTrackerHistory
       sessionTrackerList={sessionTrackerList}
       onCardPress={(sessionTrackerId: string) => sendToTrackerMachine({ type: "USER_PRESSED_EXISTING_TRACKING_SESSION", sessionTrackerId })}
     />
+    <AddButton title="Lets train !" onPress={() => sendToTrackerMachine("USER_PRESSED_CREATE_TRACKING_SESSION")} />
   </AppScreen>);
 }

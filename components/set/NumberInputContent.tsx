@@ -13,11 +13,12 @@ interface NumberFormContentProps {
     handleOnGoBack: () => void;
     testId: string;
     defaultValue?: number;
+    placeholder: string;
 }
 
 export const NumberInputFormContent: React.FC<
     NumberFormContentProps
-> = ({ handleOnSubmit, handleOnGoBack, testId, defaultValue }) => {
+> = ({ handleOnSubmit, handleOnGoBack, testId, defaultValue, placeholder }) => {
     const {
         control,
         handleSubmit,
@@ -35,32 +36,30 @@ export const NumberInputFormContent: React.FC<
 
     return (
         <AppScreen testID={testId}>
-            <View className="flex-row w-full">
-                <Controller
-                    control={control}
-                    rules={{
-                        required: true,
-                        min: 1,
-                    }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <TextInput
-                            value={`${value}`}
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            placeholder="Load"
-                            keyboardType="numeric"
-                        />
-                    )}
-                    name="value"
-                />
-                {errors.value && (
-                    <Text className="text-red-500" accessibilityRole="alert">
-                        A value must be set.
-                    </Text>
+            <Controller
+                control={control}
+                rules={{
+                    required: true,
+                    min: 1,
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                        value={`${value}`}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        placeholder={placeholder}
+                        keyboardType="numeric"
+                    />
                 )}
-            </View>
+                name="value"
+            />
+            <Button title="Next" onPress={handleSubmit(handleOnSubmit)}></Button>
 
-            <Button title="Submit" onPress={handleSubmit(handleOnSubmit)}></Button>
+            {errors.value && (
+                <Text className="text-red-500" accessibilityRole="alert">
+                    A value must be set
+                </Text>
+            )}
         </AppScreen>
     );
 };

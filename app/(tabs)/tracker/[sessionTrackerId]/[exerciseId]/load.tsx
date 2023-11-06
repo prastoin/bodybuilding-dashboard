@@ -1,4 +1,5 @@
 import { NumberInputFormContent, NumberInputFormValues } from "@/components/set/NumberInputContent";
+import { StackHeaderTitle } from "@/components/set/StackHeaderTitle";
 import { useSetFormMachine } from "@/hooks/useTrackerHooks";
 import { SetFormActorRef } from "@/machines/Tracker/SetFormMachine";
 import { useSelector } from "@xstate/react";
@@ -31,12 +32,16 @@ const Content: React.FC<ContentProps> = ({ setFormMachineRef }) => {
   );
 
   return (
-    <NumberInputFormContent
-      testId={`tracker-set-form-load-${setFormMachineRef.id}`}
-      handleOnGoBack={handleGoBack}
-      defaultValue={defaultLoad}
-      handleOnSubmit={handleGoNext}
-    />
+    <StackHeaderTitle field="load" setFormMachineRef={setFormMachineRef}>
+      <NumberInputFormContent
+        placeholder="load"
+        testId={`tracker-set-form-load-${setFormMachineRef.id}`}
+        handleOnGoBack={handleGoBack}
+        defaultValue={defaultLoad}
+        handleOnSubmit={handleGoNext}
+      />
+    </StackHeaderTitle>
+
   );
 }
 
@@ -51,7 +56,6 @@ export default function CreateSetLoadFormScreen() {
       <Text>Set form machine ref not found</Text>
     </View>)
   }
-
 
   return <Content setFormMachineRef={setFormMachineRef} />
 };

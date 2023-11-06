@@ -246,7 +246,7 @@ export async function userNavigatesBackFromHeaderBackButton(
 
 export function getSessionTracker(): SessionTracker {
   return {
-    createdOn: faker.number.int(),
+    createdOn: faker.date.anytime().valueOf(),
     exerciseTrackerList: [],
     name: faker.word.words(2),
     sessionId: faker.string.uuid(),
