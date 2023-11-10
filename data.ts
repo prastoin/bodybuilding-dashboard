@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { Program } from "./types";
 
-const getUuid = () => faker.string.uuid()
+const getUuid = () => faker.string.uuid();
 export const myStaticProgram: Program = {
     name: "prastoin's program",
     sessionList: [
@@ -15,7 +15,8 @@ export const myStaticProgram: Program = {
                     rep: 8,
                     rest: 230,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Chest", "Triceps"],
                 },
                 {
                     name: "Vertical pulldown",
@@ -23,7 +24,8 @@ export const myStaticProgram: Program = {
                     rep: 8,
                     rest: 230,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Lats", "Biceps"],
                 },
                 {
                     name: "Leg extension",
@@ -31,7 +33,8 @@ export const myStaticProgram: Program = {
                     rep: 8,
                     rest: 230,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Quadriceps"],
                 },
                 {
                     name: "Lateral raises cable",
@@ -39,7 +42,8 @@ export const myStaticProgram: Program = {
                     rep: 10,
                     rest: 130,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Deltoid"],
                 },
                 {
                     name: "Biceps curl db",
@@ -47,9 +51,10 @@ export const myStaticProgram: Program = {
                     rep: 8,
                     rest: 200,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Biceps"],
                 },
-            ]
+            ],
         },
         {
             name: "Squat day",
@@ -61,7 +66,8 @@ export const myStaticProgram: Program = {
                     rep: 8,
                     rest: 230,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Quadriceps", "Glutes", "Harmstring"],
                 },
                 {
                     name: "Overhead press machine",
@@ -69,7 +75,8 @@ export const myStaticProgram: Program = {
                     rep: 8,
                     rest: 230,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Deltoid"],
                 },
                 {
                     name: "Rear delt cable",
@@ -77,7 +84,8 @@ export const myStaticProgram: Program = {
                     rep: 10,
                     rest: 130,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Deltoid"],
                 },
                 {
                     name: "Assisted pullups",
@@ -85,7 +93,8 @@ export const myStaticProgram: Program = {
                     rep: 6,
                     rest: 200,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Lats", "Biceps"],
                 },
                 {
                     name: "Biceps curl barbell",
@@ -93,9 +102,10 @@ export const myStaticProgram: Program = {
                     rep: 8,
                     rest: 200,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Biceps"],
                 },
-            ]
+            ],
         },
         {
             name: "Low row day",
@@ -107,7 +117,8 @@ export const myStaticProgram: Program = {
                     rep: 8,
                     rest: 130,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Back"],
                 },
                 {
                     name: "Incline dumbell bench press",
@@ -115,7 +126,8 @@ export const myStaticProgram: Program = {
                     rep: 8,
                     rest: 230,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Chest", "Triceps"],
                 },
                 {
                     name: "Cable Y",
@@ -123,7 +135,8 @@ export const myStaticProgram: Program = {
                     rep: 10,
                     rest: 130,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Deltoid"],
                 },
                 {
                     name: "Triceps ropes",
@@ -131,7 +144,8 @@ export const myStaticProgram: Program = {
                     rep: 8,
                     rest: 200,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Triceps"],
                 },
                 {
                     name: "Calves raises",
@@ -139,9 +153,10 @@ export const myStaticProgram: Program = {
                     rep: 8,
                     rest: 200,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Calves"],
                 },
-            ]
+            ],
         },
         {
             name: "Conventional Deadlift day",
@@ -153,7 +168,8 @@ export const myStaticProgram: Program = {
                     rep: 8,
                     rest: 230,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Glutes", "Harmstring", "Forearm", "Glutes"],
                 },
                 {
                     name: "Leg curl",
@@ -161,7 +177,8 @@ export const myStaticProgram: Program = {
                     rep: 8,
                     rest: 200,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Harmstring"],
                 },
                 {
                     name: "Trieps barbell",
@@ -169,7 +186,8 @@ export const myStaticProgram: Program = {
                     rep: 8,
                     rest: 200,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Triceps"],
                 },
                 {
                     name: "Butterfly",
@@ -177,10 +195,11 @@ export const myStaticProgram: Program = {
                     rep: 8,
                     rest: 200,
                     set: 4,
-                    uuid: getUuid()
+                    uuid: getUuid(),
+                    targetMuscle: ["Chest"],
                 },
-            ]
+            ],
         },
     ],
-    uuid: "42"
-}
+    uuid: "42",
+};

@@ -1,7 +1,28 @@
 import * as z from "zod";
 
-export const SERVER_ENDPOINT = `http://${process.env.EXPO_PUBLIC_SERVER_HOST!}:${process.env
-  .EXPO_PUBLIC_SERVER_PORT!}`;
+const MUSCLES = [
+  "Chest",
+  "Biceps",
+  "Deltoid",
+  "Calves",
+  "Adductor",
+  "Abductor",
+  "Glutes",
+  "Harmstring", //Should create map and not array, this way could contain more information such as Deltoid : rear posterior middle etc same with back and more
+  "Quadriceps",
+  "Triceps",
+  "Lats",
+  "Trapeze",
+  "Forearm",
+  "Abs",
+  "Back" //Quite generic should be replaced using precise muscle groups
+] as const;
+
+const Muscle = z.enum(MUSCLES);
+type Muscle = z.infer<typeof Muscle>;
+
+export const SERVER_ENDPOINT = `http://${process.env
+  .EXPO_PUBLIC_SERVER_HOST!}:${process.env.EXPO_PUBLIC_SERVER_PORT!}`;
 
 export const NonEmptyString = z.string().min(1);
 
@@ -9,10 +30,10 @@ export const LoadUnit = z.enum(["lbs", "kg"]);
 export type LoadUnit = z.infer<typeof LoadUnit>;
 
 export const Seconds = z.number();
-export type Seconds = z.infer<typeof Seconds>
+export type Seconds = z.infer<typeof Seconds>;
 
-export const Kilograms = z.number()
-export type Kilograms = z.infer<typeof Kilograms>
+export const Kilograms = z.number();
+export type Kilograms = z.infer<typeof Kilograms>;
 
 export const ExerciseMetrics = z.object({
   set: z.number().min(1).max(10),
@@ -21,8 +42,9 @@ export const ExerciseMetrics = z.object({
   load: Kilograms,
   // Rest is in seconds
   rest: Seconds,
-})
-export type ExerciseMetrics = z.infer<typeof ExerciseMetrics>
+  targetMuscle: Muscle.array(),
+});
+export type ExerciseMetrics = z.infer<typeof ExerciseMetrics>;
 
 export const Exercise = ExerciseMetrics.extend({
   uuid: z.string().uuid(),
@@ -61,25 +83,27 @@ export const SetTracker = z.object({
   index: z.number(),
   load: z.number(),
   rest: z.number(),
-})
-export type SetTracker = z.infer<typeof SetTracker>
+});
+export type SetTracker = z.infer<typeof SetTracker>;
 
 export const ExerciseTracker = z.object({
   exerciseId: z.string().uuid(),
   name: z.string(),
   expectedMetrics: ExerciseMetrics,
-  setList: SetTracker.array()
-})
-export type ExerciseTracker = z.infer<typeof ExerciseTracker>
+  setList: SetTracker.array(),
+});
+export type ExerciseTracker = z.infer<typeof ExerciseTracker>;
 
 const SessionTracker = z.object({
   uuid: z.string().uuid(),
   sessionId: z.string().uuid(),
   name: z.string(),
   exerciseTrackerList: ExerciseTracker.array(),
-  createdOn: z.number() //TODO Refactor to be date
-})
-export type SessionTracker = z.infer<typeof SessionTracker>
+  createdOn: z.number(), //TODO Refactor to be date
+});
+export type SessionTracker = z.infer<typeof SessionTracker>;
 
-export const RetrieveUserSessionTrackerHistory = SessionTracker.array()
-export type RetrieveUserSessionTrackerHistory = z.infer<typeof RetrieveUserSessionTrackerHistory>
+export const RetrieveUserSessionTrackerHistory = SessionTracker.array();
+export type RetrieveUserSessionTrackerHistory = z.infer<
+  typeof RetrieveUserSessionTrackerHistory
+>;

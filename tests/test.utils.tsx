@@ -47,6 +47,7 @@ export const getBodyBuildingProgram = (): Program => {
             }),
             load: 42,
             rest: getRandomMinuteSecondDuration(),
+            targetMuscle: []
           },
           {
             uuid: uuidv4(),
@@ -61,6 +62,7 @@ export const getBodyBuildingProgram = (): Program => {
             }),
             load: 42,
             rest: getRandomMinuteSecondDuration(),
+            targetMuscle: []
           },
           {
             uuid: uuidv4(),
@@ -75,6 +77,7 @@ export const getBodyBuildingProgram = (): Program => {
             }),
             load: 42,
             rest: getRandomMinuteSecondDuration(),
+            targetMuscle: []
           },
         ],
       },
@@ -95,6 +98,7 @@ export const getBodyBuildingProgram = (): Program => {
             }),
             load: 42,
             rest: getRandomMinuteSecondDuration(),
+            targetMuscle: []
           },
           {
             uuid: uuidv4(),
@@ -109,6 +113,7 @@ export const getBodyBuildingProgram = (): Program => {
             }),
             load: 42,
             rest: getRandomMinuteSecondDuration(),
+            targetMuscle: []
           },
         ],
       },

@@ -29,6 +29,22 @@ export const getBodyBuildingProgram = (): Program => {
               min: 1,
             }),
             load: faker.number.int({ min: 0, max: 100 }),
+            rest: faker.number.int({ min: 0, max: 300 }),
+            targetMuscle: []
+          },
+          {
+            uuid: faker.string.uuid(),
+            name: faker.person.jobTitle(),
+            rep: faker.datatype.number({
+              max: 20,
+              min: 1,
+            }),
+            set: faker.datatype.number({
+              max: 10,
+              min: 1,
+            }),
+            load: faker.number.int({ min: 0, max: 100 }),
+            targetMuscle: [],
             rest: faker.number.int({ min: 0, max: 300 })
           },
           {
@@ -43,21 +59,8 @@ export const getBodyBuildingProgram = (): Program => {
               min: 1,
             }),
             load: faker.number.int({ min: 0, max: 100 }),
-            rest: faker.number.int({ min: 0, max: 300 })
-          },
-          {
-            uuid: faker.string.uuid(),
-            name: faker.person.jobTitle(),
-            rep: faker.datatype.number({
-              max: 20,
-              min: 1,
-            }),
-            set: faker.datatype.number({
-              max: 10,
-              min: 1,
-            }),
-            load: faker.number.int({ min: 0, max: 100 }),
-            rest: faker.number.int({ min: 0, max: 300 })
+            rest: faker.number.int({ min: 0, max: 300 }),
+            targetMuscle: []
           },
         ],
       },
@@ -77,7 +80,8 @@ export const getBodyBuildingProgram = (): Program => {
               min: 1,
             }),
             load: faker.number.int({ min: 0, max: 100 }),
-            rest: faker.number.int({ min: 0, max: 300 })
+            rest: faker.number.int({ min: 0, max: 300 }),
+            targetMuscle: []
           },
           {
             uuid: faker.string.uuid(),
@@ -91,7 +95,8 @@ export const getBodyBuildingProgram = (): Program => {
               min: 1,
             }),
             load: faker.number.int({ min: 0, max: 100 }),
-            rest: faker.number.int({ min: 0, max: 300 })
+            rest: faker.number.int({ min: 0, max: 300 }),
+            targetMuscle: []
           },
         ],
       },
@@ -143,6 +148,7 @@ function getExerciseTracker(exerciseId: string): ExerciseTracker {
       }),
       load: 120,
       rest: 230,
+      targetMuscle: []
     },
     name: faker.person.firstName(),
     setList
